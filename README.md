@@ -32,21 +32,17 @@ Professional Korean business report writer with structured formatting:
 
 > ⚠️ **Important**: Must be installed to `~/.claude/plugins/marketplaces/cs_plugins` for Claude Code to recognize it as a marketplace.
 
-### One-liner (Recommended)
-
 ```bash
+# Using git
 git clone https://github.com/intenet1001-commits/cs_plugins ~/.claude/plugins/marketplaces/cs_plugins
-```
 
-### Or use the install script
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/intenet1001-commits/cs_plugins/main/install.sh | bash
+# Using GitHub CLI
+gh repo clone intenet1001-commits/cs_plugins ~/.claude/plugins/marketplaces/cs_plugins
 ```
 
 ### Troubleshooting
 
-**Cloned to wrong location?** Move it to the correct path:
+**Cloned to wrong location?** Move it:
 
 ```bash
 mv ~/cs_plugins ~/.claude/plugins/marketplaces/cs_plugins

@@ -32,21 +32,17 @@
 
 > ⚠️ **중요**: Claude Code가 마켓플레이스로 인식하려면 반드시 `~/.claude/plugins/marketplaces/cs_plugins` 경로에 설치해야 합니다.
 
-### 한 줄 설치 (권장)
-
 ```bash
+# git 사용
 git clone https://github.com/intenet1001-commits/cs_plugins ~/.claude/plugins/marketplaces/cs_plugins
-```
 
-### 또는 설치 스크립트 사용
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/intenet1001-commits/cs_plugins/main/install.sh | bash
+# GitHub CLI 사용
+gh repo clone intenet1001-commits/cs_plugins ~/.claude/plugins/marketplaces/cs_plugins
 ```
 
 ### 문제 해결
 
-**잘못된 위치에 클론했나요?** 올바른 경로로 이동하세요:
+**잘못된 위치에 클론했나요?** 이동하세요:
 
 ```bash
 mv ~/cs_plugins ~/.claude/plugins/marketplaces/cs_plugins
