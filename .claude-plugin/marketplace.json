@@ -13,7 +13,12 @@
     },
     {
       "name": "report-writer",
-      "description": "Professional Korean business report writer with python-docx generation",
+      "description": "Professional Korean business report writer with 7-level hierarchy (v2)",
+      "source": "./plugins/report-writer-v2"
+    },
+    {
+      "name": "report-writer-v1",
+      "description": "[Legacy] Korean business report writer with 5-level hierarchy",
       "source": "./plugins/report-writer-v1"
     }
   ]

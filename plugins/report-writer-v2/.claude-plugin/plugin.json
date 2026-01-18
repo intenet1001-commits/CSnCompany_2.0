@@ -1,0 +1,12 @@
+{
+  "name": "report-writer",
+  "version": "2.0.0",
+  "description": "Professional Korean business report writer with 7-level hierarchy and python-docx generation (v2)",
+  "author": {
+    "name": "intenet1001-commits",
+    "url": "https://github.com/intenet1001-commits"
+  },
+  "repository": "https://github.com/intenet1001-commits/cs_plugins",
+  "license": "MIT",
+  "keywords": ["report", "korean", "docx", "business", "python-docx", "보고서"]
+}
