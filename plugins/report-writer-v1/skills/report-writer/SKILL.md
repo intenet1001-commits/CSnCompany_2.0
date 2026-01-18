@@ -1,6 +1,6 @@
 ---
 name: report-writer
-description: This skill should be used when user asks "보고서 작성", "report writing", "문서 작성", "DOCX 생성", "business report", "전략 보고서", "기획 보고서", "한글 보고서", "Word 문서", "python-docx", or wants to create professional Korean business documents with structured formatting.
+description: This skill should be used when user asks "/report", "/report-writer", "보고서 작성", "report writing", "문서 작성", "DOCX 생성", "business report", "전략 보고서", "기획 보고서", "한글 보고서", "Word 문서", "python-docx", or wants to create professional Korean business documents with structured formatting.
 ---
 
 # Professional Korean Business Report Writer

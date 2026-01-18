@@ -1,6 +1,6 @@
 ---
 name: playwright-test
-description: This skill should be used when user asks "test automation", "Playwright test", "E2E test", "web test", "multi-agent test", "functional/visual/API/performance test", "테스트 자동화", "웹 테스트", "기능 테스트", "성능 테스트", or wants to run comprehensive web application testing.
+description: This skill should be used when user asks "/playwright-test", "/test", "test automation", "Playwright test", "E2E test", "web test", "multi-agent test", "functional/visual/API/performance test", "테스트 자동화", "웹 테스트", "기능 테스트", "성능 테스트", or wants to run comprehensive web application testing.
 ---
 
 # Multi-Agent Playwright Test Automation
