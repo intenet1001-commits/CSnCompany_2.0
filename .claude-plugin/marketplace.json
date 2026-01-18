@@ -17,6 +17,11 @@
       "source": "./plugins/report-writer-v2"
     },
     {
+      "name": "review-report",
+      "description": "Professional Korean review/analysis report writer with checkbox sections",
+      "source": "./plugins/review-report-v1"
+    },
+    {
       "name": "report-writer-v1",
       "description": "[Legacy] Korean business report writer with 5-level hierarchy",
       "source": "./plugins/report-writer-v1"
