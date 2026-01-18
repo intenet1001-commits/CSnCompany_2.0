@@ -1,5 +1,5 @@
 {
-  "name": "playwright-test-v1.0.0",
+  "name": "playwright-test",
   "version": "1.0.0",
   "description": "Multi-agent Playwright test automation for web applications (5 specialized agents)",
   "author": {
