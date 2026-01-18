@@ -7,461 +7,459 @@ description: This skill should be used when user asks "/report", "/report-writer
 
 > 증권사/금융사 전략/기획 부서 전문 보고서 작성 템플릿
 
-## Purpose
+## CRITICAL RULES - MUST FOLLOW
 
-Create professional Korean business reports with:
-- 7-level hierarchical numbering system
-- Proper Korean typography (나눔명조)
-- python-docx compatible formatting
-- Collapsible sections in Word 2016+
-- Compact spacing (no excessive gaps)
+### 1. Font Requirements (필수)
+
+**모든 텍스트에 나눔명조 폰트를 명시적으로 설정해야 합니다.**
+
+```python
+from docx.shared import Pt, Cm
+from docx.oxml.ns import qn
+
+def set_font(run, font_name='나눔명조', size=11, bold=False):
+    run.font.name = font_name
+    run.font.size = Pt(size)
+    run.font.bold = bold
+    # 한글 폰트 설정 필수
+    run._element.rPr.rFonts.set(qn('w:eastAsia'), font_name)
+```
+
+### 2. NO EMOJI - NEVER USE
+
+**절대 이모지 사용 금지. 다음 문자만 사용:**
+- 섹션: `I.` `II.` `III.` `IV.` (로마숫자)
+- 번호: `1.` `2.` `3.` (아라비아숫자)
+- 불릿: `•` (속이 찬 dot, U+2022)
+- 하위번호: `(1)` `(2)` `(3)`
+- 하이픈: `-`
+- 소불릿: `o` (소문자 o)
+- 참고: `*`
+
+**금지 기호:** ❗ ✓ ✅ ❌ 📌 🔹 → ➡ 등 모든 이모지
+
+### 3. Indentation MUST BE Applied
+
+**들여쓰기와 내어쓰기 필수 적용:**
+
+```python
+from docx.shared import Cm
+
+def set_indent(paragraph, left_cm, hanging_cm=0):
+    pf = paragraph.paragraph_format
+    pf.left_indent = Cm(left_cm)
+    if hanging_cm:
+        pf.first_line_indent = Cm(hanging_cm)  # 음수값으로 내어쓰기
+```
+
+### 4. Spacing Rules
+
+**space_after는 항상 0pt. space_before는 섹션 헤더만 12pt.**
 
 ---
 
-## 1. Page Setup
+## Document Structure
 
-### 1.1 Paper and Margins
+### Page Setup (2.54cm margins)
 
-| Item | Value |
-|------|-------|
-| Paper Size | Letter (8.5 × 11 inches / 21.59cm × 27.94cm) |
-| Top Margin | 2.54cm |
-| Bottom Margin | 2.54cm |
-| Left Margin | 2.54cm |
-| Right Margin | 2.54cm |
-| Footer Distance | 1.0cm |
+```python
+from docx import Document
+from docx.shared import Cm
 
-### 1.2 Page Number
+doc = Document()
+for section in doc.sections:
+    section.top_margin = Cm(2.54)
+    section.bottom_margin = Cm(2.54)
+    section.left_margin = Cm(2.54)
+    section.right_margin = Cm(2.54)
+```
 
-- Position: Footer center
-- Font: 나눔명조, 10pt
-- Auto page number field
+### Document Title (제목)
 
----
-
-## 2. Document Header
-
-### 2.1 Title
+```python
+def add_title(doc, title_text):
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = p.add_run(title_text)
+    set_font(run, size=18, bold=True)
+    # space_before, space_after 모두 0
+```
 
 | Item | Value |
 |------|-------|
 | Font | 나눔명조 |
-| Size | 18pt |
+| Size | **18pt** |
 | Style | Bold |
 | Alignment | Center |
+| Space Before | 0pt |
+| Space After | 0pt |
 
-### 2.2 Department and Date
+### Department and Date (부서/날짜)
 
-```
-sq1(GBS)(2026.01)
+```python
+def add_department_date(doc, dept, date):
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    run = p.add_run(f'{dept}({date})')
+    set_font(run, size=11, bold=False)
 ```
 
 | Item | Value |
 |------|-------|
+| Format | `부서명(YYYY.MM)` |
 | Font | 나눔명조 |
-| Size | 11pt |
-| Style | Normal |
+| Size | **11pt** |
 | Alignment | Right |
-| Format | 부서명(YYYY.MM) |
-
-### 2.3 Header Spacing
-
-- 1 empty line between title and department
 
 ---
 
-## 3. Line Spacing
+## Hierarchy Levels (7 Levels)
 
-| Target | Line Spacing |
-|--------|--------------|
-| All body text | 1.15x |
-| Table content | 1.15x |
-
----
-
-## 4. Hierarchy Structure (7 Levels)
-
-```
-I. 대항목 (Roman numerals)
-   1. 번호항목 (Arabic numbers)
-      • 불릿항목 (Filled dot)
-      (1) 하위번호항목 (Parenthesis numbers)
-          - 하이픈 불릿
-          o 소항목 불릿
-* 참고사항
-```
-
-### Spacing Summary (Compact)
-
-| Level | Element | Space Before | Space After | Font Size |
-|-------|---------|--------------|-------------|-----------|
-| 1 | Section Heading (I, II...) | 12pt | 4pt | 14pt |
-| 2 | Numbered Item (1. 2...) | 4pt | 2pt | 12pt |
-| 3 | Bullet Item (•) | 2pt | 1pt | 11pt |
-| 4 | Sub-numbered ((1) (2)...) | 2pt | 1pt | 11pt |
-| 5 | Dash Bullet (-) | 1pt | 1pt | 11pt |
-| 6 | Sub-bullet (o) | 1pt | 1pt | 11pt |
-| 7 | Note (*) | 4pt | 2pt | 10pt |
-
----
-
-## 5. Level Details
-
-### Level 1: Section Heading (대항목)
-
-```
-I. 추진 배경 및 목표
-II. 핵심 과제
-III. 상세 실행 방안
-IV. 전략적 도약 및 성과 지표(KPI)
-[별첨] 법인대상 세미나 운영 방안
-```
-
-| Item | Value |
-|------|-------|
-| Symbol | Roman numerals (I, II, III...) or [별첨] |
-| Font | 나눔명조 |
-| Size | 14pt |
-| Style | Bold |
-| Alignment | Left |
-| Space Before | 12pt (별첨은 0pt) |
-| Space After | 4pt |
-| Outline Level | 1 (enables collapsible in Word) |
-
-### Level 2: Numbered Item (번호항목)
-
-```
-1. 2025년 성과 및 확대
-2. 조직 강화
-3. 최상위 미션
-```
-
-| Item | Value |
-|------|-------|
-| Symbol | Arabic number + period (1. 2. 3.) |
-| Font | 나눔명조 |
-| Size | 12pt |
-| Number Style | Bold |
-| Content Style | Normal |
-| Left Indent | 0.7cm |
-| Hanging Indent | -0.5cm |
-| Space Before | 4pt |
-| Space After | 2pt |
-
-### Level 3: Bullet Item (불릿항목 •)
-
-```
-• 패밀리오피스 지원의 성공적 완수를 통해 검증된 역량을 바탕으로...
-```
-
-| Item | Value |
-|------|-------|
-| Symbol | • (filled dot) |
-| Font | 나눔명조 |
-| Size | 11pt |
-| Left Indent | 1.0cm |
-| Hanging Indent | -0.4cm |
-| Space Before | 2pt |
-| Space After | 1pt |
-| Keyword Emphasis | `bold_keyword` parameter |
-
-### Level 4: Sub-numbered Item (하위번호항목)
-
-```
-(1) 6대 타겟 분류
-(2) 맞춤형 솔루션
-```
-
-| Item | Value |
-|------|-------|
-| Symbol | Parenthesis numbers ((1) (2) (3)...) |
-| Font | 나눔명조 |
-| Size | 11pt |
-| Number Style | Bold |
-| Content Style | Normal |
-| Left Indent | 1.3cm |
-| Hanging Indent | -0.7cm |
-| Space Before | 2pt |
-| Space After | 1pt |
-
-### Level 5: Dash Bullet (하이픈 불릿)
-
-```
-- 상장기업, 외감법인, 일반법인별로 차별화된 제안서 배포
-```
-
-| Item | Value |
-|------|-------|
-| Symbol | - (hyphen) |
-| Font | 나눔명조 |
-| Size | 11pt |
-| Left Indent | 1.8cm |
-| Hanging Indent | -0.4cm |
-| Space Before | 1pt |
-| Space After | 1pt |
-| Keyword Emphasis | `bold_keyword` parameter |
-
-### Level 6: Sub-bullet (소항목 불릿)
-
-```
-o 내용
-```
-
-| Item | Value |
-|------|-------|
-| Symbol | o (lowercase o) |
-| Font | 나눔명조 |
-| Size | 11pt |
-| Left Indent | 1.5cm |
-| Space Before | 1pt |
-| Space After | 1pt |
-
-### Level 7: Note (참고사항)
-
-```
-* 참고사항 내용
-```
-
-| Item | Value |
-|------|-------|
-| Symbol | * (asterisk) |
-| Font | 나눔명조 |
-| Size | 10pt |
-| Left Indent | 0.19cm |
-| Space Before | 4pt |
-| Space After | 2pt |
-
----
-
-## 6. Text Emphasis (Bold Keyword)
-
-### 6.1 Usage
-
-```
-• 패밀리오피스 지원의 성공적 완수를 통해 검증된 역량을 바탕으로...
-  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ (Bold)
-```
-
-### 6.2 Python Code
+### Level 1: Section Heading (대항목) - I. II. III.
 
 ```python
-add_dot_bullet_item(doc, '전체 내용', bold_keyword='굵게 처리할 앞부분')
-add_dash_bullet_item(doc, '전체 내용', bold_keyword='굵게 처리할 앞부분')
+def add_section_heading(doc, text):
+    # 빈 줄 추가 (섹션 간 구분)
+    doc.add_paragraph()
+
+    p = doc.add_paragraph()
+    pf = p.paragraph_format
+    pf.space_before = Pt(12)
+    pf.space_after = Pt(0)
+    pf.left_indent = Cm(0)
+
+    run = p.add_run(text)  # 예: "I. 추진 배경"
+    set_font(run, size=14, bold=True)
+
+    # Collapsible heading 설정
+    set_collapsible_heading(p, outline_level=1)
 ```
 
-### 6.3 Emphasis Rules
+| Item | Value |
+|------|-------|
+| Symbol | **I. II. III. IV.** (로마숫자) 또는 [별첨] |
+| Font | 나눔명조 |
+| Size | **14pt** |
+| Style | **Bold** |
+| Left Indent | **0cm** |
+| Space Before | **12pt** |
+| Space After | **0pt** |
 
-- **Bold**: Section headings, numbers, table headers, key keywords
-- **Normal**: Body content, explanatory text
-- **Single quotes**: English terms (e.g., 'Complete Care')
-
----
-
-## 7. Footnotes
-
-### 7.1 Format
-
-- Body: Superscript number `1)` format
-- Page bottom: `1) Footnote content` format
-
-### 7.2 Python Code
+### Level 2: Numbered Item (번호항목) - 1. 2. 3.
 
 ```python
-p = doc.add_paragraph()
-run = p.add_run('단체(협회)')
-set_font(run, size=11, bold=True)
-create_footnote(doc, p, '단체(협회): 산업통상자원부 산하 사단법인...')
-run = p.add_run('를 대상으로 먼저 시행')
-set_font(run, size=11)
-```
+def add_numbered_item(doc, number, content):
+    p = doc.add_paragraph()
+    pf = p.paragraph_format
+    pf.left_indent = Cm(0.7)
+    pf.first_line_indent = Cm(-0.5)
+    pf.space_before = Pt(0)
+    pf.space_after = Pt(0)
 
-### 7.3 Footnote Style
+    # 번호 (굵게)
+    run_num = p.add_run(f'{number}. ')
+    set_font(run_num, size=12, bold=True)
+
+    # 내용 (일반)
+    run_content = p.add_run(content)
+    set_font(run_content, size=12, bold=False)
+```
 
 | Item | Value |
 |------|-------|
+| Symbol | **1. 2. 3.** (아라비아숫자 + 마침표) |
 | Font | 나눔명조 |
-| Body Superscript | 9pt |
-| Bottom Footnote | 9pt (18 half-points) |
+| Size | **12pt** |
+| Number Style | **Bold** |
+| Content Style | Normal |
+| Left Indent | **0.7cm** |
+| Hanging Indent | **-0.5cm** |
+| Space Before | **0pt** |
+| Space After | **0pt** |
+
+### Level 3: Bullet Item (불릿항목) - •
+
+```python
+def add_bullet_item(doc, content, bold_keyword=None):
+    p = doc.add_paragraph()
+    pf = p.paragraph_format
+    pf.left_indent = Cm(1.0)
+    pf.first_line_indent = Cm(-0.4)
+    pf.space_before = Pt(0)
+    pf.space_after = Pt(0)
+
+    # 불릿 기호
+    run_bullet = p.add_run('• ')
+    set_font(run_bullet, size=11, bold=False)
+
+    if bold_keyword and content.startswith(bold_keyword):
+        # 키워드 굵게
+        run_kw = p.add_run(bold_keyword)
+        set_font(run_kw, size=11, bold=True)
+        # 나머지 일반
+        run_rest = p.add_run(content[len(bold_keyword):])
+        set_font(run_rest, size=11, bold=False)
+    else:
+        run_content = p.add_run(content)
+        set_font(run_content, size=11, bold=False)
+```
+
+| Item | Value |
+|------|-------|
+| Symbol | **•** (U+2022, 속이 찬 dot) |
+| Font | 나눔명조 |
+| Size | **11pt** |
+| Left Indent | **1.0cm** |
+| Hanging Indent | **-0.4cm** |
+| Space Before | **0pt** |
+| Space After | **0pt** |
+
+### Level 4: Sub-numbered Item (하위번호) - (1) (2)
+
+```python
+def add_sub_numbered_item(doc, number, content):
+    p = doc.add_paragraph()
+    pf = p.paragraph_format
+    pf.left_indent = Cm(1.3)
+    pf.first_line_indent = Cm(-0.7)
+    pf.space_before = Pt(0)
+    pf.space_after = Pt(0)
+
+    # 번호 (굵게)
+    run_num = p.add_run(f'({number}) ')
+    set_font(run_num, size=11, bold=True)
+
+    # 내용 (일반)
+    run_content = p.add_run(content)
+    set_font(run_content, size=11, bold=False)
+```
+
+| Item | Value |
+|------|-------|
+| Symbol | **(1) (2) (3)** |
+| Font | 나눔명조 |
+| Size | **11pt** |
+| Number Style | **Bold** |
+| Left Indent | **1.3cm** |
+| Hanging Indent | **-0.7cm** |
+| Space Before | **0pt** |
+| Space After | **0pt** |
+
+### Level 5: Dash Bullet (하이픈) - -
+
+```python
+def add_dash_item(doc, content, bold_keyword=None):
+    p = doc.add_paragraph()
+    pf = p.paragraph_format
+    pf.left_indent = Cm(1.8)
+    pf.first_line_indent = Cm(-0.4)
+    pf.space_before = Pt(0)
+    pf.space_after = Pt(0)
+
+    run_dash = p.add_run('- ')
+    set_font(run_dash, size=11, bold=False)
+
+    # bold_keyword 처리 (Level 3과 동일)
+    run_content = p.add_run(content)
+    set_font(run_content, size=11, bold=False)
+```
+
+| Item | Value |
+|------|-------|
+| Symbol | **-** (하이픈) |
+| Font | 나눔명조 |
+| Size | **11pt** |
+| Left Indent | **1.8cm** |
+| Hanging Indent | **-0.4cm** |
+| Space Before | **0pt** |
+| Space After | **0pt** |
+
+### Level 6: Sub-bullet (소불릿) - o
+
+```python
+def add_sub_bullet(doc, content):
+    p = doc.add_paragraph()
+    pf = p.paragraph_format
+    pf.left_indent = Cm(1.5)
+    pf.space_before = Pt(0)
+    pf.space_after = Pt(0)
+
+    run = p.add_run(f'o {content}')
+    set_font(run, size=11, bold=False)
+```
+
+| Item | Value |
+|------|-------|
+| Symbol | **o** (소문자 o) |
+| Font | 나눔명조 |
+| Size | **11pt** |
+| Left Indent | **1.5cm** |
+
+### Level 7: Note (참고사항) - *
+
+```python
+def add_note(doc, content):
+    p = doc.add_paragraph()
+    pf = p.paragraph_format
+    pf.left_indent = Cm(0.19)
+    pf.space_before = Pt(0)
+    pf.space_after = Pt(0)
+
+    run = p.add_run(f'* {content}')
+    set_font(run, size=10, bold=False)
+```
+
+| Item | Value |
+|------|-------|
+| Symbol | **\*** (별표) |
+| Font | 나눔명조 |
+| Size | **10pt** |
+| Left Indent | **0.19cm** |
 
 ---
 
-## 8. Tables
+## Tables
 
-### 8.1 Table Title
+### Table Title
 
+```python
+def add_table_title(doc, title):
+    p = doc.add_paragraph()
+    pf = p.paragraph_format
+    pf.left_indent = Cm(0.19)
+
+    run = p.add_run(f'[{title}]')
+    set_font(run, size=11, bold=True)
 ```
-[전략적 지향점]
-```
 
-| Item | Value |
-|------|-------|
-| Format | Wrapped in brackets |
-| Font | 나눔명조 |
-| Size | 11pt |
-| Style | Bold |
-| Left Indent | 0.19cm |
-| Position | Immediately above table |
-
-### 8.2 Table Header
+### Table Header
 
 | Item | Value |
 |------|-------|
 | Font | 나눔명조 |
-| Size | 10pt |
-| Style | Bold |
-| Alignment | Center |
-| Background | #F2F2F2 (light gray) |
-| Row Height | 0.64cm (fixed) |
-| Line Spacing | 1.15x |
+| Size | **10pt** |
+| Style | **Bold** |
+| Alignment | **Center** |
+| Background | **#F2F2F2** |
+| Row Height | **0.64cm** |
 
-### 8.3 Table Content
+### Table Content
 
 | Item | Value |
 |------|-------|
 | Font | 나눔명조 |
-| Size | 10pt |
+| Size | **10pt** |
 | Style | Normal |
 | Alignment | Left |
-| Line Spacing | 1.15x |
-
-### 8.4 Table Style
-
-- Border: Table Grid (default grid)
 
 ---
 
-## 9. Collapsible Sections
-
-Word 2016+ displays triangle icon on section headings for expand/collapse.
-
-### Python Code
+## Document End
 
 ```python
-def set_collapsible_heading(paragraph, outline_level=1):
-    pPr = paragraph._p.get_or_add_pPr()
-    outlineLvl = OxmlElement('w:outlineLvl')
-    outlineLvl.set(qn('w:val'), str(outline_level - 1))
-    pPr.append(outlineLvl)
-```
-
-### Outline Levels
-
-| Level | Usage |
-|-------|-------|
-| 1 | Section heading (I, II, III...) |
-| 2 | Sub-section (if needed) |
-| 3 | Sub-sub-section (if needed) |
-
----
-
-## 10. Document End
-
-```
-[끝]
-```
-
-| Item | Value |
-|------|-------|
-| Font | 나눔명조 |
-| Size | 11pt |
-| Style | Bold |
-| Alignment | Center |
-
----
-
-## 11. Python-docx Function Reference
-
-### Basic Functions
-
-| Function | Purpose | Parameters |
-|----------|---------|------------|
-| `set_font()` | Set font | font_name, size, bold |
-| `set_line_spacing()` | Set line spacing | multiplier (default 1.15) |
-
-### Document Structure Functions
-
-| Function | Purpose | Parameters |
-|----------|---------|------------|
-| `add_heading_text()` | Document title | size=18, bold=True, alignment |
-| `add_section_heading()` | Section heading (I, II) | size=14, outline_level, space_before |
-| `add_numbered_item()` | Numbered item (1. 2.) | number, content |
-| `add_dot_bullet_item()` | Bullet (•) | content, bold_keyword |
-| `add_sub_numbered_item()` | Sub-number ((1) (2)) | number, content |
-| `add_dash_bullet_item()` | Hyphen (-) | content, bold_keyword |
-| `add_sub_bullet()` | Sub-bullet (o) | content |
-| `add_note()` | Note (*) | content, size=10 |
-
-### Table and Footnote Functions
-
-| Function | Purpose | Parameters |
-|----------|---------|------------|
-| `add_table_title()` | Table title | title |
-| `create_table()` | Create table | headers, rows |
-| `create_footnote()` | Add footnote | paragraph, footnote_text |
-| `save_doc_with_footnotes()` | Save with footnotes | filepath |
-
----
-
-## 12. Template Example
-
-```markdown
-[보고서 제목]
-
-[작성부서](YYYY.MM)
-
-I. 추진 배경 및 목표
-
-1. 첫 번째 주제
-   • 핵심 키워드를 앞에 두고 상세 내용 기술
-
-2. 두 번째 주제
-   • 내용 기술
-
-II. 핵심 과제
-
-1. 과제명
-   (1) 세부 과제 1
-       - 상세 내용
-       o 추가 세부사항
-   (2) 세부 과제 2
-       - 상세 내용
-
-III. 상세 실행 방안
-
-[표 제목]
-| 항목 | 내용 |
-| --- | --- |
-| 항목1 | 내용1 |
-
-* 참고: 추가 설명이 필요한 경우
-
-IV. 성과 지표
-
-[끝]
+def add_end_mark(doc):
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = p.add_run('[끝]')
+    set_font(run, size=11, bold=True)
 ```
 
 ---
 
-## 13. v1 vs v2 Differences
+## Complete Example
 
-| Item | v1 | v2 |
-|------|----|----|
-| Hierarchy Levels | 5 | 7 (added o, *) |
-| Section Spacing | 10pt | 12pt |
-| Item Spacing | 6pt/2pt | 4pt/2pt (compact) |
-| Sub-bullet (o) | Not supported | Supported |
-| Note (*) | Not supported | Supported |
-| Base Template | Custom | 보고서_템플릿_가이드_v4.md |
+```python
+from docx import Document
+from docx.shared import Pt, Cm
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml.ns import qn
+
+def set_font(run, font_name='나눔명조', size=11, bold=False):
+    run.font.name = font_name
+    run.font.size = Pt(size)
+    run.font.bold = bold
+    run._element.rPr.rFonts.set(qn('w:eastAsia'), font_name)
+
+# Create document
+doc = Document()
+
+# Page setup
+for section in doc.sections:
+    section.top_margin = Cm(2.54)
+    section.bottom_margin = Cm(2.54)
+    section.left_margin = Cm(2.54)
+    section.right_margin = Cm(2.54)
+
+# Title
+p = doc.add_paragraph()
+p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+run = p.add_run('보고서 제목')
+set_font(run, size=18, bold=True)
+
+# Department
+p = doc.add_paragraph()
+p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+run = p.add_run('부서명(2026.01)')
+set_font(run, size=11)
+
+# Section I
+doc.add_paragraph()  # 빈 줄
+p = doc.add_paragraph()
+p.paragraph_format.space_before = Pt(12)
+run = p.add_run('I. 추진 배경')
+set_font(run, size=14, bold=True)
+
+# Numbered item
+p = doc.add_paragraph()
+p.paragraph_format.left_indent = Cm(0.7)
+p.paragraph_format.first_line_indent = Cm(-0.5)
+run = p.add_run('1. ')
+set_font(run, size=12, bold=True)
+run = p.add_run('항목 내용')
+set_font(run, size=12)
+
+# Bullet item
+p = doc.add_paragraph()
+p.paragraph_format.left_indent = Cm(1.0)
+p.paragraph_format.first_line_indent = Cm(-0.4)
+run = p.add_run('• 불릿 내용')
+set_font(run, size=11)
+
+# End
+p = doc.add_paragraph()
+p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+run = p.add_run('[끝]')
+set_font(run, size=11, bold=True)
+
+doc.save('report.docx')
+```
 
 ---
 
-## Rules
+## Checklist Before Output
 
-1. **Font Consistency**: Always use 나눔명조 for Korean documents
-2. **Line Spacing**: Use 1.15x for all content
-3. **Hierarchy**: Follow the 7-level numbering system strictly
-4. **Indentation**: Each level has specific indent values
-5. **Emphasis**: Use bold for keywords, not underlining or italics
-6. **Tables**: Always include table title in brackets before the table
-7. **Document End**: Always include [끝] at the end
-8. **Compact Spacing**: Avoid excessive empty lines between items
+1. ✓ 모든 run에 `set_font()` 호출했는가? (나눔명조 설정)
+2. ✓ 이모지 사용하지 않았는가?
+3. ✓ 섹션 헤더에 로마숫자 (I. II. III.) 사용했는가?
+4. ✓ 들여쓰기와 내어쓰기 값이 정확한가?
+5. ✓ space_after가 모두 0pt인가?
+6. ✓ space_before는 섹션 헤더만 12pt인가?
+7. ✓ 여백이 2.54cm인가?
+8. ✓ [끝] 마크를 추가했는가?
+
+---
+
+## Quick Reference Card
+
+| Level | Symbol | Size | Bold | Left | Hanging | SpaceBefore |
+|-------|--------|------|------|------|---------|-------------|
+| Title | - | 18pt | Yes | 0 | 0 | 0 |
+| Dept | - | 11pt | No | 0 | 0 | 0 |
+| L1 Section | I. II. | 14pt | Yes | 0 | 0 | 12pt |
+| L2 Number | 1. 2. | 12pt | Num | 0.7cm | -0.5cm | 0 |
+| L3 Bullet | • | 11pt | No | 1.0cm | -0.4cm | 0 |
+| L4 SubNum | (1) (2) | 11pt | Num | 1.3cm | -0.7cm | 0 |
+| L5 Dash | - | 11pt | No | 1.8cm | -0.4cm | 0 |
+| L6 SubBullet | o | 11pt | No | 1.5cm | 0 | 0 |
+| L7 Note | * | 10pt | No | 0.19cm | 0 | 0 |
+| End | [끝] | 11pt | Yes | 0 | 0 | 0 |
