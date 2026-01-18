@@ -30,13 +30,21 @@
 
 ## 설치 방법
 
-> ⚠️ **중요**: Claude Code가 마켓플레이스로 인식하려면 반드시 `~/.claude/plugins/marketplaces/cs_plugins` 경로에 설치해야 합니다.
+### 한 줄 설치 (권장)
 
 ```bash
-# git 사용
+curl -fsSL https://raw.githubusercontent.com/intenet1001-commits/cs_plugins/main/install.sh | bash
+```
+
+### 수동 설치
+
+> ⚠️ **경로 필수**: `~/.claude/plugins/marketplaces/cs_plugins` 경로를 지정해야 합니다
+
+```bash
+# git
 git clone https://github.com/intenet1001-commits/cs_plugins ~/.claude/plugins/marketplaces/cs_plugins
 
-# GitHub CLI 사용
+# GitHub CLI
 gh repo clone intenet1001-commits/cs_plugins ~/.claude/plugins/marketplaces/cs_plugins
 ```
 
