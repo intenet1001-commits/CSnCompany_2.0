@@ -30,30 +30,24 @@
 
 ## 설치 방법
 
-### 한 줄 설치 (권장)
+### Claude Code 명령어 (권장)
+
+```
+/plugin marketplace add intenet1001-commits/cs_plugins
+/plugin install playwright-test
+/plugin install report-writer
+```
+
+### 쉘 스크립트
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/intenet1001-commits/cs_plugins/main/install.sh | bash
 ```
 
-### 수동 설치
-
-> ⚠️ **경로 필수**: `~/.claude/plugins/marketplaces/cs_plugins` 경로를 지정해야 합니다
+### 수동 클론
 
 ```bash
-# git
 git clone https://github.com/intenet1001-commits/cs_plugins ~/.claude/plugins/marketplaces/cs_plugins
-
-# GitHub CLI
-gh repo clone intenet1001-commits/cs_plugins ~/.claude/plugins/marketplaces/cs_plugins
-```
-
-### 문제 해결
-
-**잘못된 위치에 클론했나요?** 이동하세요:
-
-```bash
-mv ~/cs_plugins ~/.claude/plugins/marketplaces/cs_plugins
 ```
 
 ## 사용법

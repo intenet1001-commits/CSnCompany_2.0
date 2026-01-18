@@ -30,30 +30,24 @@ Professional Korean business report writer with structured formatting:
 
 ## Installation
 
-### One-liner (Recommended)
+### Via Claude Code (Recommended)
+
+```
+/plugin marketplace add intenet1001-commits/cs_plugins
+/plugin install playwright-test
+/plugin install report-writer
+```
+
+### Via Shell
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/intenet1001-commits/cs_plugins/main/install.sh | bash
 ```
 
-### Manual Installation
-
-> ⚠️ **Path required**: Must specify `~/.claude/plugins/marketplaces/cs_plugins`
+### Manual Clone
 
 ```bash
-# git
 git clone https://github.com/intenet1001-commits/cs_plugins ~/.claude/plugins/marketplaces/cs_plugins
-
-# GitHub CLI
-gh repo clone intenet1001-commits/cs_plugins ~/.claude/plugins/marketplaces/cs_plugins
-```
-
-### Troubleshooting
-
-**Cloned to wrong location?** Move it:
-
-```bash
-mv ~/cs_plugins ~/.claude/plugins/marketplaces/cs_plugins
 ```
 
 ## Usage
