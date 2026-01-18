@@ -1,19 +1,26 @@
 {
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "cs-plugins",
-  "displayName": "CS Plugins Collection",
-  "description": "Claude Code plugins for testing and document generation",
-  "category": "productivity",
-  "featured": false,
+  "version": "1.0.0",
+  "description": "Claude Code plugins for web testing and document generation",
+  "owner": {
+    "name": "intenet1001-commits",
+    "email": "intenet1001@github.com"
+  },
   "plugins": [
     {
-      "name": "playwright-test",
+      "name": "playwright-test-v1.0.0",
       "description": "5 specialized agents for comprehensive web app testing (Explorer, Functional, Visual, API, Performance)",
-      "source": "./plugins/playwright-test"
+      "version": "1.0.0",
+      "source": "./plugins/playwright-test-v1.0.0",
+      "category": "testing"
     },
     {
-      "name": "report-writer",
+      "name": "report-writer-v1.0.0",
       "description": "Professional Korean business report writer with structured formatting and python-docx generation",
-      "source": "./plugins/report-writer"
+      "version": "1.0.0",
+      "source": "./plugins/report-writer-v1.0.0",
+      "category": "productivity"
     }
   ]
 }
