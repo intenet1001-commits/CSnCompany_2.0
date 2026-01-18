@@ -270,7 +270,7 @@ IV. 성과 지표(KPI)
 ```markdown
 [보고서 제목]
 
-[작성부서](YYYY.MM)
+[작성부서](YYYY.MM.DD)
 
 I. 추진 배경 및 목표
 
