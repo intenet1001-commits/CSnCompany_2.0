@@ -159,14 +159,14 @@ IV. 성과 지표(KPI)
 ### Department and Date
 
 ```
-전략기획팀(2026.01)
+[부서명](YYYY.MM.DD)
 ```
 
 | Item | Value |
 |------|-------|
 | Font | 나눔명조 |
 | Size | 11pt |
-| Format | Department(YYYY.MM) |
+| Format | [부서명](YYYY.MM.DD) |
 | Alignment | Right |
 
 ## Table Formatting
@@ -341,20 +341,20 @@ for section in doc.sections:
     section.right_margin = Cm(2.54)
 
 # Add title
-add_heading_text(doc, '2026년 사업 전략 기획안')
+add_heading_text(doc, '[보고서 제목]')
 
 # Add department and date
-add_department_date(doc, '전략기획팀', '2026.01')
+add_department_date(doc, '[부서명]', 'YYYY.MM.DD')
 
 # Add section
-add_section_heading(doc, 'I. 추진 배경 및 목표')
+add_section_heading(doc, 'I. [섹션 제목]')
 
 # Add numbered item
-add_numbered_item(doc, 1, '2025년 성과 및 확대')
+add_numbered_item(doc, 1, '[항목 내용]')
 
 # Add bullet
-add_dot_bullet_item(doc, '핵심 프로젝트의 성공적 완수를 통해...',
-                    bold_keyword='핵심 프로젝트의 성공적 완수')
+add_dot_bullet_item(doc, '[키워드]: [상세 설명]...',
+                    bold_keyword='[키워드]')
 
 # Save
 doc.save('report.docx')
