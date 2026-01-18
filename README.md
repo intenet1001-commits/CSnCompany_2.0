@@ -30,6 +30,8 @@ Professional Korean business report writer with structured formatting:
 
 ## Installation
 
+> ⚠️ **Important**: Must be installed to `~/.claude/plugins/marketplaces/cs_plugins` for Claude Code to recognize it as a marketplace.
+
 ### One-liner (Recommended)
 
 ```bash
@@ -42,11 +44,12 @@ git clone https://github.com/intenet1001-commits/cs_plugins ~/.claude/plugins/ma
 curl -fsSL https://raw.githubusercontent.com/intenet1001-commits/cs_plugins/main/install.sh | bash
 ```
 
-### Manual Installation
+### Troubleshooting
+
+**Cloned to wrong location?** Move it to the correct path:
 
 ```bash
-cd ~/.claude/plugins/marketplaces
-git clone https://github.com/intenet1001-commits/cs_plugins
+mv ~/cs_plugins ~/.claude/plugins/marketplaces/cs_plugins
 ```
 
 ## Usage
@@ -65,18 +68,9 @@ After installation, trigger the skills by saying:
 
 ## Quick Start
 
-1. **Install the plugin**:
-   ```bash
-   git clone https://github.com/intenet1001-commits/cs_plugins ~/.claude/plugins/marketplaces/cs_plugins
-   ```
-
+1. **Install** (see [Installation](#installation) above)
 2. **Restart Claude Code** to load the new plugins
-
-3. **Use the skills**:
-   ```
-   "Playwright 테스트 실행해줘"
-   "보고서 작성해줘"
-   ```
+3. **Use the skills**: `"Run Playwright test"` or `"보고서 작성해줘"`
 
 ## Architecture
 

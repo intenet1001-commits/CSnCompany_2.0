@@ -30,6 +30,8 @@
 
 ## 설치 방법
 
+> ⚠️ **중요**: Claude Code가 마켓플레이스로 인식하려면 반드시 `~/.claude/plugins/marketplaces/cs_plugins` 경로에 설치해야 합니다.
+
 ### 한 줄 설치 (권장)
 
 ```bash
@@ -42,11 +44,12 @@ git clone https://github.com/intenet1001-commits/cs_plugins ~/.claude/plugins/ma
 curl -fsSL https://raw.githubusercontent.com/intenet1001-commits/cs_plugins/main/install.sh | bash
 ```
 
-### 수동 설치
+### 문제 해결
+
+**잘못된 위치에 클론했나요?** 올바른 경로로 이동하세요:
 
 ```bash
-cd ~/.claude/plugins/marketplaces
-git clone https://github.com/intenet1001-commits/cs_plugins
+mv ~/cs_plugins ~/.claude/plugins/marketplaces/cs_plugins
 ```
 
 ## 사용법
@@ -65,18 +68,9 @@ git clone https://github.com/intenet1001-commits/cs_plugins
 
 ## 빠른 시작
 
-1. **플러그인 설치**:
-   ```bash
-   git clone https://github.com/intenet1001-commits/cs_plugins ~/.claude/plugins/marketplaces/cs_plugins
-   ```
-
+1. **설치** (위의 [설치 방법](#설치-방법) 참조)
 2. **Claude Code 재시작**하여 새 플러그인 로드
-
-3. **스킬 사용**:
-   ```
-   "Playwright 테스트 실행해줘"
-   "보고서 작성해줘"
-   ```
+3. **스킬 사용**: `"Playwright 테스트 실행해줘"` 또는 `"보고서 작성해줘"`
 
 ## 아키텍처
 
