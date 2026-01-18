@@ -1,5 +1,5 @@
 {
-  "name": "report-writer",
+  "name": "report-writer-v1.0.0",
   "version": "1.0.0",
   "description": "Professional Korean business report writer with structured formatting and python-docx generation",
   "author": {
