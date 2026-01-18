@@ -4,10 +4,6 @@
   "description": "Multi-agent Playwright test automation for web applications (5 specialized agents)",
   "author": {
     "name": "intenet1001-commits",
-    "url": "https://github.com/intenet1001-commits"
-  },
-  "repository": "https://github.com/intenet1001-commits/cs_plugins",
-  "license": "MIT",
-  "keywords": ["playwright", "testing", "automation", "multi-agent", "e2e", "web-testing"],
-  "skills": "./skills/playwright-test"
+    "email": "intenet1001@github.com"
+  }
 }

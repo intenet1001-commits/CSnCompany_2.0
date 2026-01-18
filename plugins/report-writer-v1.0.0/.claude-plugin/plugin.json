@@ -4,10 +4,6 @@
   "description": "Professional Korean business report writer with structured formatting and python-docx generation",
   "author": {
     "name": "intenet1001-commits",
-    "url": "https://github.com/intenet1001-commits"
-  },
-  "repository": "https://github.com/intenet1001-commits/cs_plugins",
-  "license": "MIT",
-  "keywords": ["report", "docx", "korean", "business", "document", "formatting", "python-docx"],
-  "skills": "./skills/report-writer"
+    "email": "intenet1001@github.com"
+  }
 }
