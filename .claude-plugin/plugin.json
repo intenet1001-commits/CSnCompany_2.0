@@ -8,6 +8,6 @@
   },
   "repository": "https://github.com/intenet1001-commits/cs_plugins",
   "license": "MIT",
-  "keywords": ["playwright", "testing", "automation", "multi-agent", "e2e", "web-testing", "claude-code"],
-  "plugins": ["./plugins/playwright-test"]
+  "keywords": ["playwright", "testing", "automation", "multi-agent", "e2e", "web-testing", "claude-code", "report", "docx", "korean", "business"],
+  "plugins": ["./plugins/playwright-test", "./plugins/report-writer"]
 }

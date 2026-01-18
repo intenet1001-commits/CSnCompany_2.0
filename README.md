@@ -1,6 +1,6 @@
 # CS Plugins - Claude Code Plugin Collection
 
-A collection of Claude Code plugins for web application testing and automation.
+A collection of Claude Code plugins for web application testing, automation, and document generation.
 
 ## Available Plugins
 
@@ -16,6 +16,18 @@ Multi-agent Playwright test automation for web applications using 5 specialized 
 | **API** | XHR/Fetch capture, status code validation |
 | **Performance** | Core Web Vitals, load time measurement |
 
+### report-writer
+
+Professional Korean business report writer with structured formatting:
+
+| Feature | Description |
+|---------|-------------|
+| **Hierarchical Numbering** | I. → 1. → • → (1) → - multi-level structure |
+| **Korean Typography** | 나눔명조 font with proper formatting |
+| **python-docx Compatible** | Generate .docx files programmatically |
+| **Collapsible Sections** | Word 2016+ expand/collapse support |
+| **Table Formatting** | Headers, content, and title styling |
+
 ## Installation
 
 ```bash
@@ -25,13 +37,17 @@ Multi-agent Playwright test automation for web applications using 5 specialized 
 
 ## Usage
 
-After installation, trigger the skill by saying:
+After installation, trigger the skills by saying:
 
+**playwright-test:**
 - "Run Playwright test"
 - "E2E test this project"
 - "Web app performance test"
-- "Run functional tests"
-- "Check accessibility"
+
+**report-writer:**
+- "보고서 작성해줘"
+- "Create a business report"
+- "DOCX 문서 생성"
 
 ## Quick Start
 
