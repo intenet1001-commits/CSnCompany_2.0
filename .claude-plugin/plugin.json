@@ -1,0 +1,10 @@
+{
+  "name": "cs-plugins",
+  "version": "1.0.0",
+  "description": "Claude Code plugins for web testing and document generation",
+  "author": {
+    "name": "intenet1001-commits",
+    "url": "https://github.com/intenet1001-commits"
+  },
+  "repository": "https://github.com/intenet1001-commits/cs_plugins"
+}

@@ -8,6 +8,5 @@
   },
   "repository": "https://github.com/intenet1001-commits/cs_plugins",
   "license": "MIT",
-  "keywords": ["report", "docx", "korean", "business"],
-  "skills": "./skills/report-writer"
+  "keywords": ["report", "docx", "korean", "business"]
 }
