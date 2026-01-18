@@ -52,17 +52,22 @@ git clone https://github.com/intenet1001-commits/cs_plugins ~/.claude/plugins/ma
 
 ## Usage
 
-After installation, trigger the skills by saying:
+### Slash Commands
+
+```
+/test    - Run Playwright multi-agent tests
+/report  - Create Korean business report
+```
+
+### Or Say
 
 **playwright-test:**
 - "Run Playwright test"
 - "E2E test this project"
-- "Web app performance test"
 
 **report-writer:**
 - "보고서 작성해줘"
 - "Create a business report"
-- "DOCX 문서 생성"
 
 ## Quick Start
 

@@ -52,17 +52,22 @@ git clone https://github.com/intenet1001-commits/cs_plugins ~/.claude/plugins/ma
 
 ## 사용법
 
-설치 후 다음과 같이 스킬을 트리거할 수 있습니다:
+### 슬래시 명령어
+
+```
+/test    - Playwright 멀티 에이전트 테스트 실행
+/report  - 한국어 비즈니스 보고서 작성
+```
+
+### 또는 말하기
 
 **playwright-test:**
 - "Playwright 테스트 실행해줘"
 - "이 프로젝트 E2E 테스트해줘"
-- "웹앱 성능 테스트"
 
 **report-writer:**
 - "보고서 작성해줘"
 - "전략 보고서 만들어줘"
-- "DOCX 문서 생성해줘"
 
 ## 빠른 시작
 
