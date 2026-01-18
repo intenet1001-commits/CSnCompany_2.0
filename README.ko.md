@@ -30,9 +30,23 @@
 
 ## 설치 방법
 
+### 한 줄 설치 (권장)
+
 ```bash
-# GitHub URL로 설치
-/plugin install https://github.com/intenet1001-commits/cs_plugins
+git clone https://github.com/intenet1001-commits/cs_plugins ~/.claude/plugins/marketplaces/cs_plugins
+```
+
+### 또는 설치 스크립트 사용
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/intenet1001-commits/cs_plugins/main/install.sh | bash
+```
+
+### 수동 설치
+
+```bash
+cd ~/.claude/plugins/marketplaces
+git clone https://github.com/intenet1001-commits/cs_plugins
 ```
 
 ## 사용법
@@ -53,18 +67,15 @@
 
 1. **플러그인 설치**:
    ```bash
-   /plugin install https://github.com/intenet1001-commits/cs_plugins
+   git clone https://github.com/intenet1001-commits/cs_plugins ~/.claude/plugins/marketplaces/cs_plugins
    ```
 
-2. **개발 서버 시작**:
-   ```bash
-   npm run dev
-   ```
+2. **Claude Code 재시작**하여 새 플러그인 로드
 
-3. **Claude에게 테스트 요청**:
+3. **스킬 사용**:
    ```
    "Playwright 테스트 실행해줘"
-   "이 프로젝트 E2E 테스트해줘"
+   "보고서 작성해줘"
    ```
 
 ## 아키텍처

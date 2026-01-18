@@ -30,9 +30,23 @@ Professional Korean business report writer with structured formatting:
 
 ## Installation
 
+### One-liner (Recommended)
+
 ```bash
-# Install via GitHub URL
-/plugin install https://github.com/intenet1001-commits/cs_plugins
+git clone https://github.com/intenet1001-commits/cs_plugins ~/.claude/plugins/marketplaces/cs_plugins
+```
+
+### Or use the install script
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/intenet1001-commits/cs_plugins/main/install.sh | bash
+```
+
+### Manual Installation
+
+```bash
+cd ~/.claude/plugins/marketplaces
+git clone https://github.com/intenet1001-commits/cs_plugins
 ```
 
 ## Usage
@@ -53,18 +67,15 @@ After installation, trigger the skills by saying:
 
 1. **Install the plugin**:
    ```bash
-   /plugin install https://github.com/intenet1001-commits/cs_plugins
+   git clone https://github.com/intenet1001-commits/cs_plugins ~/.claude/plugins/marketplaces/cs_plugins
    ```
 
-2. **Start your development server**:
-   ```bash
-   npm run dev
-   ```
+2. **Restart Claude Code** to load the new plugins
 
-3. **Ask Claude to run tests**:
+3. **Use the skills**:
    ```
    "Playwright 테스트 실행해줘"
-   "Run E2E tests on this project"
+   "보고서 작성해줘"
    ```
 
 ## Architecture
