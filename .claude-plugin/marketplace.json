@@ -1,0 +1,14 @@
+{
+  "name": "cs-plugins",
+  "displayName": "CS Plugins Collection",
+  "description": "Multi-agent Playwright test automation for web applications",
+  "category": "testing",
+  "featured": false,
+  "plugins": [
+    {
+      "name": "playwright-test",
+      "description": "5 specialized agents for comprehensive web app testing (Explorer, Functional, Visual, API, Performance)",
+      "source": "./plugins/playwright-test"
+    }
+  ]
+}

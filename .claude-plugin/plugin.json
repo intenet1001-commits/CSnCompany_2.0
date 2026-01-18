@@ -1,0 +1,13 @@
+{
+  "name": "cs-plugins",
+  "version": "1.0.0",
+  "description": "Claude Code plugin collection for web application testing and automation",
+  "author": {
+    "name": "intenet1001-commits",
+    "url": "https://github.com/intenet1001-commits"
+  },
+  "repository": "https://github.com/intenet1001-commits/cs_plugins",
+  "license": "MIT",
+  "keywords": ["playwright", "testing", "automation", "multi-agent", "e2e", "web-testing", "claude-code"],
+  "plugins": ["./plugins/playwright-test"]
+}
