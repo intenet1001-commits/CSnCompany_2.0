@@ -5,7 +5,7 @@ description: This skill should be used when user asks "보고서 작성", "repor
 
 # Professional Korean Business Report Writer
 
-> Structured document template for securities/financial company strategy and planning reports
+> Universal document template for corporate strategy and planning reports
 
 ## Purpose
 
@@ -43,14 +43,24 @@ I. 대항목 (Roman numerals)
           - 하이픈 불릿항목
 ```
 
+### Spacing Summary
+
+| Level | Element | Space Before | Space After |
+|-------|---------|--------------|-------------|
+| 1 | Section Heading (I, II...) | 10pt | 4pt |
+| 2 | Numbered Item (1. 2...) | 6pt | 2pt |
+| 3 | Bullet Item (•) | 2pt | 2pt |
+| 4 | Sub-numbered ((1) (2)...) | 2pt | 2pt |
+| 5 | Dash Bullet (-) | 1pt | 1pt |
+
 ### Level 1: Section Heading (대항목)
 
 ```
 I. 추진 배경 및 목표
 II. 핵심 과제
 III. 상세 실행 방안
-IV. 전략적 도약 및 성과 지표(KPI)
-[별첨] 법인대상 세미나 운영 방안
+IV. 성과 지표(KPI)
+[별첨] 참고 자료
 ```
 
 | Item | Value |
@@ -60,7 +70,8 @@ IV. 전략적 도약 및 성과 지표(KPI)
 | Size | 14pt |
 | Style | Bold |
 | Alignment | Left |
-| Space Before | 12pt |
+| Space Before | 10pt |
+| Space After | 4pt |
 | Outline Level | 1 (enables collapsible in Word) |
 
 ### Level 2: Numbered Item (번호항목)
@@ -80,11 +91,13 @@ IV. 전략적 도약 및 성과 지표(KPI)
 | Content Style | Normal |
 | Left Indent | 0.7cm |
 | Hanging Indent | -0.5cm |
+| Space Before | 6pt |
+| Space After | 2pt |
 
 ### Level 3: Bullet Item (불릿항목)
 
 ```
-• 패밀리오피스 지원의 성공적 완수를 통해 검증된 역량을 바탕으로...
+• 신규 프로젝트의 성공적 완수를 통해 검증된 역량을 바탕으로...
 ```
 
 | Item | Value |
@@ -94,13 +107,15 @@ IV. 전략적 도약 및 성과 지표(KPI)
 | Size | 11pt |
 | Left Indent | 1.0cm |
 | Hanging Indent | -0.4cm |
+| Space Before | 2pt |
+| Space After | 2pt |
 | Keyword Emphasis | `bold_keyword` parameter for leading text |
 
 ### Level 4: Sub-numbered Item (하위번호항목)
 
 ```
-(1) 6대 타겟 분류
-(2) 맞춤형 솔루션
+(1) 세부 항목 1
+(2) 세부 항목 2
 ```
 
 | Item | Value |
@@ -111,11 +126,13 @@ IV. 전략적 도약 및 성과 지표(KPI)
 | Number Style | Bold |
 | Left Indent | 1.3cm |
 | Hanging Indent | -0.7cm |
+| Space Before | 2pt |
+| Space After | 2pt |
 
 ### Level 5: Dash Bullet (하이픈 불릿)
 
 ```
-- 상장기업, 외감법인, 일반법인별로 차별화된 제안서 배포
+- 세부 실행 내용 기술
 ```
 
 | Item | Value |
@@ -125,6 +142,8 @@ IV. 전략적 도약 및 성과 지표(KPI)
 | Size | 11pt |
 | Left Indent | 1.8cm |
 | Hanging Indent | -0.4cm |
+| Space Before | 1pt |
+| Space After | 1pt |
 
 ## Document Header
 
@@ -140,7 +159,7 @@ IV. 전략적 도약 및 성과 지표(KPI)
 ### Department and Date
 
 ```
-sq1(GBS)(2026.01)
+전략기획팀(2026.01)
 ```
 
 | Item | Value |
@@ -322,10 +341,10 @@ for section in doc.sections:
     section.right_margin = Cm(2.54)
 
 # Add title
-add_heading_text(doc, '법인 영업지원 솔루션 기획 및 운영 방안(案)')
+add_heading_text(doc, '2026년 사업 전략 기획안')
 
 # Add department and date
-add_department_date(doc, 'sq1(GBS)', '2026.01')
+add_department_date(doc, '전략기획팀', '2026.01')
 
 # Add section
 add_section_heading(doc, 'I. 추진 배경 및 목표')
@@ -334,8 +353,8 @@ add_section_heading(doc, 'I. 추진 배경 및 목표')
 add_numbered_item(doc, 1, '2025년 성과 및 확대')
 
 # Add bullet
-add_dot_bullet_item(doc, '패밀리오피스 지원의 성공적 완수를 통해...',
-                    bold_keyword='패밀리오피스 지원의 성공적 완수')
+add_dot_bullet_item(doc, '핵심 프로젝트의 성공적 완수를 통해...',
+                    bold_keyword='핵심 프로젝트의 성공적 완수')
 
 # Save
 doc.save('report.docx')
