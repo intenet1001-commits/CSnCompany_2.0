@@ -10,21 +10,6 @@
       "name": "playwright-test",
       "description": "5 specialized agents for comprehensive web app testing",
       "source": "./plugins/playwright-test-v1"
-    },
-    {
-      "name": "report-writer",
-      "description": "Professional Korean business report writer with 7-level hierarchy (v2)",
-      "source": "./plugins/report-writer-v2"
-    },
-    {
-      "name": "review-report",
-      "description": "Professional Korean review/analysis report writer with checkbox sections",
-      "source": "./plugins/review-report-v1"
-    },
-    {
-      "name": "report-writer-v1",
-      "description": "[Legacy] Korean business report writer with 5-level hierarchy",
-      "source": "./plugins/report-writer-v1"
     }
   ]
 }

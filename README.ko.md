@@ -16,18 +16,6 @@
 | **API** | XHR/Fetch 캡처, 상태 코드 검증 |
 | **Performance** | Core Web Vitals, 로드 시간 측정 |
 
-### report-writer
-
-구조화된 형식의 전문 한국어 비즈니스 보고서 작성:
-
-| 기능 | 설명 |
-|------|------|
-| **계층적 번호 체계** | I. → 1. → • → (1) → - 다단계 구조 |
-| **한국어 타이포그래피** | 나눔명조 폰트 및 적절한 서식 |
-| **python-docx 호환** | 프로그래밍 방식으로 .docx 파일 생성 |
-| **접기/펼치기 섹션** | Word 2016+ 확장/축소 지원 |
-| **표 서식** | 헤더, 내용, 제목 스타일링 |
-
 ## 설치 방법
 
 ### Claude Code 명령어 (권장)
@@ -35,7 +23,6 @@
 ```
 /plugin marketplace add intenet1001-commits/cs_plugins
 /plugin install playwright-test
-/plugin install report-writer
 ```
 
 ### 쉘 스크립트
@@ -55,25 +42,19 @@ git clone https://github.com/intenet1001-commits/cs_plugins ~/.claude/plugins/ma
 ### 슬래시 명령어
 
 ```
-/test    - Playwright 멀티 에이전트 테스트 실행
-/report  - 한국어 비즈니스 보고서 작성
+/test  - Playwright 멀티 에이전트 테스트 실행
 ```
 
 ### 또는 말하기
 
-**playwright-test:**
 - "Playwright 테스트 실행해줘"
 - "이 프로젝트 E2E 테스트해줘"
-
-**report-writer:**
-- "보고서 작성해줘"
-- "전략 보고서 만들어줘"
 
 ## 빠른 시작
 
 1. **설치** (위의 [설치 방법](#설치-방법) 참조)
 2. **Claude Code 재시작**하여 새 플러그인 로드
-3. **스킬 사용**: `"Playwright 테스트 실행해줘"` 또는 `"보고서 작성해줘"`
+3. **스킬 사용**: `"Playwright 테스트 실행해줘"`
 
 ## 아키텍처
 

@@ -16,18 +16,6 @@ Multi-agent Playwright test automation for web applications using 5 specialized 
 | **API** | XHR/Fetch capture, status code validation |
 | **Performance** | Core Web Vitals, load time measurement |
 
-### report-writer
-
-Professional Korean business report writer with structured formatting:
-
-| Feature | Description |
-|---------|-------------|
-| **Hierarchical Numbering** | I. → 1. → • → (1) → - multi-level structure |
-| **Korean Typography** | 나눔명조 font with proper formatting |
-| **python-docx Compatible** | Generate .docx files programmatically |
-| **Collapsible Sections** | Word 2016+ expand/collapse support |
-| **Table Formatting** | Headers, content, and title styling |
-
 ## Installation
 
 ### Via Claude Code (Recommended)
@@ -35,7 +23,6 @@ Professional Korean business report writer with structured formatting:
 ```
 /plugin marketplace add intenet1001-commits/cs_plugins
 /plugin install playwright-test
-/plugin install report-writer
 ```
 
 ### Via Shell
@@ -55,25 +42,19 @@ git clone https://github.com/intenet1001-commits/cs_plugins ~/.claude/plugins/ma
 ### Slash Commands
 
 ```
-/test    - Run Playwright multi-agent tests
-/report  - Create Korean business report
+/test  - Run Playwright multi-agent tests
 ```
 
 ### Or Say
 
-**playwright-test:**
 - "Run Playwright test"
 - "E2E test this project"
-
-**report-writer:**
-- "보고서 작성해줘"
-- "Create a business report"
 
 ## Quick Start
 
 1. **Install** (see [Installation](#installation) above)
 2. **Restart Claude Code** to load the new plugins
-3. **Use the skills**: `"Run Playwright test"` or `"보고서 작성해줘"`
+3. **Use the skill**: `"Run Playwright test"`
 
 ## Architecture
 
