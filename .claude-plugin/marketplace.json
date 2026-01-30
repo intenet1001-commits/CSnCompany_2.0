@@ -10,6 +10,11 @@
       "name": "playwright-test",
       "description": "5 specialized agents for comprehensive web app testing",
       "source": "./plugins/playwright-test-v1"
+    },
+    {
+      "name": "codebase-review",
+      "description": "전체 코드베이스 품질/아키텍처/보안 분석 리뷰어",
+      "source": "./plugins/codebase-review-v1"
     }
   ]
 }

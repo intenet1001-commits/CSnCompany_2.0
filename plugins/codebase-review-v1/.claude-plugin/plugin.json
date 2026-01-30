@@ -1,0 +1,12 @@
+{
+  "name": "codebase-review",
+  "version": "1.0.0",
+  "description": "전체 코드베이스 품질/아키텍처/보안 분석 리뷰어",
+  "author": {
+    "name": "intenet1001-commits",
+    "url": "https://github.com/intenet1001-commits"
+  },
+  "repository": "https://github.com/intenet1001-commits/cs_plugins",
+  "license": "MIT",
+  "keywords": ["codebase-review", "quality", "architecture", "security"]
+}
