@@ -1,6 +1,6 @@
 ---
 name: report_v4
-description: 증권사/금융사 전략/기획 부서 전문 보고서 작성 양식. 7단계 계층 구조, python-docx 기반 DOCX 변환 지원.
+description: This skill should be used when user asks "/report", "보고서 작성", "report template", "증권 보고서", "금융 보고서", "전략 보고서", "기획 보고서", "DOCX 보고서", "report 양식", "보고서 템플릿", or wants to create professional financial/strategic reports. 증권사/금융사 전략/기획 부서 전문 보고서 작성 양식. 7단계 계층 구조, python-docx 기반 DOCX 변환 지원.
 ---
 
 # 보고서 템플릿 가이드 v4
@@ -383,22 +383,6 @@ IV. 성과 지표
 
 [끝]
 ```
-
----
-
-## 12. 사용 시나리오
-
-### 12.1 새 보고서 작성
-
-1. 이 스킬을 호출하여 템플릿 가이드 확인
-2. 마크다운으로 보고서 내용 작성
-3. python-docx 기반 create_docx.py로 DOCX 변환
-
-### 12.2 기존 보고서 수정
-
-1. 기존 DOCX 파일 내용 확인
-2. 이 가이드에 맞춰 스타일 통일
-3. 변환 스크립트로 재생성
 
 ---
 

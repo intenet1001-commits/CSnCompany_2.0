@@ -1,12 +1,12 @@
 {
   "name": "report-template-v4",
   "version": "4.0.0",
-  "description": "증권사/금융사 전략/기획 부서 전문 보고서 작성 양식. 7단계 계층 구조, python-docx 기반 DOCX 변환 지원.",
+  "description": "증권사/금융사 전략/기획 부서 전문 보고서 템플릿. 7단계 계층 구조, python-docx 기반 DOCX 변환 지원.",
   "author": {
     "name": "sq1(GBS)",
     "url": "https://github.com/intenet1001-commits"
   },
-  "repository": "https://github.com/intenet1001-commits/cs_plugins",
+  "repository": "https://github.com/intenet1001-commits/cs-plugins",
   "license": "MIT",
   "keywords": ["report", "document", "docx", "python-docx", "financial", "template"]
 }
