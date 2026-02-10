@@ -15,6 +15,11 @@
       "name": "codebase-review",
       "description": "전체 코드베이스 품질/아키텍처/보안 분석 리뷰어",
       "source": "./plugins/codebase-review-v1"
+    },
+    {
+      "name": "playwright-test-v2",
+      "description": "AI Agent Teams powered intelligent web testing with 6 Claude agents",
+      "source": "./plugins/playwright-test-v2"
     }
   ]
 }
