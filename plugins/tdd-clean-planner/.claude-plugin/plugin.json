@@ -1,0 +1,12 @@
+{
+  "name": "tdd-clean-planner",
+  "version": "1.0.0",
+  "description": "TDD + Clean Architecture 기반 코딩 플랜 자동 생성 - 4개 전문 에이전트가 도메인 분석, 아키텍처 설계, 테스트 전략, 구현 체크리스트를 병렬로 생성합니다",
+  "author": {
+    "name": "intenet1001-commits",
+    "url": "https://github.com/intenet1001-commits"
+  },
+  "repository": "https://github.com/intenet1001-commits/cs_plugins",
+  "license": "MIT",
+  "keywords": ["tdd", "clean-architecture", "ddd", "planning", "agent-teams", "ai-planning"]
+}

@@ -20,6 +20,11 @@
       "name": "playwright-test-v2",
       "description": "AI Agent Teams powered intelligent web testing with 6 Claude agents",
       "source": "./plugins/playwright-test-v2"
+    },
+    {
+      "name": "tdd-clean-planner",
+      "description": "TDD + Clean Architecture 기반 코딩 플랜 자동 생성 - 4개 전문 에이전트가 도메인 분석, 아키텍처 설계, 테스트 전략, 구현 체크리스트를 병렬로 생성",
+      "source": "./plugins/tdd-clean-planner"
     }
   ]
 }
