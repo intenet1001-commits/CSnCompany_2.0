@@ -25,6 +25,16 @@
       "name": "tdd-clean-planner",
       "description": "TDD + Clean Architecture 기반 코딩 플랜 자동 생성 - 4개 전문 에이전트가 도메인 분석, 아키텍처 설계, 테스트 전략, 구현 체크리스트를 병렬로 생성",
       "source": "./plugins/tdd-clean-planner"
+    },
+    {
+      "name": "playwright-test-v3",
+      "description": "7-agent AI Teams web testing with social share (KakaoTalk/SNS) validation and PWA verification",
+      "source": "./plugins/playwright-test-v3"
+    },
+    {
+      "name": "playwright-test-v4",
+      "description": "9-agent AI Teams web testing with build/deploy pre-validation and DB CRUD verification",
+      "source": "./plugins/playwright-test-v4"
     }
   ]
 }
