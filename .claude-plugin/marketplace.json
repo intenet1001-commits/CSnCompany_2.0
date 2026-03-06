@@ -35,6 +35,11 @@
       "name": "playwright-test-v4",
       "description": "9-agent AI Teams web testing with build/deploy pre-validation and DB CRUD verification",
       "source": "./plugins/playwright-test-v4"
+    },
+    {
+      "name": "playwright-test-v5",
+      "description": "11-agent AI Teams web testing with touch interaction validation and image optimization (MWC 2026 learnings)",
+      "source": "./plugins/playwright-test-v5"
     }
   ]
 }
