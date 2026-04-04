@@ -124,7 +124,7 @@ If the session covered "How does TypeScript help with bugs?":
 2. **Multiple exchanges** — if the session covered multiple topics, create a separate conversation section for each
 3. **Natural length** — 6–10 exchanges per topic is ideal; don't pad, don't cut too short
 4. **No stiff language** — if you catch yourself writing "Furthermore" or "It is important to note", rewrite it
-5. **Save to Obsidian** — after generating, offer to save to `/Users/gwanli/CS볼트V5/00. Inbox/08. 퀵캡쳐/영어메모/1. 영어메모_작업전/` as a `.md` file
+5. **Auto-save to Obsidian** — after generating, automatically save to `/Users/gwanli/CS볼트V5/00. Inbox/08. 퀵캡쳐/영어메모/1. 영어메모_작업전/` as a `.md` file. File name format: `convo_YYYY-MM-DD_[Topic].md` (e.g., `convo_2026-04-05_TypeScript.md`). Use today's date and the first topic title. Do not ask — just save silently and confirm with the file path at the end.
 
 ## Completion Signal
 
