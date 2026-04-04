@@ -45,6 +45,11 @@
       "name": "convo-maker",
       "description": "세션 Q&A를 자연스러운 미국식 영어 대화로 변환 - Convert session Q&A into natural American English conversations for language learning",
       "source": "./plugins/convo-maker"
+    },
+    {
+      "name": "cs-sync",
+      "description": "Commit, push cs_plugins to GitHub and update local marketplace in one command (/cs-sync)",
+      "source": "./plugins/cs-sync"
     }
   ]
 }
