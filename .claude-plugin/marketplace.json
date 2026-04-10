@@ -24,7 +24,7 @@
     {
       "name": "experiencing",
       "description": "3-domain knowledge repository: CS-test (14-agent web testing), CS-plan (TDD+CleanArch 4-agent), CS-codebase-review (5-agent parallel review)",
-      "source": "./plugins/experiencing-v1"
+      "source": "./plugins/cs-experiencing-v1"
     },
     {
       "name": "CS-test",

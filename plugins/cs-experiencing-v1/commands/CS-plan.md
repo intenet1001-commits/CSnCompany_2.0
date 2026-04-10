@@ -1,5 +1,5 @@
 ---
-description: "TDD + Clean Architecture 4-agent planning - runs the CS-plan domain protocol from experiencing-v1"
+description: "TDD + Clean Architecture 4-agent planning - runs the CS-plan domain protocol from cs-experiencing-v1"
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep, Task, TaskCreate, TaskUpdate, TaskList, TaskGet, TeamCreate, TeamDelete, SendMessage
 ---
 
@@ -19,7 +19,7 @@ TDD + Clean Architecture 기반의 즉시 실행 가능한 코딩 플랜을 자�
 ## 실행
 
 이 커맨드는 `CS-plan-v1/skills/CS-plan/SKILL.md` 프로토콜을 실행합니다.
-(CS-plan-v1은 experiencing-v1과 같은 레벨의 plugins/ 디렉토리에 위치)
+(CS-plan-v1은 cs-experiencing-v1과 같은 레벨의 plugins/ 디렉토리에 위치)
 
 1. `../CS-plan-v1/VERSION` 읽기 → 현재 버전 확인
 2. `../CS-plan-v1/skills/CS-plan/SKILL.md` 프로토콜 실행

@@ -1,4 +1,4 @@
-# experiencing-v1 - 경험 지식 저장소
+# cs-experiencing-v1 - 경험 지식 저장소
 
 이 플러그인은 누적된 학습 경험을 도메인별로 관리합니다.
 
@@ -28,11 +28,11 @@
 
 ## 도메인 파일 구조
 
-3개 도메인은 experiencing-v1과 같은 레벨의 plugins/ 디렉토리에 위치합니다:
+3개 도메인은 cs-experiencing-v1과 같은 레벨의 plugins/ 디렉토리에 위치합니다:
 
 ```
 plugins/
-├── experiencing-v1/     ← 이 플러그인 (오케스트레이터)
+├── cs-experiencing-v1/  ← 이 플러그인 (오케스트레이터)
 ├── CS-test-v1/
 │   ├── VERSION          # 현재: 1
 │   ├── agents/          # 14개 테스트 에이전트

@@ -1,5 +1,5 @@
 ---
-description: "14-agent AI Teams web testing - runs the CS-test domain protocol from experiencing-v1"
+description: "14-agent AI Teams web testing - runs the CS-test domain protocol from cs-experiencing-v1"
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep, Task, TaskCreate, TaskUpdate, TaskList, TaskGet, TeamCreate, TeamDelete, SendMessage, ToolSearch
 ---
 
@@ -17,7 +17,7 @@ allowed-tools: Bash, Read, Write, Edit, Glob, Grep, Task, TaskCreate, TaskUpdate
 ## 실행
 
 이 커맨드는 `CS-test-v1/skills/CS-test/SKILL.md` 프로토콜을 실행합니다.
-(CS-test-v1은 experiencing-v1과 같은 레벨의 plugins/ 디렉토리에 위치)
+(CS-test-v1은 cs-experiencing-v1과 같은 레벨의 plugins/ 디렉토리에 위치)
 
 URL을 대상으로 14-agent 팀을 가동하세요:
 1. `../CS-test-v1/VERSION` 읽기 → 현재 버전 확인

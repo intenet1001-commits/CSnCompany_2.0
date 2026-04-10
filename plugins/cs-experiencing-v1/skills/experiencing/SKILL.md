@@ -18,11 +18,11 @@ allowed-tools:
 
 ## 도메인 위치
 
-3개 도메인은 experiencing-v1과 같은 레벨의 plugins/ 디렉토리에 위치합니다:
+3개 도메인은 cs-experiencing-v1과 같은 레벨의 plugins/ 디렉토리에 위치합니다:
 
 ```
 plugins/
-├── experiencing-v1/    ← 이 플러그인 (오케스트레이터)
+├── cs-experiencing-v1/ ← 이 플러그인 (오케스트레이터)
 ├── CS-test-v1/         ← 14-agent 웹 테스트 도메인
 ├── CS-plan-v1/         ← TDD+CleanArch 4-agent 플랜 도메인
 └── CS-codebase-review-v1/  ← 5-agent 코드 리뷰 도메인
