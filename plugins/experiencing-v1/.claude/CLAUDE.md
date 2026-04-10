@@ -7,15 +7,18 @@
 | 도메인 | 현재 버전 | 내용 |
 |--------|-----------|------|
 | **CS-test** | v1 | 웹 테스트 (14-agent playwright 팀) |
-| **CS-plan** | v1 | 플래닝/아키텍처 학습 (준비 중) |
+| **CS-plan** | v1 | TDD+CleanArch 플랜 (4-agent: domain-analyst, arch-designer, tdd-strategist, checklist-builder) |
+| **CS-codebase-review** | v1 | 5-관점 병렬 코드 리뷰 (Architecture/Quality/Security/Performance/Maintainability) |
 
 ## 사용법
 
 ```
-/experiencing           # 도메인 목록 및 버전 확인
-/experiencing test [URL]   # CS-test 실행 (14개 에이전트로 웹 테스트)
-/experiencing plan [task]  # CS-plan 실행
-/experiencing version-up test  # CS-test 버전 업그레이드
+/experiencing                                      # 도메인 목록 및 버전 확인
+/experiencing test [URL]                           # CS-test 실행 (14개 에이전트로 웹 테스트)
+/experiencing plan [task]                          # CS-plan 실행
+/experiencing review [path] [--focus aspect]       # CS-codebase-review 실행 (5-관점 코드 리뷰)
+/experiencing version-up test                      # CS-test 버전 업그레이드
+/experiencing version-up review                    # CS-codebase-review 버전 업그레이드
 ```
 
 ## 버전 관리
@@ -32,8 +35,14 @@ domains/
 │   ├── agents/          # 14개 테스트 에이전트
 │   ├── skills/CS-test/SKILL.md
 │   └── commands/CS-test.md
-└── CS-plan-v1/
+├── CS-plan-v1/
+│   ├── VERSION          # 현재: 1
+│   ├── agents/          # 4개: domain-analyst, arch-designer, tdd-strategist, checklist-builder
+│   ├── commands/CS-plan.md
+│   ├── knowledge/README.md
+│   └── skills/CS-plan/SKILL.md
+└── CS-codebase-review-v1/
     ├── VERSION          # 현재: 1
-    ├── knowledge/README.md
-    └── skills/CS-plan/SKILL.md
+    ├── skills/CS-codebase-review/SKILL.md
+    └── commands/CS-codebase-review.md
 ```
