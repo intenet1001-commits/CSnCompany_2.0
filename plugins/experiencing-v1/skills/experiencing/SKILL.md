@@ -16,6 +16,20 @@ allowed-tools:
 
 # Experiencing - 경험 지식 저장소
 
+## 도메인 위치
+
+3개 도메인은 experiencing-v1과 같은 레벨의 plugins/ 디렉토리에 위치합니다:
+
+```
+plugins/
+├── experiencing-v1/    ← 이 플러그인 (오케스트레이터)
+├── CS-test-v1/         ← 14-agent 웹 테스트 도메인
+├── CS-plan-v1/         ← TDD+CleanArch 4-agent 플랜 도메인
+└── CS-codebase-review-v1/  ← 5-agent 코드 리뷰 도메인
+```
+
+마켓플레이스 절대 경로: `~/.claude/plugins/marketplaces/cs-plugins/plugins/`
+
 ## 사용법
 
 ```
@@ -36,7 +50,7 @@ allowed-tools:
 도메인 목록과 현재 버전을 표시:
 
 ```bash
-BASE="plugins/experiencing-v1/domains"
+BASE="$HOME/.claude/plugins/marketplaces/cs-plugins/plugins"
 for domain in CS-test CS-plan CS-codebase-review; do
   VERSION=$(cat "$BASE/${domain}-v"*/VERSION 2>/dev/null || echo "?")
   echo "📦 $domain | 현재 콘텐츠 버전: $VERSION"
@@ -45,19 +59,19 @@ done
 
 ### `/experiencing test [URL]`
 
-1. `domains/CS-test-v1/VERSION` 읽기 → 현재 버전 확인
-2. `domains/CS-test-v1/skills/CS-test/SKILL.md` 프로토콜 실행
+1. `../CS-test-v1/VERSION` 읽기 → 현재 버전 확인
+2. `../CS-test-v1/skills/CS-test/SKILL.md` 프로토콜 실행
 3. URL을 대상으로 14-agent 팀 가동
 
 ### `/experiencing plan [task]`
 
-1. `domains/CS-plan-v1/VERSION` 읽기
-2. `domains/CS-plan-v1/skills/CS-plan/SKILL.md` 프로토콜 실행
+1. `../CS-plan-v1/VERSION` 읽기
+2. `../CS-plan-v1/skills/CS-plan/SKILL.md` 프로토콜 실행
 
 ### `/experiencing review [path] [--focus aspect]`
 
-1. `domains/CS-codebase-review-v1/VERSION` 읽기 → 현재 버전 확인
-2. `domains/CS-codebase-review-v1/skills/CS-codebase-review/SKILL.md` 프로토콜 실행
+1. `../CS-codebase-review-v1/VERSION` 읽기 → 현재 버전 확인
+2. `../CS-codebase-review-v1/skills/CS-codebase-review/SKILL.md` 프로토콜 실행
 3. 인수 파싱:
    - `[path]` 없음 → 현재 작업 디렉토리 전체 분석
    - `[path]` 있음 → 해당 경로만 분석
@@ -71,16 +85,14 @@ done
 
 ```bash
 DOMAIN="[domain]"  # test, plan, 또는 review
-BASE_PATH="/Users/gwanli/cs_plugins/plugins/experiencing-v1/domains"
+BASE_PATH="$HOME/.claude/plugins/marketplaces/cs-plugins/plugins"
 
-# 현재 버전 읽기
-CURRENT_VERSION=$(cat "$BASE_PATH/${DOMAIN}-v1/VERSION" 2>/dev/null || echo "1")
-# 실제로는 최신 도메인 디렉토리를 찾아야 함:
+# 최신 도메인 디렉토리 찾기
 LATEST_DIR=$(ls -d "$BASE_PATH/CS-${DOMAIN}-v"* 2>/dev/null | sort -V | tail -1)
 CURRENT_VERSION=$(cat "$LATEST_DIR/VERSION" 2>/dev/null || echo "1")
 NEXT_VERSION=$((CURRENT_VERSION + 1))
 
-echo "⬆️ CS-${DOMAIN}-v${CURRENT_VERSION} → v${NEXT_VERSION} 준비 중..."
+echo "⬆️ CS-${DOMAIN}-v${CURRENT_VERSION} → CS-${DOMAIN}-v${NEXT_VERSION} 준비 중..."
 ```
 
 새 버전 디렉토리 생성 절차:
@@ -91,13 +103,13 @@ echo "⬆️ CS-${DOMAIN}-v${CURRENT_VERSION} → v${NEXT_VERSION} 준비 중...
 
 ### `/experiencing status`
 
-모든 도메인의 VERSION 파일과 마지막 수정 시간 표시:
+모든 도메인의 VERSION 파일 표시:
 
 ```bash
-find /Users/gwanli/cs_plugins/plugins/experiencing-v1/domains -name "VERSION" | sort | while read f; do
-  DIR=$(dirname "$f")
+BASE="$HOME/.claude/plugins/marketplaces/cs-plugins/plugins"
+find "$BASE" -name "VERSION" -path "*/CS-*" | sort | while read f; do
+  DOMAIN=$(basename $(dirname "$f"))
   VER=$(cat "$f")
-  DOMAIN=$(basename "$DIR")
   echo "📋 $DOMAIN: v$VER"
 done
 ```

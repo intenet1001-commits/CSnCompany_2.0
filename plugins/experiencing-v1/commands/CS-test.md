@@ -16,11 +16,12 @@ allowed-tools: Bash, Read, Write, Edit, Glob, Grep, Task, TaskCreate, TaskUpdate
 
 ## 실행
 
-이 커맨드는 `domains/CS-test-v1/skills/CS-test/SKILL.md` 프로토콜을 실행합니다.
+이 커맨드는 `CS-test-v1/skills/CS-test/SKILL.md` 프로토콜을 실행합니다.
+(CS-test-v1은 experiencing-v1과 같은 레벨의 plugins/ 디렉토리에 위치)
 
 URL을 대상으로 14-agent 팀을 가동하세요:
-1. `domains/CS-test-v1/VERSION` 읽기 → 현재 버전 확인
-2. `domains/CS-test-v1/skills/CS-test/SKILL.md` 프로토콜 실행
+1. `../CS-test-v1/VERSION` 읽기 → 현재 버전 확인
+2. `../CS-test-v1/skills/CS-test/SKILL.md` 프로토콜 실행
 
 ## 에이전트 팀 (14개)
 
