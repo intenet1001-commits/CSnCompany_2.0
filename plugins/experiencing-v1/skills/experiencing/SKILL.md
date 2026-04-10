@@ -19,11 +19,12 @@ allowed-tools:
 ## 사용법
 
 ```
-/experiencing                          # 도메인 목록 + 버전 현황 표시
-/experiencing test [URL]               # CS-test 실행 (14-agent 웹 테스트)
-/experiencing plan [task]              # CS-plan 실행
-/experiencing version-up [domain]     # 도메인 버전 증가
-/experiencing status                   # 모든 도메인 VERSION 파일 읽기
+/experiencing                                        # 도메인 목록 + 버전 현황 표시
+/experiencing test [URL]                             # CS-test 실행 (14-agent 웹 테스트)
+/experiencing plan [task]                            # CS-plan 실행
+/experiencing review [path] [--focus aspect]         # CS-codebase-review 실행 (5-관점 코드 리뷰)
+/experiencing version-up [domain]                    # 도메인 버전 증가
+/experiencing status                                 # 모든 도메인 VERSION 파일 읽기
 ```
 
 ---
@@ -36,7 +37,7 @@ allowed-tools:
 
 ```bash
 BASE="plugins/experiencing-v1/domains"
-for domain in CS-test CS-plan; do
+for domain in CS-test CS-plan CS-codebase-review; do
   VERSION=$(cat "$BASE/${domain}-v"*/VERSION 2>/dev/null || echo "?")
   echo "📦 $domain | 현재 콘텐츠 버전: $VERSION"
 done
@@ -53,12 +54,23 @@ done
 1. `domains/CS-plan-v1/VERSION` 읽기
 2. `domains/CS-plan-v1/skills/CS-plan/SKILL.md` 프로토콜 실행
 
+### `/experiencing review [path] [--focus aspect]`
+
+1. `domains/CS-codebase-review-v1/VERSION` 읽기 → 현재 버전 확인
+2. `domains/CS-codebase-review-v1/skills/CS-codebase-review/SKILL.md` 프로토콜 실행
+3. 인수 파싱:
+   - `[path]` 없음 → 현재 작업 디렉토리 전체 분석
+   - `[path]` 있음 → 해당 경로만 분석
+   - `--focus [aspect]` 있음 → 해당 관점만 집중 분석 (architecture/quality/security/performance/maintainability)
+4. 5개 에이전트(Architecture/Quality/Security/Performance/Maintainability)를 병렬 실행
+5. 결과 종합 → 등급(A/B/C/D) + 우선순위별 권장 조치사항 리포트 출력
+
 ### `/experiencing version-up [domain]`
 
 도메인 버전을 증가시키고 새 버전 디렉토리를 준비:
 
 ```bash
-DOMAIN="[domain]"  # test 또는 plan
+DOMAIN="[domain]"  # test, plan, 또는 review
 BASE_PATH="/Users/gwanli/cs_plugins/plugins/experiencing-v1/domains"
 
 # 현재 버전 읽기
