@@ -55,6 +55,11 @@
       "name": "smart-run",
       "description": "Two-phase orchestrator: Plan with Opus → Execute with Sonnet agents in parallel (/smart-run)",
       "source": "./plugins/smart-run"
+    },
+    {
+      "name": "experiencing",
+      "description": "Accumulated knowledge repository with domain versioning - CS-test (14-agent web testing) and CS-plan",
+      "source": "./plugins/experiencing-v1"
     }
   ]
 }

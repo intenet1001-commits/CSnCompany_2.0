@@ -1,0 +1,39 @@
+# experiencing-v1 - 경험 지식 저장소
+
+이 플러그인은 누적된 학습 경험을 도메인별로 관리합니다.
+
+## 도메인 구성
+
+| 도메인 | 현재 버전 | 내용 |
+|--------|-----------|------|
+| **CS-test** | v1 | 웹 테스트 (14-agent playwright 팀) |
+| **CS-plan** | v1 | 플래닝/아키텍처 학습 (준비 중) |
+
+## 사용법
+
+```
+/experiencing           # 도메인 목록 및 버전 확인
+/experiencing test [URL]   # CS-test 실행 (14개 에이전트로 웹 테스트)
+/experiencing plan [task]  # CS-plan 실행
+/experiencing version-up test  # CS-test 버전 업그레이드
+```
+
+## 버전 관리
+
+각 도메인의 VERSION 파일이 현재 콘텐츠 버전을 나타냅니다.
+새 학습이 추가되면 `/experiencing version-up [domain]` 으로 버전 증가.
+
+## 도메인 파일 구조
+
+```
+domains/
+├── CS-test-v1/
+│   ├── VERSION          # 현재: 1
+│   ├── agents/          # 14개 테스트 에이전트
+│   ├── skills/CS-test/SKILL.md
+│   └── commands/CS-test.md
+└── CS-plan-v1/
+    ├── VERSION          # 현재: 1
+    ├── knowledge/README.md
+    └── skills/CS-plan/SKILL.md
+```
