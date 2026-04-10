@@ -4,43 +4,8 @@
     "name": "intenet1001-commits",
     "url": "https://github.com/intenet1001-commits"
   },
-  "description": "Claude Code plugins for web testing and document generation",
+  "description": "Claude Code plugins for web testing, planning, and code review",
   "plugins": [
-    {
-      "name": "playwright-test",
-      "description": "5 specialized agents for comprehensive web app testing",
-      "source": "./plugins/playwright-test-v1"
-    },
-    {
-      "name": "codebase-review",
-      "description": "전체 코드베이스 품질/아키텍처/보안 분석 리뷰어",
-      "source": "./plugins/codebase-review-v1"
-    },
-    {
-      "name": "playwright-test-v2",
-      "description": "AI Agent Teams powered intelligent web testing with 6 Claude agents",
-      "source": "./plugins/playwright-test-v2"
-    },
-    {
-      "name": "tdd-clean-planner",
-      "description": "TDD + Clean Architecture 기반 코딩 플랜 자동 생성 - 4개 전문 에이전트가 도메인 분석, 아키텍처 설계, 테스트 전략, 구현 체크리스트를 병렬로 생성",
-      "source": "./plugins/tdd-clean-planner"
-    },
-    {
-      "name": "playwright-test-v3",
-      "description": "7-agent AI Teams web testing with social share (KakaoTalk/SNS) validation and PWA verification",
-      "source": "./plugins/playwright-test-v3"
-    },
-    {
-      "name": "playwright-test-v4",
-      "description": "9-agent AI Teams web testing with build/deploy pre-validation and DB CRUD verification",
-      "source": "./plugins/playwright-test-v4"
-    },
-    {
-      "name": "playwright-test-v5",
-      "description": "11-agent AI Teams web testing with touch interaction validation and image optimization (MWC 2026 learnings)",
-      "source": "./plugins/playwright-test-v5"
-    },
     {
       "name": "convo-maker",
       "description": "세션 Q&A를 자연스러운 미국식 영어 대화로 변환 - Convert session Q&A into natural American English conversations for language learning",
@@ -58,8 +23,23 @@
     },
     {
       "name": "experiencing",
-      "description": "Accumulated knowledge repository with domain versioning - CS-test (14-agent web testing) and CS-plan",
+      "description": "3-domain knowledge repository: CS-test (14-agent web testing), CS-plan (TDD+CleanArch 4-agent), CS-codebase-review (5-agent parallel review)",
       "source": "./plugins/experiencing-v1"
+    },
+    {
+      "name": "CS-test",
+      "description": "14-agent AI Teams web testing - security, SEO, performance, DB, touch, image optimization",
+      "source": "./plugins/CS-test-v1"
+    },
+    {
+      "name": "CS-plan",
+      "description": "TDD + Clean Architecture 4-agent planning - domain analysis, architecture, test strategy, implementation checklist",
+      "source": "./plugins/CS-plan-v1"
+    },
+    {
+      "name": "CS-codebase-review",
+      "description": "5-agent parallel codebase review - Architecture, Quality, Security, Performance, Maintainability",
+      "source": "./plugins/CS-codebase-review-v1"
     }
   ]
 }
