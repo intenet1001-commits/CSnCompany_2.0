@@ -50,6 +50,11 @@
       "name": "cs-sync",
       "description": "Commit, push cs_plugins to GitHub and update local marketplace in one command (/cs-sync)",
       "source": "./plugins/cs-sync"
+    },
+    {
+      "name": "smart-run",
+      "description": "Two-phase orchestrator: Plan with Opus → Execute with Sonnet agents in parallel (/smart-run)",
+      "source": "./plugins/smart-run"
     }
   ]
 }
