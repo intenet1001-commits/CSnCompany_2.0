@@ -81,25 +81,53 @@ done
 
 ### `/experiencing version-up [domain]`
 
-도메인 버전을 증가시키고 새 버전 디렉토리를 준비:
+**정책: 직전 버전 + 현재 버전 2개만 유지. 더 오래된 버전은 자동 삭제.**
 
 ```bash
 DOMAIN="[domain]"  # test, plan, 또는 review
 BASE_PATH="$HOME/.claude/plugins/marketplaces/cs-plugins/plugins"
 
-# 최신 도메인 디렉토리 찾기
-LATEST_DIR=$(ls -d "$BASE_PATH/CS-${DOMAIN}-v"* 2>/dev/null | sort -V | tail -1)
+# 1. 모든 버전 디렉토리 버전순 정렬
+ALL_DIRS=($(ls -d "$BASE_PATH/CS-${DOMAIN}-v"* 2>/dev/null | sort -V))
+LATEST_DIR="${ALL_DIRS[-1]}"
 CURRENT_VERSION=$(cat "$LATEST_DIR/VERSION" 2>/dev/null || echo "1")
 NEXT_VERSION=$((CURRENT_VERSION + 1))
+NEW_DIR="$BASE_PATH/CS-${DOMAIN}-v${NEXT_VERSION}"
 
-echo "⬆️ CS-${DOMAIN}-v${CURRENT_VERSION} → CS-${DOMAIN}-v${NEXT_VERSION} 준비 중..."
+echo "⬆️ CS-${DOMAIN}-v${CURRENT_VERSION} → CS-${DOMAIN}-v${NEXT_VERSION}"
+
+# 2. 새 버전 디렉토리 생성
+cp -r "$LATEST_DIR" "$NEW_DIR"
+echo "$NEXT_VERSION" > "$NEW_DIR/VERSION"
+
+# 3. 이전+현재 2개만 유지 — 더 오래된 버전 삭제
+TOTAL=${#ALL_DIRS[@]}
+DELETE_COUNT=$((TOTAL - 1))  # 새 버전 생성 전 목록 기준: 마지막 1개(이전)만 남기고 삭제
+if [ $DELETE_COUNT -gt 0 ]; then
+  for dir in "${ALL_DIRS[@]:0:$DELETE_COUNT}"; do
+    echo "🗑️ 삭제: $(basename $dir)"
+    rm -rf "$dir"
+  done
+fi
 ```
 
-새 버전 디렉토리 생성 절차:
-1. `cp -r $LATEST_DIR $BASE_PATH/CS-${DOMAIN}-v${NEXT_VERSION}/` (내용 복사)
-2. `echo "$NEXT_VERSION" > $BASE_PATH/CS-${DOMAIN}-v${NEXT_VERSION}/VERSION` (버전 파일 갱신)
-3. 새 학습 내용을 추가할 수 있도록 사용자에게 안내
-4. `plugin.json` patch version 증가
+실행 단계:
+
+1. `BASE_PATH` 아래 `CS-[DOMAIN]-v*` 디렉토리를 버전순 정렬 → `ALL_DIRS`
+2. 최신 디렉토리에서 현재 VERSION 번호 읽기
+3. `cp -r $LATEST_DIR $NEW_DIR` — 새 버전 디렉토리 생성
+4. `echo $NEXT_VERSION > $NEW_DIR/VERSION` — VERSION 파일 갱신
+5. **오래된 버전 정리**: `ALL_DIRS` 마지막 1개(→이전 버전이 될 것)만 남기고 앞의 것들 모두 `rm -rf`
+6. **marketplace.json 업데이트**: source 포인터 갱신
+   - 파일: `~/.claude/plugins/marketplaces/cs-plugins/.claude-plugin/marketplace.json`
+   - `"./plugins/CS-[DOMAIN]-v[CURRENT]"` → `"./plugins/CS-[DOMAIN]-v[NEXT]"` 로 Edit
+7. 완료 안내:
+   ```
+   ✅ 버전업 완료
+   📦 현재 버전: CS-[DOMAIN]-v[NEXT]
+   📦 보관 버전: CS-[DOMAIN]-v[CURRENT] (직전)
+   🗑️ 삭제됨: [삭제된 버전들]
+   ```
 
 ### `/experiencing status`
 
