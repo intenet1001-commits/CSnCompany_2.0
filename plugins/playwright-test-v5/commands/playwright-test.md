@@ -16,7 +16,7 @@ AI Agent Teams를 활용한 종합 웹 앱 테스트를 실행합니다.
 
 ## 설명
 
-11개의 전문 Claude AI 에이전트가 팀을 구성하여 대상 웹 앱을 심층 테스트합니다:
+14개의 전문 Claude AI 에이전트가 팀을 구성하여 대상 웹 앱을 심층 테스트합니다:
 
 1. **build-validator** - 빌드/보안 사전 검증 (CVE, tsconfig, Tailwind, 미커밋 파일)
 2. **test-lead** - 팀 리더, 전체 오케스트레이션 및 리포트 생성
@@ -29,6 +29,9 @@ AI Agent Teams를 활용한 종합 웹 앱 테스트를 실행합니다.
 9. **db-validator** - Supabase/DB CRUD 실제 동작 검증
 10. **touch-interaction-validator** *(v5 신규)* - 터치/스와이프 인터랙션 검증
 11. **image-optimizer** *(v5 신규)* - 이미지 용량·WebP·Next.js Image 최적화 검증
+12. **security-auditor** *(v5 신규)* - HTTP 보안 헤더, 쿠키 플래그, 민감정보 소스코드 감사
+13. **seo-auditor** *(v5 신규)* - 메타태그, canonical, robots.txt, sitemap, 구조화 데이터 분석
+14. **error-resilience** *(v5 신규)* - 404 페이지 품질, 콘솔 에러, 깨진 외부 링크, 에러 바운더리
 
 ## v5 신규 기능
 
@@ -53,7 +56,7 @@ MWC 세션에서 발견된 이미지 최적화 이슈:
 
 - **Phase 0**: build-validator가 빌드/보안 사전 검증 (Playwright 불필요)
 - **Phase 1**: page-explorer가 앱 구조 + OG/PWA 메타 파악, page-map 생성
-- **Phase 2**: 9개 에이전트가 병렬로 심층 테스트 실행
+- **Phase 2**: 11개 에이전트가 병렬로 심층 테스트 실행
 - **Phase 3**: test-lead가 결과를 취합하여 REPORT.md 생성
 
 ## 출력
@@ -68,6 +71,9 @@ MWC 세션에서 발견된 이미지 최적화 이슈:
 - `tests/results/db-report.json` - DB/API CRUD 검증
 - `tests/results/touch-report.json` - 터치/스와이프 인터랙션 검증 *(v5 신규)*
 - `tests/results/image-report.json` - 이미지 최적화 분석 *(v5 신규)*
+- `tests/results/security-report.json` - 보안 감사 결과 *(v5 신규)*
+- `tests/results/seo-report.json` - SEO 분석 결과 *(v5 신규)*
+- `tests/results/error-resilience-report.json` - 오류 복원력 검사 *(v5 신규)*
 - `tests/results/REPORT.md` - 종합 리포트
 
 ## 사전 요구사항

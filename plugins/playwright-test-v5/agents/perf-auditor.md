@@ -48,6 +48,8 @@ ToolSearch(query: "+playwright evaluate navigate network")
 
 ## 실행 프로토콜
 
+> 📌 **역할 경계**: 이미지 최적화 상세 분석(WebP, Next.js Image, 용량 절감)은 image-optimizer 담당. 이 에이전트는 Core Web Vitals와 리소스 총량에 집중.
+
 ### Step 1: page-map 분석
 
 `tests/results/page-map.json`을 읽고 측정 대상 페이지 목록을 확인합니다.
@@ -154,13 +156,8 @@ ToolSearch(query: "+playwright evaluate navigate network")
     ...document.querySelectorAll('script[src]:not([async]):not([defer]):not([type="module"])')
   ].length;
 
-  // 이미지 최적화 검사
-  const unoptimizedImages = [...document.querySelectorAll('img')].filter(img => {
-    return !img.loading || img.loading !== 'lazy';
-  }).filter(img => {
-    const rect = img.getBoundingClientRect();
-    return rect.top > window.innerHeight; // 뷰포트 밖의 이미지
-  });
+  // 이미지 상세 최적화 분석은 image-optimizer 에이전트 담당
+  // 여기서는 리소스 총량만 측정
 
   return {
     dom: {
@@ -181,11 +178,6 @@ ToolSearch(query: "+playwright evaluate navigate network")
       stylesheets: renderBlocking,
       scripts: blockingScripts,
       total: renderBlocking + blockingScripts
-    },
-    imageOptimization: {
-      totalImages: document.querySelectorAll('img').length,
-      lazyLoadedImages: document.querySelectorAll('img[loading="lazy"]').length,
-      belowFoldWithoutLazy: unoptimizedImages.length
     }
   };
 })()
@@ -243,7 +235,7 @@ ToolSearch(query: "+playwright evaluate navigate network")
 
 발견된 문제에 따라 구체적인 개선 방안 제시:
 - 렌더링 블로킹 리소스 → async/defer 사용 권장
-- 큰 이미지 → 이미지 최적화, lazy loading 권장
+- 큰 이미지/느린 로딩 → image-optimizer 에이전트의 상세 분석 참고
 - 큰 JS 번들 → 코드 스플리팅 권장
 - 느린 TTFB → 서버 응답 최적화, CDN 활용 권장
 - 높은 CLS → 이미지/광고 크기 고정, 폰트 최적화 권장
@@ -304,13 +296,6 @@ ToolSearch(query: "+playwright evaluate navigate network")
       "issue": "5개의 렌더링 블로킹 리소스 감지",
       "recommendation": "CSS에 media 속성 추가, JS에 async/defer 속성 추가",
       "estimatedImpact": "FCP 0.5-1.0초 개선 예상"
-    },
-    {
-      "priority": "medium",
-      "category": "images",
-      "issue": "뷰포트 밖 이미지 8개가 lazy loading 미적용",
-      "recommendation": "loading=\"lazy\" 속성 추가",
-      "estimatedImpact": "초기 로딩 시간 감소"
     }
   ]
 }
