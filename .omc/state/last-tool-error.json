@@ -1,0 +1,7 @@
+{
+  "tool_name": "Read",
+  "tool_input_preview": "{\"file_path\":\"/Users/gwanli/cs_plugins/plugins/playwright-test-v5\"}",
+  "error": "EISDIR: illegal operation on a directory, read '/Users/gwanli/cs_plugins/plugins/playwright-test-v5'",
+  "timestamp": "2026-03-21T05:51:02.599Z",
+  "retry_count": 1
+}

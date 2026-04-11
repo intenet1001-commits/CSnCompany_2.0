@@ -1,6 +1,7 @@
 ---
 name: convo-maker
 description: Use this skill when the user types "/convo-maker", "/convo", "make conversation", "영어 대화 만들어", "미국식 영어", "native english dialog", "session to english", "대화로 만들어", or wants to convert current session Q&A into natural American English conversations.
+user-invocable: true
 ---
 
 # ConvoMaker - Session to American English Conversation

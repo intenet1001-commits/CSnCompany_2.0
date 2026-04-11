@@ -1,5 +1,6 @@
 ---
 name: smart-run
+user-invocable: true
 description: |
   Two-phase orchestrator: Plan with Opus → Execute with Sonnet.
   Opus analyzes the task and produces a structured plan; Sonnet agents

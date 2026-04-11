@@ -1,6 +1,7 @@
 ---
 name: cs-sync
 description: Use this skill when the user types "/cs-sync", "플러그인 동기화", "sync plugins", "push and sync", or wants to commit, push cs_plugins to GitHub and update the local marketplace.
+user-invocable: true
 ---
 
 # CS-Sync - Plugin Workspace Sync

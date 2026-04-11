@@ -1,5 +1,6 @@
 ---
 name: CS-plan
+user-invocable: true
 description: |
   TDD + Clean Architecture coding plan generator. Use when user types "/CS-plan", "코딩 플랜",
   "플랜 생성", "TDD 플랜", "clean architecture plan", or wants to generate an implementation plan

@@ -1,5 +1,6 @@
 ---
 name: CS-test
+user-invocable: true
 description: |
   14-agent AI Teams web testing skill. Use when user types "/CS-test", "웹 테스트", "playwright test",
   "테스트 실행", "사이트 테스트", or wants comprehensive web app testing covering security, SEO,
