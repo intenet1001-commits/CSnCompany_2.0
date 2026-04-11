@@ -1,112 +1,109 @@
-# CS Plugins - Claude Code Plugin Collection
+# CS Plugins — Claude Code Plugin Collection
 
-A collection of Claude Code plugins for web application testing, automation, and document generation.
+Claude Code plugins for web testing, planning, and code review.
 
-## Available Plugins
+## Plugins
 
-### playwright-test
-
-Multi-agent Playwright test automation for web applications using 5 specialized agents:
-
-| Agent | Role |
-|-------|------|
-| **Explorer** | Page discovery, DOM analysis, selector extraction |
-| **Functional** | Page load, button click, form validation testing |
-| **Visual** | Responsive screenshots, accessibility (axe-core) |
-| **API** | XHR/Fetch capture, status code validation |
-| **Performance** | Core Web Vitals, load time measurement |
+| Plugin | Slash Command | What it does |
+|--------|--------------|-------------|
+| **CS-test** | `/CS-test` | 14-agent web testing — security, SEO, performance, accessibility, DB, PWA, touch, image optimization |
+| **CS-plan** | `/CS-plan "feature"` | TDD + Clean Architecture 4-agent plan — domain analysis, architecture design, test strategy, implementation checklist |
+| **CS-codebase-review** | `/CS-codebase-review` | 5-agent parallel codebase review — Architecture, Quality, Security, Performance, Maintainability |
+| **cs-sync** | `/cs-sync` | Commit → push cs_plugins to GitHub → update local marketplace in one command |
+| **smart-run** | `/smart-run` | Two-phase orchestrator: Plan with Opus → Execute with Sonnet agents in parallel |
+| **convo-maker** | `/convo-maker` | Convert session Q&A into natural American English conversations for language learning |
+| **experiencing** | `/experiencing` | Meta-router for CS-test, CS-plan, CS-codebase-review domains |
 
 ## Installation
 
-### Via Claude Code (Recommended)
-
-```
-/plugin marketplace add intenet1001-commits/cs_plugins
-/plugin install playwright-test
-```
-
-### Via Shell
-
 ```bash
-curl -fsSL https://raw.githubusercontent.com/intenet1001-commits/cs_plugins/main/install.sh | bash
+git clone https://github.com/intenet1001-commits/cs_plugins ~/.claude/plugins/marketplaces/cs-plugins
 ```
 
-### Manual Clone
+Then enable plugins in `~/.claude/settings.json`:
 
-```bash
-git clone https://github.com/intenet1001-commits/cs_plugins ~/.claude/plugins/marketplaces/cs_plugins
+```json
+{
+  "extraKnownMarketplaces": {
+    "cs-plugins": {
+      "source": {
+        "source": "local",
+        "path": "~/.claude/plugins/marketplaces/cs-plugins"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "CS-test@cs-plugins": true,
+    "CS-plan@cs-plugins": true,
+    "CS-codebase-review@cs-plugins": true,
+    "cs-sync@cs-plugins": true,
+    "smart-run@cs-plugins": true,
+    "convo-maker@cs-plugins": true,
+    "experiencing@cs-plugins": true
+  }
+}
 ```
 
-## Usage
-
-### Slash Commands
-
-```
-/test  - Run Playwright multi-agent tests
-```
-
-### Or Say
-
-- "Run Playwright test"
-- "E2E test this project"
-
-## Quick Start
-
-1. **Install** (see [Installation](#installation) above)
-2. **Restart Claude Code** to load the new plugins
-3. **Use the skill**: `"Run Playwright test"`
+Restart Claude Code to load the plugins.
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Test Coordinator                          │
-├─────────────────────────────────────────────────────────────┤
-│  Phase 1: Run Explorer first (generate page map)             │
-│                                                              │
-│  Phase 2: Run remaining 4 agents in parallel                 │
-│           ┌──────────┬──────────┬──────────┬──────────┐      │
-│           │Functional│  Visual  │   API    │Performance│      │
-│           └──────────┴──────────┴──────────┴──────────┘      │
-│                                                              │
-│  Phase 3: Aggregate results and generate unified report      │
-└─────────────────────────────────────────────────────────────┘
-```
-
-## Environment Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `TEST_URL` | `http://localhost:9005` | Target URL for testing |
-| `HEADLESS` | `true` | Hide browser window |
-| `SLOW_MO` | `0` | Action delay time (ms) |
-| `DEVTOOLS` | `false` | Open developer tools |
-
-## Output Files
-
-After test execution, results are generated in:
+All multi-agent plugins use the **lead-agent pattern** — main context spawns one lead agent, the lead orchestrates N specialist workers internally. Raw agent outputs never accumulate in the main conversation.
 
 ```
-tests/
-├── results/
-│   ├── REPORT.md               # Unified markdown report
-│   ├── page-map.json           # Page structure map
-│   ├── functional-tests.json   # Functional test results
-│   ├── visual-tests.json       # Visual test results
-│   ├── api-tests.json          # API test results
-│   └── performance-report.json # Performance metrics
-└── screenshots/                # Responsive screenshots
+main context
+  └─ SKILL.md (thin wrapper: parse args, spawn 1 lead Task)
+       └─ lead agent (own context: orchestrate N workers)
+            ├─ worker-1 → result file
+            ├─ worker-2 → result file
+            └─ worker-N → result file
+            → synthesize final doc → return to main context
+```
+
+### CS-test (14 agents, 2-phase)
+
+```
+SKILL → test-lead
+  Phase 1: build-validator, page-explorer (sequential)
+  Phase 2: functional, visual, api-interceptor, perf, security,
+           seo, social-share, touch, image, db, error-resilience (parallel)
+  → REPORT.md
+```
+
+### CS-plan (4 agents, parallel)
+
+```
+SKILL → plan-lead
+  ├─ domain-analyst    → domain-analysis.md
+  ├─ arch-designer     → architecture.md
+  ├─ tdd-strategist    → tdd-strategy.md
+  └─ checklist-builder → implementation-checklist.md
+  → PLAN.md
+```
+
+### CS-codebase-review (5 agents, parallel)
+
+```
+SKILL → review-lead
+  ├─ architecture  → architecture-report.json
+  ├─ quality       → quality-report.json
+  ├─ security      → security-report.json
+  ├─ performance   → performance-report.json
+  └─ maintainability → maintainability-report.json
+  → REVIEW.md
+```
+
+## Usage Examples
+
+```
+/CS-test https://example.com
+/CS-plan "user authentication with email + JWT"
+/CS-codebase-review
+/CS-codebase-review ./src --focus security
+/cs-sync
+/smart-run "add dark mode to the dashboard"
 ```
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
-
-## Contributing
-
-Issues and pull requests are welcome!
-
-## Links
-
-- [Korean Documentation](README.ko.md)
-- [GitHub Repository](https://github.com/intenet1001-commits/cs_plugins)
+MIT
