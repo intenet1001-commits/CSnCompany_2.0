@@ -1,4 +1,4 @@
-# cs-experiencing-v1 - 경험 지식 저장소
+# cs-experiencing-v3 - 경험 지식 저장소
 
 이 플러그인은 누적된 학습 경험을 도메인별로 관리합니다.
 
@@ -6,9 +6,9 @@
 
 | 도메인 | 현재 버전 | 내용 |
 |--------|-----------|------|
-| **CS-test** | v1 | 웹 테스트 (14-agent playwright 팀) |
-| **CS-plan** | v1 | TDD+CleanArch 플랜 (4-agent: domain-analyst, arch-designer, tdd-strategist, checklist-builder) |
-| **CS-codebase-review** | v1 | 5-관점 병렬 코드 리뷰 (Architecture/Quality/Security/Performance/Maintainability) |
+| **CS-test** | v2 | 웹 테스트 (14-agent playwright 팀) |
+| **CS-plan** | v2 | TDD+CleanArch 플랜 (4-agent: domain-analyst, arch-designer, tdd-strategist, checklist-builder) |
+| **CS-codebase-review** | v2 | 5-관점 병렬 코드 리뷰 (Architecture/Quality/Security/Performance/Maintainability) |
 
 ## 사용법
 
@@ -32,20 +32,20 @@
 
 ```
 plugins/
-├── cs-experiencing-v1/  ← 이 플러그인 (오케스트레이터)
-├── CS-test-v1/
-│   ├── VERSION          # 현재: 1
+├── cs-experiencing-v3/  ← 이 플러그인 (오케스트레이터)
+├── CS-test-v2/
+│   ├── VERSION          # 현재: 2
 │   ├── agents/          # 14개 테스트 에이전트
 │   ├── skills/CS-test/SKILL.md
 │   └── commands/CS-test.md
-├── CS-plan-v1/
-│   ├── VERSION          # 현재: 1
+├── CS-plan-v2/
+│   ├── VERSION          # 현재: 2
 │   ├── agents/          # 4개: domain-analyst, arch-designer, tdd-strategist, checklist-builder
 │   ├── commands/CS-plan.md
 │   ├── knowledge/README.md
 │   └── skills/CS-plan/SKILL.md
-└── CS-codebase-review-v1/
-    ├── VERSION          # 현재: 1
+└── CS-codebase-review-v2/
+    ├── VERSION          # 현재: 2
     ├── skills/CS-codebase-review/SKILL.md
     └── commands/CS-codebase-review.md
 ```

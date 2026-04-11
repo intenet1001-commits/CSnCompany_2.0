@@ -5,7 +5,7 @@ description: |
   경험 지식 저장소 오케스트레이터.
   도메인별 누적 학습 조회, 실행, 버전 관리.
   Use when invoked via /experiencing, or when user says "경험", "학습 실행", "버전업".
-version: 1.0.0
+version: 3.0.0
 allowed-tools:
   - Read
   - Write
@@ -19,14 +19,14 @@ allowed-tools:
 
 ## 도메인 위치
 
-3개 도메인은 cs-experiencing-v1과 같은 레벨의 plugins/ 디렉토리에 위치합니다:
+3개 도메인은 cs-experiencing-v3과 같은 레벨의 plugins/ 디렉토리에 위치합니다:
 
 ```
 plugins/
-├── cs-experiencing-v1/ ← 이 플러그인 (오케스트레이터)
-├── CS-test-v1/         ← 14-agent 웹 테스트 도메인
-├── CS-plan-v1/         ← TDD+CleanArch 4-agent 플랜 도메인
-└── CS-codebase-review-v1/  ← 5-agent 코드 리뷰 도메인
+├── cs-experiencing-v3/ ← 이 플러그인 (오케스트레이터)
+├── CS-test-v2/         ← 14-agent 웹 테스트 도메인
+├── CS-plan-v2/         ← TDD+CleanArch 4-agent 플랜 도메인
+└── CS-codebase-review-v2/  ← 5-agent 코드 리뷰 도메인
 ```
 
 마켓플레이스 절대 경로: `~/.claude/plugins/marketplaces/cs-plugins/plugins/`
@@ -61,19 +61,34 @@ done
 
 ### `/experiencing test [URL]`
 
-1. `../CS-test-v1/VERSION` 읽기 → 현재 버전 확인
-2. `../CS-test-v1/skills/CS-test/SKILL.md` 프로토콜 실행
-3. URL을 대상으로 14-agent 팀 가동
+1. 최신 CS-test 도메인 경로 찾기:
+   ```bash
+   BASE="$HOME/.claude/plugins/marketplaces/cs-plugins/plugins"
+   LATEST_TEST=$(ls -d "$BASE/CS-test-v"* 2>/dev/null | sort -V | tail -1)
+   ```
+2. `$LATEST_TEST/VERSION` 읽기 → 현재 버전 확인
+3. `$LATEST_TEST/skills/CS-test/SKILL.md` 프로토콜 실행
+4. URL을 대상으로 14-agent 팀 가동
 
 ### `/experiencing plan [task]`
 
-1. `../CS-plan-v1/VERSION` 읽기
-2. `../CS-plan-v1/skills/CS-plan/SKILL.md` 프로토콜 실행
+1. 최신 CS-plan 도메인 경로 찾기:
+   ```bash
+   BASE="$HOME/.claude/plugins/marketplaces/cs-plugins/plugins"
+   LATEST_PLAN=$(ls -d "$BASE/CS-plan-v"* 2>/dev/null | sort -V | tail -1)
+   ```
+2. `$LATEST_PLAN/VERSION` 읽기 → 현재 버전 확인
+3. `$LATEST_PLAN/skills/CS-plan/SKILL.md` 프로토콜 실행
 
 ### `/experiencing review [path] [--focus aspect]`
 
-1. `../CS-codebase-review-v1/VERSION` 읽기 → 현재 버전 확인
-2. `../CS-codebase-review-v1/skills/CS-codebase-review/SKILL.md` 프로토콜 실행
+1. 최신 CS-codebase-review 도메인 경로 찾기:
+   ```bash
+   BASE="$HOME/.claude/plugins/marketplaces/cs-plugins/plugins"
+   LATEST_REVIEW=$(ls -d "$BASE/CS-codebase-review-v"* 2>/dev/null | sort -V | tail -1)
+   ```
+2. `$LATEST_REVIEW/VERSION` 읽기 → 현재 버전 확인
+3. `$LATEST_REVIEW/skills/CS-codebase-review/SKILL.md` 프로토콜 실행
 3. 인수 파싱:
    - `[path]` 없음 → 현재 작업 디렉토리 전체 분석
    - `[path]` 있음 → 해당 경로만 분석
@@ -160,6 +175,6 @@ done
 
 ## 버전 철학
 
-- **도메인 디렉토리명** (`CS-test-v1`): 스키마/구조 버전 — 큰 구조 변경 시에만 변경
+- **도메인 디렉토리명** (`CS-test-v2`): 스키마/구조 버전 — 큰 구조 변경 시에만 변경
 - **VERSION 파일**: 콘텐츠 버전 — 새 학습이 추가될 때마다 증가
 - **plugin.json version**: 전체 플러그인 버전 — semver (major.minor.patch)
