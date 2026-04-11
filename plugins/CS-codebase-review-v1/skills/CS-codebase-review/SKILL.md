@@ -1,3 +1,12 @@
+---
+name: CS-codebase-review
+description: |
+  5-agent parallel codebase review skill. Use when user types "/CS-codebase-review", "코드베이스 리뷰",
+  "전체 코드 리뷰", "codebase review", "코드 전체 분석", or wants a comprehensive parallel review
+  covering architecture, quality, security, performance, and maintainability.
+version: 1.0.0
+---
+
 # Codebase Review Skill
 
 <codebase-review>

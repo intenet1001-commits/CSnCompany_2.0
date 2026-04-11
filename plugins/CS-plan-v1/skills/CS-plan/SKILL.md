@@ -1,3 +1,13 @@
+---
+name: CS-plan
+description: |
+  TDD + Clean Architecture coding plan generator. Use when user types "/CS-plan", "코딩 플랜",
+  "플랜 생성", "TDD 플랜", "clean architecture plan", or wants to generate an implementation plan
+  using TDD and Clean Architecture with 4 specialized agents (domain-analyst, arch-designer,
+  tdd-strategist, checklist-builder).
+version: 1.0.0
+---
+
 # CS-plan - TDD + Clean Architecture 코딩 플랜 생성
 
 ## 개요
