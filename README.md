@@ -9,7 +9,6 @@ Claude Code plugins for web testing, planning, and code review.
 | **CS-test** | `/CS-test` | 14-agent web testing — security, SEO, performance, accessibility, DB, PWA, touch, image optimization |
 | **CS-plan** | `/CS-plan "feature"` | TDD + Clean Architecture 4-agent plan — domain analysis, architecture design, test strategy, implementation checklist |
 | **CS-codebase-review** | `/CS-codebase-review` | 5-agent parallel codebase review — Architecture, Quality, Security, Performance, Maintainability |
-| **cs-sync** | `/cs-sync` | Commit → push cs_plugins to GitHub → update local marketplace in one command |
 | **smart-run** | `/smart-run` | Two-phase orchestrator: Plan with Opus → Execute with Sonnet agents in parallel |
 | **convo-maker** | `/convo-maker` | Convert session Q&A into natural American English conversations for language learning |
 | **experiencing** | `/experiencing` | Meta-router for CS-test, CS-plan, CS-codebase-review domains |
@@ -36,7 +35,6 @@ Then enable plugins in `~/.claude/settings.json`:
     "CS-test@cs-plugins": true,
     "CS-plan@cs-plugins": true,
     "CS-codebase-review@cs-plugins": true,
-    "cs-sync@cs-plugins": true,
     "smart-run@cs-plugins": true,
     "convo-maker@cs-plugins": true,
     "experiencing@cs-plugins": true
@@ -100,7 +98,6 @@ SKILL → review-lead
 /CS-plan "user authentication with email + JWT"
 /CS-codebase-review
 /CS-codebase-review ./src --focus security
-/cs-sync
 /smart-run "add dark mode to the dashboard"
 ```
 
