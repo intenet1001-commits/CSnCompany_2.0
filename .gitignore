@@ -23,3 +23,11 @@ tests/logs/
 # Environment
 .env
 .env.local
+
+# Runtime state (bkit, omc, tdd-plans)
+.bkit/
+.omc/
+.tdd-plans/
+plugins/.omc/
+plugins/docs/.bkit-memory.json
+plugins/docs/.pdca-status.json
