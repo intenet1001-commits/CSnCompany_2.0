@@ -13,18 +13,18 @@
 ## 사용법
 
 ```
-/experiencing                                      # 도메인 목록 및 버전 확인
-/experiencing test [URL]                           # CS-test 실행 (14개 에이전트로 웹 테스트)
-/experiencing plan [task]                          # CS-plan 실행
-/experiencing review [path] [--focus aspect]       # CS-codebase-review 실행 (5-관점 코드 리뷰)
-/experiencing version-up test                      # CS-test 버전 업그레이드
-/experiencing version-up review                    # CS-codebase-review 버전 업그레이드
+/cs-experiencing                                      # 도메인 목록 및 버전 확인
+/cs-experiencing test [URL]                           # CS-test 실행 (14개 에이전트로 웹 테스트)
+/cs-experiencing plan [task]                          # CS-plan 실행
+/cs-experiencing review [path] [--focus aspect]       # CS-codebase-review 실행 (5-관점 코드 리뷰)
+/cs-experiencing version-up test                      # CS-test 버전 업그레이드
+/cs-experiencing version-up review                    # CS-codebase-review 버전 업그레이드
 ```
 
 ## 버전 관리
 
 각 도메인의 VERSION 파일이 현재 콘텐츠 버전을 나타냅니다.
-새 학습이 추가되면 `/experiencing version-up [domain]` 으로 버전 증가.
+새 학습이 추가되면 `/cs-experiencing version-up [domain]` 으로 버전 증가.
 
 ## 도메인 파일 구조
 

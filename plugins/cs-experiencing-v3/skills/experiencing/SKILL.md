@@ -4,7 +4,7 @@ user-invocable: true
 description: |
   경험 지식 저장소 오케스트레이터.
   도메인별 누적 학습 조회, 실행, 버전 관리.
-  Use when invoked via /experiencing, or when user says "경험", "학습 실행", "버전업".
+  Use when invoked via /cs-experiencing, or when user says "경험", "학습 실행", "버전업".
 version: 3.0.0
 allowed-tools:
   - Read
@@ -34,13 +34,14 @@ plugins/
 ## 사용법
 
 ```
-/experiencing                                        # 도메인 목록 + 버전 현황 표시
-/experiencing test [URL]                             # CS-test 실행 (14-agent 웹 테스트)
-/experiencing plan [task]                            # CS-plan 실행
-/experiencing review [path] [--focus aspect]         # CS-codebase-review 실행 (5-관점 코드 리뷰)
-/experiencing version-up [domain]                    # 도메인 버전 증가 (test/plan/review)
-/experiencing version-up all                         # 3개 도메인 한번에 버전 증가
-/experiencing status                                 # 모든 도메인 VERSION 파일 읽기
+/cs-experiencing                                     # 도메인 목록 + 버전 현황 표시
+/cs-experiencing test [URL]                          # CS-test 실행 (14-agent 웹 테스트)
+/cs-experiencing plan [task]                         # CS-plan 실행
+/cs-experiencing review [path] [--focus aspect]      # CS-codebase-review 실행 (5-관점 코드 리뷰)
+/cs-experiencing update                              # 3개 스킬 모두 버전업 (version-up all 단축키)
+/cs-experiencing version-up [domain]                 # 도메인 버전 증가 (test/plan/review)
+/cs-experiencing version-up all                      # 3개 도메인 한번에 버전 증가
+/cs-experiencing status                              # 모든 도메인 VERSION 파일 읽기
 ```
 
 ---
@@ -59,7 +60,7 @@ for domain in CS-test CS-plan CS-codebase-review; do
 done
 ```
 
-### `/experiencing test [URL]`
+### `/cs-experiencing test [URL]`
 
 1. 최신 CS-test 도메인 경로 찾기:
    ```bash
@@ -70,7 +71,7 @@ done
 3. `$LATEST_TEST/skills/CS-test/SKILL.md` 프로토콜 실행
 4. URL을 대상으로 14-agent 팀 가동
 
-### `/experiencing plan [task]`
+### `/cs-experiencing plan [task]`
 
 1. 최신 CS-plan 도메인 경로 찾기:
    ```bash
@@ -80,7 +81,7 @@ done
 2. `$LATEST_PLAN/VERSION` 읽기 → 현재 버전 확인
 3. `$LATEST_PLAN/skills/CS-plan/SKILL.md` 프로토콜 실행
 
-### `/experiencing review [path] [--focus aspect]`
+### `/cs-experiencing review [path] [--focus aspect]`
 
 1. 최신 CS-codebase-review 도메인 경로 찾기:
    ```bash
@@ -96,7 +97,15 @@ done
 4. 5개 에이전트(Architecture/Quality/Security/Performance/Maintainability)를 병렬 실행
 5. 결과 종합 → 등급(A/B/C/D) + 우선순위별 권장 조치사항 리포트 출력
 
-### `/experiencing version-up [domain|all]`
+### `/cs-experiencing update`
+
+`version-up all`의 단축 명령어. 3개 도메인(CS-test, CS-plan, CS-codebase-review)을 순차적으로 버전업합니다.
+
+아래 `version-up all` 프로토콜과 동일하게 실행.
+
+---
+
+### `/cs-experiencing version-up [domain|all]`
 
 **정책: 직전 버전 + 현재 버전 2개만 유지. 더 오래된 버전은 자동 삭제.**
 
@@ -189,7 +198,7 @@ fi
 📦 CS-codebase-review: v[N] → v[N+1]  (학습 추가/스킵)
 ```
 
-### `/experiencing status`
+### `/cs-experiencing status`
 
 모든 도메인의 VERSION 파일 표시:
 
@@ -224,4 +233,4 @@ done
 
 - **상황**: 도메인별로 version-up을 3번 따로 실행해야 했음
 - **발견**: `test` → `plan` → `review` 순서로 순차 처리하면 한 번의 명령으로 모두 처리 가능
-- **교훈**: `/experiencing version-up all` 지원으로 워크플로우 간소화. 각 도메인마다 학습 캡처 인터랙션이 뜨므로 3번의 입력 기회가 생김.
+- **교훈**: `/cs-experiencing version-up all` 지원으로 워크플로우 간소화. 각 도메인마다 학습 캡처 인터랙션이 뜨므로 3번의 입력 기회가 생김.
