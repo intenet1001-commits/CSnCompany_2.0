@@ -12,11 +12,6 @@
       "source": "./plugins/convo-maker"
     },
     {
-      "name": "cs-sync",
-      "description": "Commit, push cs_plugins to GitHub and update local marketplace in one command (/cs-sync)",
-      "source": "./plugins/cs-sync"
-    },
-    {
       "name": "smart-run",
       "description": "Two-phase orchestrator: Plan with Opus → Execute with Sonnet agents in parallel (/smart-run)",
       "source": "./plugins/smart-run"
@@ -29,17 +24,17 @@
     {
       "name": "CS-test",
       "description": "14-agent AI Teams web testing - security, SEO, performance, DB, touch, image optimization",
-      "source": "./plugins/CS-test-v1"
+      "source": "./plugins/CS-test-v2"
     },
     {
       "name": "CS-plan",
       "description": "TDD + Clean Architecture 4-agent planning - domain analysis, architecture, test strategy, implementation checklist",
-      "source": "./plugins/CS-plan-v1"
+      "source": "./plugins/CS-plan-v2"
     },
     {
       "name": "CS-codebase-review",
       "description": "5-agent parallel codebase review - Architecture, Quality, Security, Performance, Maintainability",
-      "source": "./plugins/CS-codebase-review-v1"
+      "source": "./plugins/CS-codebase-review-v2"
     }
   ]
 }
