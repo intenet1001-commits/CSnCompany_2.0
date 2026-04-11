@@ -34,8 +34,13 @@ Ask the user for a commit message, OR if they didn't provide one, auto-generate 
 
 Then run:
 ```bash
-git -C /Users/gwanli/cs_plugins add -p  # or specific files
-git -C /Users/gwanli/cs_plugins commit -m "<message>\n\nCo-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
+git -C /Users/gwanli/cs_plugins add plugins/
+git -C /Users/gwanli/cs_plugins commit -m "$(cat <<'EOF'
+<message>
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+EOF
+)"
 ```
 
 > Stage only files in `plugins/` — skip `.bkit/`, `.omc/`, `.tdd-plans/`, `plugins/docs/` unless explicitly requested.
@@ -46,11 +51,15 @@ git -C /Users/gwanli/cs_plugins commit -m "<message>\n\nCo-Authored-By: Claude S
 git -C /Users/gwanli/cs_plugins push origin main
 ```
 
+> If push fails (remote ahead): run `git -C /Users/gwanli/cs_plugins pull --rebase origin main` then retry push. If auth error, report to user and stop.
+
 ### Step 4: Update local marketplace
 
 ```bash
 git -C /Users/gwanli/.claude/plugins/marketplaces/cs-plugins pull
 ```
+
+> If pull results in a merge conflict, report the conflicting files to the user and stop — do not auto-resolve.
 
 ### Step 5: Confirm
 
