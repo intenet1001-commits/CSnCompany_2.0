@@ -38,7 +38,8 @@ plugins/
 /experiencing test [URL]                             # CS-test 실행 (14-agent 웹 테스트)
 /experiencing plan [task]                            # CS-plan 실행
 /experiencing review [path] [--focus aspect]         # CS-codebase-review 실행 (5-관점 코드 리뷰)
-/experiencing version-up [domain]                    # 도메인 버전 증가
+/experiencing version-up [domain]                    # 도메인 버전 증가 (test/plan/review)
+/experiencing version-up all                         # 3개 도메인 한번에 버전 증가
 /experiencing status                                 # 모든 도메인 VERSION 파일 읽기
 ```
 
@@ -129,6 +130,18 @@ fi
    📦 보관 버전: CS-[DOMAIN]-v[CURRENT] (직전)
    🗑️ 삭제됨: [삭제된 버전들]
    ```
+
+### `/experiencing version-up all`
+
+3개 도메인을 순서대로 모두 버전업합니다. 각 도메인에 대해 위 `/experiencing version-up [domain]` 프로토콜을 `test` → `plan` → `review` 순으로 실행합니다.
+
+완료 안내:
+```
+✅ 전체 버전업 완료
+📦 CS-test: v[N] → v[N+1]
+📦 CS-plan: v[N] → v[N+1]
+📦 CS-codebase-review: v[N] → v[N+1]
+```
 
 ### `/experiencing status`
 
