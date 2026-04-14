@@ -24,22 +24,22 @@
     {
       "name": "CS-test",
       "description": "14-agent AI Teams web testing - security, SEO, performance, DB, touch, image optimization",
-      "source": "./plugins/CS-test-v4"
+      "source": "./plugins/CS-test-v5"
     },
     {
       "name": "CS-plan",
       "description": "TDD + Clean Architecture 4-agent planning - domain analysis, architecture, test strategy, implementation checklist",
-      "source": "./plugins/CS-plan-v4"
+      "source": "./plugins/CS-plan-v5"
     },
     {
       "name": "CS-codebase-review",
       "description": "5-agent parallel codebase review - Architecture, Quality, Security, Performance, Maintainability",
-      "source": "./plugins/CS-codebase-review-v4"
+      "source": "./plugins/CS-codebase-review-v5"
     },
     {
       "name": "cs-design",
       "description": "5-agent parallel design review - visual hierarchy, interaction quality, design system consistency, responsive/accessibility, anti-pattern detection",
-      "source": "./plugins/cs-design-v1"
+      "source": "./plugins/cs-design-v2"
     }
   ]
 }
