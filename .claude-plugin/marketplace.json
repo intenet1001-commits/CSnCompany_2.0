@@ -40,6 +40,11 @@
       "name": "cs-design",
       "description": "5-agent parallel design review - visual hierarchy, interaction quality, design system consistency, responsive/accessibility, anti-pattern detection",
       "source": "./plugins/cs-design-v3"
+    },
+    {
+      "name": "cs-design-sample1",
+      "description": "Crextio-inspired design guide: warm cream #F5F3EE + amber/slate accents, dark table headers, KPI cards — audit & apply to Tailwind/Next.js dashboards",
+      "source": "./plugins/cs-design-sample1"
     }
   ]
 }
