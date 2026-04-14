@@ -7,14 +7,6 @@ description: |
   covering visual hierarchy, interaction quality, design system consistency,
   responsive accessibility, and anti-pattern detection.
 version: 1.0.0
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Bash
-  - Agent
-  - Grep
-  - Glob
 ---
 
 # CS-design - 5관점 병렬 디자인 리뷰
