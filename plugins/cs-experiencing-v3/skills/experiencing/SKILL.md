@@ -19,14 +19,15 @@ allowed-tools:
 
 ## 도메인 위치
 
-3개 도메인은 cs-experiencing-v3과 같은 레벨의 plugins/ 디렉토리에 위치합니다:
+4개 도메인은 cs-experiencing-v3과 같은 레벨의 plugins/ 디렉토리에 위치합니다:
 
 ```
 plugins/
-├── cs-experiencing-v3/ ← 이 플러그인 (오케스트레이터)
-├── CS-test-v2/         ← 14-agent 웹 테스트 도메인
-├── CS-plan-v2/         ← TDD+CleanArch 4-agent 플랜 도메인
-└── CS-codebase-review-v2/  ← 5-agent 코드 리뷰 도메인
+├── cs-experiencing-v3/   ← 이 플러그인 (오케스트레이터)
+├── CS-test-v4/           ← 14-agent 웹 테스트 도메인
+├── CS-plan-v4/           ← TDD+CleanArch 4-agent 플랜 도메인
+├── CS-codebase-review-v4/ ← 5-agent 코드 리뷰 도메인
+└── cs-design-v1/         ← 5-agent 디자인 리뷰 도메인 (신규)
 ```
 
 마켓플레이스 절대 경로: `~/.claude/plugins/marketplaces/cs-plugins/plugins/`
@@ -34,14 +35,15 @@ plugins/
 ## 사용법
 
 ```
-/cs-experiencing                                     # 도메인 목록 + 버전 현황 표시
-/cs-experiencing test [URL]                          # CS-test 실행 (14-agent 웹 테스트)
-/cs-experiencing plan [task]                         # CS-plan 실행
-/cs-experiencing review [path] [--focus aspect]      # CS-codebase-review 실행 (5-관점 코드 리뷰)
-/cs-experiencing update                              # 3개 스킬 모두 버전업 (version-up all 단축키)
-/cs-experiencing version-up [domain]                 # 도메인 버전 증가 (test/plan/review)
-/cs-experiencing version-up all                      # 3개 도메인 한번에 버전 증가
-/cs-experiencing status                              # 모든 도메인 VERSION 파일 읽기
+/cs-experiencing                                          # 도메인 목록 + 버전 현황 표시
+/cs-experiencing test [URL]                               # CS-test 실행 (14-agent 웹 테스트)
+/cs-experiencing plan [task]                              # CS-plan 실행
+/cs-experiencing review [path] [--focus aspect]           # CS-codebase-review 실행 (5-관점 코드 리뷰)
+/cs-experiencing design [path] [--focus aspect] [--fix]  # CS-design 실행 (5-관점 디자인 리뷰)
+/cs-experiencing update                                   # 4개 스킬 모두 버전업 (version-up all 단축키)
+/cs-experiencing version-up [domain]                      # 도메인 버전 증가 (test/plan/review/design)
+/cs-experiencing version-up all                           # 4개 도메인 한번에 버전 증가
+/cs-experiencing status                                   # 모든 도메인 VERSION 파일 읽기
 ```
 
 ---
@@ -105,11 +107,29 @@ done
 
 ---
 
+### `/cs-experiencing design [path] [--focus aspect] [--fix]`
+
+1. 최신 CS-design 도메인 경로 찾기:
+   ```bash
+   BASE="$HOME/.claude/plugins/marketplaces/cs-plugins/plugins"
+   LATEST_DESIGN=$(ls -d "$BASE/cs-design-v"* 2>/dev/null | sort -V | tail -1)
+   ```
+2. `$LATEST_DESIGN/VERSION` 읽기 → 현재 버전 확인
+3. `$LATEST_DESIGN/skills/cs-design/SKILL.md` 프로토콜 실행
+4. 인수 파싱:
+   - `[path]` 없음 → 현재 작업 디렉토리
+   - `--focus [aspect]` 있음 → 해당 관점만 집중 분석 (visual/interaction/consistency/responsive/antipatterns)
+   - `--fix` 있음 → 발견된 안티패턴 자동 수정 활성화
+5. design-lead 에이전트를 스폰하여 5개 에이전트(visual-hierarchy/interaction-quality/design-system-consistency/responsive-accessibility/anti-pattern-detector) 병렬 실행
+6. 결과 종합 → 관점별 점수(0-10) + 등급(A~F) + 우선순위별 수정사항 DESIGN-REVIEW.md 출력
+
+---
+
 ### `/cs-experiencing version-up [domain|all]`
 
 **정책: 직전 버전 + 현재 버전 2개만 유지. 더 오래된 버전은 자동 삭제.**
 
-**`all` 키워드**: `test` → `plan` → `review` 3개 도메인 순차 처리.
+**`all` 키워드**: `test` → `plan` → `review` → `design` 4개 도메인 순차 처리.
 
 **각 도메인마다 아래 순서로 실행:**
 
@@ -196,6 +216,7 @@ fi
 📦 CS-test: v[N] → v[N+1]  (학습 추가/스킵)
 📦 CS-plan: v[N] → v[N+1]  (학습 추가/스킵)
 📦 CS-codebase-review: v[N] → v[N+1]  (학습 추가/스킵)
+📦 cs-design: v[N] → v[N+1]  (학습 추가/스킵)
 ```
 
 ### `/cs-experiencing status`
@@ -204,10 +225,13 @@ fi
 
 ```bash
 BASE="$HOME/.claude/plugins/marketplaces/cs-plugins/plugins"
-find "$BASE" -name "VERSION" -path "*/CS-*" | sort | while read f; do
-  DOMAIN=$(basename $(dirname "$f"))
-  VER=$(cat "$f")
-  echo "📋 $DOMAIN: v$VER"
+for PATTERN in "CS-test-v" "CS-plan-v" "CS-codebase-review-v" "cs-design-v"; do
+  LATEST=$(ls -d "$BASE/${PATTERN}"* 2>/dev/null | sort -V | tail -1)
+  if [ -n "$LATEST" ]; then
+    VER=$(cat "$LATEST/VERSION" 2>/dev/null || echo "?")
+    DOMAIN=$(basename "$LATEST")
+    echo "📋 $DOMAIN: v$VER"
+  fi
 done
 ```
 
