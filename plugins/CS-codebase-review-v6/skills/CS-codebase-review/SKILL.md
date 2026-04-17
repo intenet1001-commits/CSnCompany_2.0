@@ -88,3 +88,9 @@ review-lead 완료 후 결과를 사용자에게 전달합니다.
 - **상황**: review-lead가 high severity 이슈를 발견해도 "무엇이 문제인지"만 리포트. "왜 이 문제가 생겼는지" 분석 없음.
 - **발견**: gstack `/investigate`는 증상→원인→근본원인 방향으로 5-Why 체인을 실행. root cause 없이 증상만 수정하면 같은 버그가 재발함.
 - **교훈**: review-lead가 High severity 항목 발견 시 해당 항목에 대해 `/investigate` 식 3-Why 분석 추가 실행. REVIEW.md에 "근본 원인" 컬럼 추가.
+
+### 4. localhost-only API의 path traversal 경고 처리 패턴 (2026-04-17)
+
+- **상황**: `POST /api/git-pull`에서 `folderPath`를 검증 없이 `cwd`로 사용하여 CRITICAL 경고 발생
+- **발견**: CORS wildcard + localhost-only 설계인 경우, 기존 동일 패턴 엔드포인트(예: `/api/open-folder`)와 비교하면 일관된 설계 결정임. 무조건 fix가 아닌 맥락 판단이 필요.
+- **교훈**: Security 리뷰 시 "프로젝트 내 동일 패턴 존재 여부" 확인 후 severity 조정. localhost-only 명시 주석 또는 CLAUDE.md 문서화로 의도적 결정임을 표시하면 future reviewer 혼동 방지.

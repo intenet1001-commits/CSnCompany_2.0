@@ -100,3 +100,9 @@ plan-lead 완료 후 완료 결과를 사용자에게 전달합니다.
 - **상황**: plan-lead가 기능 설명을 받으면 즉시 full plan을 생성. 과대 설계 위험 있음.
 - **발견**: gstack `/office-hours`는 "이 기능이 정말 필요한가?", "더 단순한 대안은?" 같은 forcing questions를 먼저 던져 범위를 검증함. 이를 통해 불필요한 복잡성을 사전에 제거.
 - **교훈**: plan-lead 프로토콜에 Step 0 추가: 기능 설명 수신 직후 1개의 반론 질문 생성 (예: "이 기능의 MVP 버전은 무엇인가요?"). 사용자가 답변 후 플랜 생성 진행.
+
+### 4. 빌드 검증 시 pre-existing 에러와 신규 에러 구분 (2026-04-17)
+
+- **상황**: subagent가 `bun run build` 실행 시 rollup native 모듈 에러 발생
+- **발견**: 에러가 이번 변경과 무관한 기존 환경 문제였음. subagent가 `DONE_WITH_CONCERNS`로 보고하여 혼동 없이 진행 가능했음.
+- **교훈**: 빌드 검증 실패 시 git diff로 변경 범위 확인 후 pre-existing 에러 여부 판단. subagent는 `DONE_WITH_CONCERNS`로 명확히 구분하여 보고해야 함.
