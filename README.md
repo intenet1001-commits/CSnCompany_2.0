@@ -15,6 +15,18 @@ Claude Code plugins for web testing, planning, and code review.
 
 ## Installation
 
+### Option 1 — One-liner via Claude Code (recommended)
+
+Just tell Claude Code:
+
+```
+https://github.com/intenet1001-commits/cs_plugins install this
+```
+
+Claude Code automatically clones the marketplace and updates `~/.claude/settings.json`. Run `/clear` and restart when done.
+
+### Option 2 — Manual
+
 ```bash
 git clone https://github.com/intenet1001-commits/cs_plugins ~/.claude/plugins/marketplaces/cs-plugins
 ```
