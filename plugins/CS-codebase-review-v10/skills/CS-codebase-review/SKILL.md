@@ -94,3 +94,30 @@ review-lead 완료 후 결과를 사용자에게 전달합니다.
 - **상황**: `POST /api/git-pull`에서 `folderPath`를 검증 없이 `cwd`로 사용하여 CRITICAL 경고 발생
 - **발견**: CORS wildcard + localhost-only 설계인 경우, 기존 동일 패턴 엔드포인트(예: `/api/open-folder`)와 비교하면 일관된 설계 결정임. 무조건 fix가 아닌 맥락 판단이 필요.
 - **교훈**: Security 리뷰 시 "프로젝트 내 동일 패턴 존재 여부" 확인 후 severity 조정. localhost-only 명시 주석 또는 CLAUDE.md 문서화로 의도적 결정임을 표시하면 future reviewer 혼동 방지.
+
+### 5. Windows WSL distro 감지 — `wsl --list` hang 패턴과 registry 대안 (2026-04-19)
+
+- **상황**: Windows 앱에서 `wsl --list --quiet`로 WSL distro 목록을 조회하는 코드가 4초 이상 blocking됨
+- **발견**: Docker Desktop이 WSL2 서비스를 점유 중이면 `wsl.exe`의 모든 하위 명령이 서비스 응답을 기다리며 hang. Windows Registry(`HKCU:\Software\Microsoft\Windows\CurrentVersion\Lxss`)에 각 distro의 `DistributionName`이 등록되어 있으므로 PowerShell로 즉시 조회 가능 (WSL 서비스 불필요).
+- **교훈**: Windows WSL 관련 코드 리뷰 시 `wsl --list` 의존 패턴을 발견하면 registry 조회 대안 제안. PowerShell 1줄: `Get-ChildItem HKCU:/Software/Microsoft/Windows/CurrentVersion/Lxss | ForEach-Object { (Get-ItemProperty $_.PSPath).DistributionName }`
+
+### 6. Windows에서 WSL 프로세스 SIGKILL 불가 — timeout 기반 중단 신뢰 불가 패턴 (2026-04-19)
+
+- **상황**: WSL bash 명령에 `timeout`, `killSignal: 'SIGKILL'`을 설정해도 10초 이상 hang하는 코드 발견
+- **발견**: Windows는 WSL2 프로세스에 SIGKILL을 전달하지 못함. `Bun.spawnSync`, Node.js `child_process.spawnSync`, Rust `child.kill()` 모두 WSL bash 프로세스를 종료하지 못함. Ubuntu WSL 미초기화(first-time setup) 상태에서는 `bash -c "echo ok"`가 interactive TTY를 기다리며 영구 blocking됨.
+- **교훈**: Windows 코드에서 `wsl bash ... + timeout` 패턴을 발견하면 위험 플래그. bash 실행 테스트 대신 registry 존재 여부 확인으로 교체 제안. Rust/Node/Bun 어느 런타임이든 동일하게 적용.
+
+### 7. Windows 크로스플랫폼 서브프로세스 호출 — cmd.exe / wt.exe / wsl bash 인용부호·세미콜론·환경 함정 (2026-04-19)
+
+- **상황**: 포트관리기 tmux 버튼이 `cmd /c start wt wsl -- bash -c "..."`로 명령을 실행하는데 WSL 창만 빈 채로 열리고 claude가 실행되지 않는 버그 디버깅
+- **발견** (3중 함정):
+  1. **wt.exe의 `;` 해석**: Windows Terminal은 `;`를 subcommand 구분자로 취급하며 `"..."` 안에 있어도 동일. bashCmd에 `tmux kill-session; tmux new-session` 같이 세미콜론이 포함되면 명령이 쪼개져 "지정된 파일을 찾을 수 없음" not-found 에러 발생.
+  2. **cmd.exe의 `\"` 미지원**: Windows CRT가 argv 빌드 시 내부 쌍따옴표를 `\"`로 escape하지만, cmd.exe는 이를 이해하지 못하고 단순 `"`로 파싱 → 내부 쌍따옴표가 있는 bashCmd는 중간에 끊겨 `bash -c` 인수가 사라지고 기본 WSL 셸만 열림.
+  3. **non-login/non-interactive 셸**: `wsl -d Ubuntu -- bash -c`는 `.bashrc`·`.profile`을 로드하지 않아 nvm·`~/.npm-global/bin` 등 사용자 PATH가 비어있음. `npm i -g`로 설치한 CLI가 "command not found"로 조용히 실패.
+- **교훈** (리뷰 체크리스트 추가):
+  - Windows 대상 서브프로세스 호출 코드를 볼 때 다음 위험 패턴 플래그: bashCmd에 `;` 존재, bashCmd에 `"` 중첩, `wsl -- bash -c` 사용.
+  - 권장 해결 패턴:
+    - `bash -c` → `bash -lic`로 전환해 login+interactive 셸로 사용자 환경 완전 로드
+    - `;` 대신 `(cmd1 || :) && cmd2` 또는 `&&` 체인 사용 (`:` = no-op 성공 반환)
+    - 중첩 쌍따옴표 대신 단일 따옴표만 사용하고 escapeSq 헬퍼로 내부 `'` 처리 (`' → '\''`)
+    - 실패 시 즉시 창 닫힘 방지: tmux inner를 `cmd || bash -l`로 감싸 login shell fallback 제공 → 사용자가 에러 메시지 확인 후 수동 진단 가능
