@@ -139,6 +139,9 @@ Task(
 - 네이밍 컨벤션 일관성
 - 에러 핸들링 패턴
 - 타입 안정성 (TypeScript, 타입 힌트 등)
+- **상태 동기화 버그** (v8): `persist()`/`saveToFile()` 등 외부 저장 후 React `setState` 누락 여부 — 파일 저장과 UI 상태 업데이트는 반드시 둘 다 호출해야 함
+- **크로스플랫폼 경로 오염**: Mac 경로(/Users/)와 Windows 경로(C:\)가 혼재하는 데이터 로딩 로직 확인
+- **멀티 디바이스 ID 오염**: 외부 데이터 Pull 후 Push 시 원본 device_id 보존 여부 확인 (`sourceDeviceId` 패턴)
 
 ## 평가 기준
 - A: 클린 코드, 일관된 스타일, 낮은 복잡도

@@ -118,3 +118,35 @@ SendMessage(
 ```
 SendMessage(type: "shutdown_response", request_id: [requestId], approve: true)
 ```
+
+## 크로스플랫폼 주의사항 (v8 추가)
+
+### Windows에서 Playwright 실행 시
+
+**한글 텍스트 매칭**: 정규식 대신 `.includes()` 사용. 정규식 `/한글/` 은 Windows Node.js에서 깨질 수 있음.
+```javascript
+// ❌ 위험
+const tabs = await page.locator('button').filter({ hasText: /포털/ });
+
+// ✅ 안전
+for (const btn of await page.locator('button').all()) {
+  const txt = await btn.textContent();
+  if (txt && txt.includes('포털')) { ... }
+}
+```
+
+**스크린샷 경로**: `/tmp/` 하드코딩 금지 → `require('os').tmpdir()` 사용
+```javascript
+const os = require('os');
+await page.screenshot({ path: `${os.tmpdir()}/screenshot.png` });
+```
+
+**`networkidle` 타임아웃**: 앱이 백그라운드 polling(Supabase, WebSocket 등)을 하면 `networkidle` 이 절대 도달하지 않음.
+```javascript
+// ❌ polling 앱에서 타임아웃
+await page.goto(url, { waitUntil: 'networkidle' });
+
+// ✅ 대신 사용
+await page.goto(url, { waitUntil: 'domcontentloaded' });
+await page.waitForTimeout(2000); // React 렌더 대기
+```

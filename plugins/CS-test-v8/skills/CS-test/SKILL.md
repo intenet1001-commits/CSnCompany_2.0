@@ -306,6 +306,12 @@ if (dt < 400 && Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { ... }
 - **발견**: 각 agent .md 파일에 `📌 OWNS` / `❌ DOES NOT OWN` 섹션을 상단에 고정하면 중복 방지 효과가 명확해짐. impeccable의 "명시적 경계 문서화" 철학과 동일.
 - **교훈**: 새 에이전트 추가 시 반드시 OWNS/DOES NOT OWN 섹션 작성. version-up 시 이 섹션들을 검토하여 중복 없음 확인.
 
+### 19. Windows WSL 환경 — `wsl --list` hang과 API 응답시간 급변 패턴 (2026-04-19)
+
+- **상황**: Windows 앱의 `/api/check-wsl` 엔드포인트가 Docker Desktop 실행 여부에 따라 응답시간이 0.7초 ↔ 4초 이상으로 급변함
+- **발견**: `wsl --list --quiet`는 Docker Desktop이 WSL 서비스를 점유하면 hang. 테스트 환경에 Docker Desktop이 있으면 WSL 관련 API가 일관성 없는 응답 시간을 보임. 올바른 구현은 Windows Registry에서 직접 distro 목록을 읽는 방식.
+- **교훈**: Windows 앱 테스트 시 WSL 관련 API는 `time_total > 2s`이면 hang 패턴 의심. Docker Desktop 동시 실행 상태와 미실행 상태 두 가지로 반드시 테스트. playwright로 API 응답시간도 assertion 추가 권장 (`expect(duration).toBeLessThan(2000)`).
+
 ### 15. cs-sync 이중 레포 구조 충돌 처리
 
 이 플러그인의 작업 흐름에서 발견된 git 충돌 패턴:

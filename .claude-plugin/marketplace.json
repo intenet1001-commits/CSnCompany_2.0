@@ -24,7 +24,7 @@
     {
       "name": "CS-test",
       "description": "14-agent AI Teams web testing - security, SEO, performance, DB, touch, image optimization",
-      "source": "./plugins/CS-test-v7"
+      "source": "./plugins/CS-test-v9"
     },
     {
       "name": "CS-plan",
@@ -34,7 +34,7 @@
     {
       "name": "CS-codebase-review",
       "description": "5-agent parallel codebase review - Architecture, Quality, Security, Performance, Maintainability",
-      "source": "./plugins/CS-codebase-review-v7"
+      "source": "./plugins/CS-codebase-review-v9"
     },
     {
       "name": "cs-design",

@@ -94,3 +94,15 @@ review-lead 완료 후 결과를 사용자에게 전달합니다.
 - **상황**: `POST /api/git-pull`에서 `folderPath`를 검증 없이 `cwd`로 사용하여 CRITICAL 경고 발생
 - **발견**: CORS wildcard + localhost-only 설계인 경우, 기존 동일 패턴 엔드포인트(예: `/api/open-folder`)와 비교하면 일관된 설계 결정임. 무조건 fix가 아닌 맥락 판단이 필요.
 - **교훈**: Security 리뷰 시 "프로젝트 내 동일 패턴 존재 여부" 확인 후 severity 조정. localhost-only 명시 주석 또는 CLAUDE.md 문서화로 의도적 결정임을 표시하면 future reviewer 혼동 방지.
+
+### 5. Windows WSL distro 감지 — `wsl --list` hang 패턴과 registry 대안 (2026-04-19)
+
+- **상황**: Windows 앱에서 `wsl --list --quiet`로 WSL distro 목록을 조회하는 코드가 4초 이상 blocking됨
+- **발견**: Docker Desktop이 WSL2 서비스를 점유 중이면 `wsl.exe`의 모든 하위 명령이 서비스 응답을 기다리며 hang. Windows Registry(`HKCU:\Software\Microsoft\Windows\CurrentVersion\Lxss`)에 각 distro의 `DistributionName`이 등록되어 있으므로 PowerShell로 즉시 조회 가능 (WSL 서비스 불필요).
+- **교훈**: Windows WSL 관련 코드 리뷰 시 `wsl --list` 의존 패턴을 발견하면 registry 조회 대안 제안. PowerShell 1줄: `Get-ChildItem HKCU:/Software/Microsoft/Windows/CurrentVersion/Lxss | ForEach-Object { (Get-ItemProperty $_.PSPath).DistributionName }`
+
+### 6. Windows에서 WSL 프로세스 SIGKILL 불가 — timeout 기반 중단 신뢰 불가 패턴 (2026-04-19)
+
+- **상황**: WSL bash 명령에 `timeout`, `killSignal: 'SIGKILL'`을 설정해도 10초 이상 hang하는 코드 발견
+- **발견**: Windows는 WSL2 프로세스에 SIGKILL을 전달하지 못함. `Bun.spawnSync`, Node.js `child_process.spawnSync`, Rust `child.kill()` 모두 WSL bash 프로세스를 종료하지 못함. Ubuntu WSL 미초기화(first-time setup) 상태에서는 `bash -c "echo ok"`가 interactive TTY를 기다리며 영구 blocking됨.
+- **교훈**: Windows 코드에서 `wsl bash ... + timeout` 패턴을 발견하면 위험 플래그. bash 실행 테스트 대신 registry 존재 여부 확인으로 교체 제안. Rust/Node/Bun 어느 런타임이든 동일하게 적용.

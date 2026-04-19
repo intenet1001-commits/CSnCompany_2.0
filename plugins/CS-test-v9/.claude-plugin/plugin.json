@@ -8,5 +8,5 @@
   },
   "repository": "https://github.com/intenet1001-commits/cs_plugins",
   "license": "MIT",
-  "keywords": ["playwright", "testing", "agent-teams", "security", "seo", "performance", "e2e"]
+  "keywords": ["playwright", "testing", "agent-teams", "security", "seo", "performance", "e2e", "cross-platform", "windows"]
 }
