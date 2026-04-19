@@ -121,3 +121,17 @@ review-lead 완료 후 결과를 사용자에게 전달합니다.
     - `;` 대신 `(cmd1 || :) && cmd2` 또는 `&&` 체인 사용 (`:` = no-op 성공 반환)
     - 중첩 쌍따옴표 대신 단일 따옴표만 사용하고 escapeSq 헬퍼로 내부 `'` 처리 (`' → '\''`)
     - 실패 시 즉시 창 닫힘 방지: tmux inner를 `cmd || bash -l`로 감싸 login shell fallback 제공 → 사용자가 에러 메시지 확인 후 수동 진단 가능
+
+### 8. Windows Terminal `;` 공격성 + PowerShell spawn 불안정 + TUI OSC override (2026-04-19)
+
+- **상황**: 포트관리기 tmux/Claude 탭 타이틀 기능 구현 중 3개 파생 함정 발견 (위 #7 후속 학습)
+- **발견**:
+  1. **wt.exe의 `;`는 단일따옴표 안에서도 split됨**: #7에서 "쌍따옴표 안에서도" 언급했지만 **단일따옴표('...')도 뚫음**. 예: OSC 시퀀스 `printf '\033]0;TITLE\007'`의 `;`를 wt가 subcommand 구분자로 취급해 명령이 쪼개지고 "시스템에서 지정된 파일을 찾을 수 없음" 에러. **해결**: `\;`로 이스케이프 → wt가 literal `;`로 unescape해서 subprocess에 전달. bash 단일따옴표는 wt 파서를 속이지 못하므로 wt 레벨에서 처리 필수.
+  2. **PowerShell `spawnSync`도 간헐적 5~15s timeout**: #5에서 registry 조회는 빠르다고 적었지만 실제 운영 중 PowerShell 프로세스 자체가 간헐적으로 hang 관찰. **reg.exe로 교체** 시 66ms 고정 응답 (100배+ 빠름). `reg query HKCU\...\Lxss /s /v DistributionName` 포맷 파싱이 간결.
+  3. **네이티브 TUI 앱은 자체 OSC로 탭 타이틀 override**: claude/vim/htop 같은 TUI가 시작하면서 `\033]0;<app-title>\007`를 emit → `wt --title` 플래그로 설정한 타이틀이 즉시 덮여씀. tmux는 기본 `set-titles off`라서 자식 OSC를 외부 터미널로 forward 안 해서 isolation 제공. title 유지 필요하면 tmux 안에서 실행하거나 periodic re-emit 필요.
+  - **#7 수정 사항**: #7에서 권장한 `bash -c → bash -lic` 전환은 **WSL pty 레이어에서 hang 유발 가능** (`-i` 플래그 특히 위험). 실제로 WSL default PATH가 이미 Windows PATH를 import하므로 `/mnt/c/Users/.../AppData/Roaming/npm`에서 npm global CLI 접근 가능 → `bash -c`로도 충분. nvm 전용 설치가 아니라면 `-lic` 불필요.
+- **교훈** (리뷰 체크리스트 확장):
+  - Windows 대상 스크립트 리뷰 시 **OSC/ANSI 이스케이프 시퀀스 안의 `;`**를 특히 주의. 단일따옴표 보호로는 부족 — wt에 `\;` 이스케이프 필수.
+  - Windows 시스템 조회(`wsl`, `wmic`, registry)에서 `child_process.spawnSync('powershell', ...)` 패턴을 보면 `reg.exe`/`wmic`/`cmd /c` 대안 제안. PowerShell 시작 시간 자체가 수백 ms 이상이고 간헐 hang까지 있어 비용 대비 득실 나쁨.
+  - TUI 앱 실행 시 **터미널 속성(title, palette, cursor, ...)의 소유권**을 명확히 추적. 누가 언제 OSC를 emit하는지 그래프 그려보면 디버깅 쉬움. isolation이 필요하면 tmux/screen 같은 멀티플렉서 경유.
+  - `bash -i` 플래그를 `-c` 명령과 함께 쓰는 패턴(`bash -lic`, `bash -ic`)은 WSL 환경에서 hang 위험. login+interactive가 정말 필요한지 재검증.
