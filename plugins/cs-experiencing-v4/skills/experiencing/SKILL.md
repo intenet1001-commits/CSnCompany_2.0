@@ -259,6 +259,33 @@ LEAD_DIR=$(ls -d "$BASE/cs-experiencing-v"* 2>/dev/null | sort -V | tail -1)
 
 ---
 
+### `/cs-experiencing btw [idea]` ← v4 신규 (bkit btw 패턴)
+
+세션 중 발견한 개선 아이디어를 즉시 캡처합니다.
+
+```bash
+BTW_FILE="$(dirname $(ls -d "$HOME/.claude/plugins/marketplaces/cs-plugins" 2>/dev/null || echo "/tmp"))/.experiencing-btw.json"
+# {id, idea, date, status: "pending"} 형태로 JSON 배열에 추가
+```
+
+저장 후: `💡 BTW #[N] 캡처됨: "[아이디어]"` 출력. version-up 시 pending 항목 자동 제안.
+
+---
+
+### `/cs-experiencing checkpoint` ← v4 신규 (gstack 패턴)
+
+현재 작업 상태를 WIP 커밋으로 보존합니다.
+
+```bash
+DATE=$(date +%Y-%m-%d-%H%M)
+git -C "$HOME/.claude/plugins/marketplaces/cs-plugins" add -A
+git -C "$HOME/.claude/plugins/marketplaces/cs-plugins" commit -m "wip: cs-experiencing checkpoint $DATE"
+```
+
+완료 후: `✅ 체크포인트 저장됨 (${DATE})` 출력.
+
+---
+
 ### `/cs-experiencing status`
 
 모든 도메인의 VERSION 파일 표시:
@@ -310,3 +337,15 @@ done
 - **상황**: bkit-claude-code, Karpathy-skills, gstack 3개 외부 레포 분석 후 cs-experiencing 및 4개 도메인에 적용 가능한 패턴을 발견함
 - **발견**: bkit → Evaluator-Optimizer 루프(등급 미달 자동 재실행), Checkpoint 패턴(단계 간 사용자 확인 게이트). Karpathy → Think-Before-Coding(모호성 선제 해소), Goal-Driven Execution(성공 기준 명시). gstack → 선형 파이프라인(review→design→test), CSS/JSX 리스크 버짓 분리, 크로스 모델 듀얼 리뷰.
 - **교훈**: 외부 패턴 학습은 각 도메인 SKILL.md 노하우에 직접 추가. 오케스트레이터(experiencing)에는 파이프라인 커맨드 + experiencing-lead/preflight-checker 신규 에이전트로 반영. 학습 후 즉시 version-up 실행.
+
+### 5. bkit btw 패턴 — 세션 중 아이디어 즉시 캡처 (2026-04-20)
+
+- **상황**: version-up 시 "이번 세션에서 뭘 개선해야 할지" 기억이 흐릿함. 작업 중 발견한 개선점이 세션 끝에 사라짐.
+- **발견**: bkit의 btw(By-The-Way) 패턴: 작업 중 즉시 캡처 → JSON 파일에 pending 상태로 저장 → version-up 시 pending 항목을 먼저 보여주고 반영 여부 결정.
+- **교훈**: `/cs-experiencing btw [idea]` 명령 추가. 세션 중 발견사항을 즉시 캡처하면 version-up의 AI 분석 단계를 보완할 수 있음.
+
+### 6. gstack Iron Law — version-up 루프 실패 상한 (2026-04-20)
+
+- **상황**: version-up all 실행 중 특정 도메인에서 오류가 생기면 전체가 중단되거나 무한 재시도 가능성 있음.
+- **발견**: gstack Iron Law: "동일 문제에 3회 실패 시 강제 중단 + STUCK 리포트." version-up에도 동일 원칙 적용 — 도메인 처리 실패 2회 시 해당 도메인 스킵 + 경고 출력 후 다음 도메인으로.
+- **교훈**: `version-up all` 프로토콜에 도메인별 retry 상한(2회) 추가. 실패 도메인은 스킵하고 `⚠️ [DOMAIN] 스킵됨 — 수동 확인 필요` 출력 후 계속 진행.
