@@ -107,14 +107,14 @@ plan-lead 완료 후 완료 결과를 사용자에게 전달합니다.
 - **발견**: 에러가 이번 변경과 무관한 기존 환경 문제였음. subagent가 `DONE_WITH_CONCERNS`로 보고하여 혼동 없이 진행 가능했음.
 - **교훈**: 빌드 검증 실패 시 git diff로 변경 범위 확인 후 pre-existing 에러 여부 판단. subagent는 `DONE_WITH_CONCERNS`로 명확히 구분하여 보고해야 함.
 
-### 5. Karpathy 원칙 — Think Before Planning + Goal-Driven Step 포맷 (2026-04-20)
+### 5. 플랜 생성 전 Think-Before-Coding 프리플라이트 (Karpathy 학습, 2026-04-20)
 
-- **상황**: plan-lead가 요청을 받으면 바로 구현 플랜을 생성. 암묵적 가정이나 해석이 여러 가지인 경우 하나를 선택하고 진행해 나중에 재작업이 발생.
-- **발견**: Karpathy의 "Think Before Coding" 원칙: 가정이 여러 개이면 모두 명시하고 하나를 선택하지 말 것. "Goal-Driven Execution"은 각 플랜 스텝에 `→ verify: [검증 조건]`을 붙여 완료 기준을 선언적으로 정의. LLM은 명확한 성공 기준이 있으면 자율 루프 품질이 급등함.
-- **교훈**: PLAN.md 각 스텝을 `1. [작업] → verify: [검증 조건]` 포맷으로 작성. 가정이 복수인 경우 모두 명시 후 AskUserQuestion으로 선택 확인. 암묵적 선택 금지.
+- **상황**: 기능 설명이 모호한 채로 플랜을 생성하면 4개 에이전트가 서로 다른 가정 위에서 설계함
+- **발견**: Karpathy의 "Think Before Coding" — 구현 전 모호성을 명시적으로 드러내고 정리해야 함. "if 200 lines could be 50, rewrite it" 원칙: 플랜이 과도하게 복잡하면 단순화 질문을 먼저 던져야 함.
+- **교훈**: plan-lead Step 1(인자 파싱) 직후, 기능 설명의 모호성 평가(명확/보통/모호). 모호하면 AskUserQuestion으로 명확화 질문 1회. 명확하면 스킵.
 
-### 6. bkit Context Anchor — 크로스 세션 플랜 연속성 (2026-04-20)
+### 6. 아키텍처 선택 체크포인트 (bkit checkpoint 패턴 학습, 2026-04-20)
 
-- **상황**: 세션이 끊기거나 새 세션에서 plan을 이어받을 때 WHY/WHO/SCOPE 맥락이 사라져 arch-designer나 tdd-strategist가 재질문하거나 틀린 방향으로 진행.
-- **발견**: bkit의 Context Anchor 패턴: WHY(목적)/WHO(대상)/RISK(주요 위험)/SUCCESS(성공 기준)/SCOPE(범위) 5항목 테이블을 PLAN.md 상단에 삽입. 새 세션에서 이 테이블만 읽어도 전체 맥락 복원 가능.
-- **교훈**: plan-lead가 PLAN.md 생성 시 최상단에 Context Anchor 테이블 필수 추가. 다운스트림 에이전트(arch-designer, tdd-strategist)가 이 테이블을 먼저 읽도록 프로토콜 업데이트.
+- **상황**: plan-lead가 아키텍처 옵션 없이 단일 설계만 생성하여 사용자가 방향 조정 기회를 놓침
+- **발견**: bkit Checkpoint 3 패턴 — Design 단계에서 Minimal/Clean/Pragmatic 3가지 옵션을 제시하고 사용자가 선택하게 함. 선택 후 해당 방향으로 깊게 들어감.
+- **교훈**: arch-designer가 결과 제출 시 "핵심 설계 결정 1가지 + 대안 접근법 1개" 명시. plan-lead가 이를 요약해 사용자 확인 후 checklist-builder로 진행.

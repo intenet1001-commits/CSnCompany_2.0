@@ -142,14 +142,14 @@ review-lead 완료 후 결과를 사용자에게 전달합니다.
 - **발견**: Next.js App Router에서 'use client' 페이지는 metadata export 불가. 별도 layout.tsx 없으면 루트 레이아웃 메타데이터를 상속함.
 - **교훈**: Architecture 리뷰 시 'use client' 페이지 + 해당 route의 layout.tsx 유무를 함께 체크. 클라이언트 컴포넌트 페이지마다 route-level layout.tsx 존재 여부 필수 확인.
 
-### 10. Karpathy 원칙 — Surgical Changes & Simplicity First 리뷰 기준 (2026-04-20)
+### 10. 등급 미달 시 Evaluator-Optimizer 재실행 제안 (bkit 학습, 2026-04-20)
 
-- **상황**: 코드 리뷰 시 요청 범위 외 코드도 함께 리팩토링하거나 개선하는 경향. 관련 없는 코드 수정으로 diff가 커지고 책임 범위 불명확.
-- **발견**: Karpathy의 Surgical Changes: 변경된 모든 라인은 사용자 요청으로 직접 추적 가능해야 함. 관련 없는 dead code 발견 시 수정 금지 — 주석으로만 언급. Simplicity First: "시니어 엔지니어가 과도하게 복잡하다고 할 코드인가?" self-test.
-- **교훈**: CS-codebase-review 리포트에 두 체크리스트 추가: (1) Diff Traceability Test — 각 변경 라인이 요청으로 추적 가능한가? (2) Senior Engineer Test — 추상화가 실제 필요한가 아니면 YAGNI인가?
+- **상황**: 리뷰 결과 B 미만 등급이 나왔지만 수정 후 재검증 루프가 없어 개선 여부를 확인하지 못함
+- **발견**: bkit Evaluator-Optimizer 패턴 — 결과가 품질 기준 미달이면 수정-재검증 루프를 자동 제안함. 최대 5회 반복, 90% match 달성 시 종료.
+- **교훈**: review-lead가 종합 등급 산출 후 C 이하 항목이 있으면 "수정 후 `--focus [aspect]`로 부분 재실행 가능"을 안내. 개선 사이클을 명시적으로 지원.
 
-### 11. bkit 3-Way Contract 검증 — Design ↔ Server ↔ Client (2026-04-20)
+### 11. 크로스 모델 듀얼 리뷰 패턴 (gstack /codex 학습, 2026-04-20)
 
-- **상황**: API 변경 시 서버 라우트는 수정됐지만 클라이언트 fetch 코드 미수정 — 또는 반대 — 로 인한 런타임 에러가 리뷰에서 미탐지됨.
-- **발견**: bkit gap-detector의 3-Way Contract 검증: Design 스펙(또는 API 문서) ↔ 서버 라우트 ↔ 클라이언트 fetch 세 곳이 URL/Method/파라미터/응답 형태가 모두 일치해야 함. 두 곳만 확인하면 삼각형의 한 변이 빠짐.
-- **교훈**: architecture-reviewer가 API 변경을 포함하는 PR 리뷰 시 3-Way 체크 수행: ① API 문서/주석 → ② 서버 핸들러 → ③ 클라이언트 호출부. 세 곳이 불일치하면 Critical 이슈로 플래그.
+- **상황**: 단일 에이전트 팀의 리뷰는 동일 모델의 편향이 반영될 수 있음
+- **발견**: gstack `/codex`는 다른 모델이 독립적으로 동일 코드를 리뷰함. 두 결과의 겹치는 발견 = 높은 신뢰도, 한쪽만 찾은 발견 = 추가 검토 필요.
+- **교훈**: 인증·결제·데이터 모델 같은 고위험 변경에서 review-lead가 완료 후 "크로스 모델 검증을 원하시면 동일 diff로 다른 모델에 리뷰 요청하세요"를 안내할 것.

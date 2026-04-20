@@ -19,27 +19,27 @@
     {
       "name": "cs-experiencing",
       "description": "4-domain knowledge repository: CS-test (14-agent web testing), CS-plan (TDD+CleanArch 4-agent), CS-codebase-review (5-agent parallel review), CS-design (5-agent design review)",
-      "source": "./plugins/cs-experiencing-v3"
+      "source": "./plugins/cs-experiencing-v4"
     },
     {
       "name": "CS-test",
       "description": "14-agent AI Teams web testing - security, SEO, performance, DB, touch, image optimization",
-      "source": "./plugins/CS-test-v13"
+      "source": "./plugins/CS-test-v14"
     },
     {
       "name": "CS-plan",
       "description": "TDD + Clean Architecture 4-agent planning - domain analysis, architecture, test strategy, implementation checklist",
-      "source": "./plugins/CS-plan-v11"
+      "source": "./plugins/CS-plan-v12"
     },
     {
       "name": "CS-codebase-review",
       "description": "5-agent parallel codebase review - Architecture, Quality, Security, Performance, Maintainability",
-      "source": "./plugins/CS-codebase-review-v13"
+      "source": "./plugins/CS-codebase-review-v14"
     },
     {
       "name": "cs-design",
       "description": "5-agent parallel design review - visual hierarchy, interaction quality, design system consistency, responsive/accessibility, anti-pattern detection",
-      "source": "./plugins/cs-design-v8"
+      "source": "./plugins/cs-design-v9"
     },
     {
       "name": "cs-design-sample1",

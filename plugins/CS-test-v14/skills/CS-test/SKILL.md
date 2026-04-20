@@ -326,20 +326,14 @@ if (dt < 400 && Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { ... }
 - **발견**: 'use client' 페이지는 metadata export 불가 → layout.tsx 없으면 루트 OG 메타데이터 상속. CS-test social-share-auditor가 페이지별 og:title 검증 미수행으로 미탐지됨.
 - **교훈**: social-share-auditor가 각 라우트 URL별 og:title/og:description을 실제 fetch로 검증해야 함. 루트 layout과 동일한 값이면 버그 플래그.
 
-### 21. Karpathy 원칙 — Goal-Driven 버그 재현 테스트 우선 (2026-04-20)
+### 21. 테스트 실행 전 성공 기준 정의 (Karpathy goal-driven execution, 2026-04-20)
 
-- **상황**: 버그 보고 시 test-lead가 즉시 수정 작업을 시작하는 경향. 재현 테스트 없이 고치면 "수정됐는지" 검증 불가.
-- **발견**: Karpathy의 Goal-Driven Execution: "Fix the bug" → "버그를 재현하는 테스트를 먼저 작성하고, 그 테스트를 통과시켜라." LLM은 명확한 성공 기준(테스트 통과)이 있을 때 자율 루프 품질이 급등함.
-- **교훈**: test-lead 프로토콜: 버그 수정 요청 수신 시 Step 0으로 playwright 재현 테스트 먼저 작성. 테스트가 실패함을 확인한 후 수정 시작. 테스트 통과 = 완료 기준.
+- **상황**: 14-agent 팀을 실행했지만 "성공"이 무엇인지 불명확해 결과 판단이 어려웠음
+- **발견**: Karpathy의 "goal-driven execution" — 실행 전 `[Step] → verify: [check]` 형태의 성공 기준을 명시하면 에이전트가 목표 지향적으로 동작하고 결과 판단이 명확해짐
+- **교훈**: test-lead가 URL 확인 직후 "성공 기준: [1문장]"을 출력하고 시작. 예: "P0 에러 0건, 성능 점수 70+, SEO 등급 B 이상"
 
-### 22. gstack Iron Law — 3회 실패 시 강제 에스컬레이션 (2026-04-20)
+### 22. 수정 후 핵심 경로 재검증 패턴 (gstack canary 학습, 2026-04-20)
 
-- **상황**: test-lead가 동일 문제에 대해 수정 시도를 반복하다가 컨텍스트 소진. 루프가 끝나도 문제는 미해결.
-- **발견**: gstack `/investigate`의 Iron Law: 같은 문제에 3번 수정 시도가 실패하면 강제 중단하고 "STUCK: [실패 원인 요약]" 리포트 출력. 무한 루프보다 조기 에스컬레이션이 낫다.
-- **교훈**: test-lead가 동일 버그에 3번 연속 실패 시 추가 시도 금지. "STUCK" 리포트와 함께 사용자에게 에스컬레이션. 실패한 접근법 3개를 명시하여 중복 재시도 방지.
-
-### 23. gstack Atomic Commit — QA 전후 bisectability 보장 (2026-04-20)
-
-- **상황**: 여러 버그를 한 번에 수정하면 git bisect로 개별 버그의 수정 시점 추적 불가.
-- **발견**: gstack `/qa`는 검증된 버그 수정마다 원자적 커밋을 생성. `git bisect`로 언제 어떤 버그가 수정됐는지 추적 가능.
-- **교훈**: functional-tester가 버그를 수정할 때마다 단일 원자적 커밋. 여러 버그 수정을 한 커밋에 묶지 말 것. 커밋 메시지: `fix: [버그 설명] (CS-test #[N])`.
+- **상황**: 테스트 완료 후 수정 사항을 적용했으나 수정이 다른 페이지에 영향을 줬는지 검증하지 않음
+- **발견**: gstack `/canary`는 수정 후 핵심 페이지들을 재방문하며 console 에러·성능 회귀·페이지 실패를 재확인함. full re-run보다 훨씬 빠르게 회귀 감지 가능.
+- **교훈**: 수정 사항이 생겼을 때 test-lead가 "영향 범위 내 핵심 3-5개 경로" 미니 재테스트 단계를 옵션으로 제공할 것.
