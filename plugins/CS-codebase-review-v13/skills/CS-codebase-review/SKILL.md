@@ -153,3 +153,21 @@ review-lead 완료 후 결과를 사용자에게 전달합니다.
 - **상황**: API 변경 시 서버 라우트는 수정됐지만 클라이언트 fetch 코드 미수정 — 또는 반대 — 로 인한 런타임 에러가 리뷰에서 미탐지됨.
 - **발견**: bkit gap-detector의 3-Way Contract 검증: Design 스펙(또는 API 문서) ↔ 서버 라우트 ↔ 클라이언트 fetch 세 곳이 URL/Method/파라미터/응답 형태가 모두 일치해야 함. 두 곳만 확인하면 삼각형의 한 변이 빠짐.
 - **교훈**: architecture-reviewer가 API 변경을 포함하는 PR 리뷰 시 3-Way 체크 수행: ① API 문서/주석 → ② 서버 핸들러 → ③ 클라이언트 호출부. 세 곳이 불일치하면 Critical 이슈로 플래그.
+
+### 12. kimoring Self-Healing Coverage — 새 코드 도메인 자동 감지 (2026-04-21)
+
+- **상황**: CS-codebase-review가 고정 5개 관점으로만 실행. 새 `payments/` 디렉토리가 추가돼도 결제 도메인 전문 리뷰가 없음.
+- **발견**: kimoring `/manage-skills`는 변경된 파일을 분석하여 기존 verify-* 스킬로 커버되지 않는 영역을 감지하고 새 스킬을 자동 생성. 스킬 시스템이 스스로 커버리지 갭을 패치함.
+- **교훈**: review-lead가 PR diff 분석 시 새 디렉토리/도메인 탐지 스텝 추가. 5개 고정 관점에 없는 전문 도메인(e.g. payments, auth, i18n)이 발견되면 임시 전문 리뷰어 에이전트 스폰 제안.
+
+### 13. OMC Two-Stage Review Gate — 스펙 준수 먼저, 코드 품질 나중 (2026-04-21)
+
+- **상황**: CS-codebase-review가 5개 관점을 병렬 실행. 미완성 구현에 코드 품질 점수를 매기면 오해의 소지가 있음.
+- **발견**: OMC code-reviewer는 2단계: ① 스펙 준수 검사 (스펙과 구현이 일치하는가?), ② 스펙 통과 시에만 코드 품질 검사. 미완성 코드에 품질 점수를 주는 것은 misleading.
+- **교훈**: review-lead 프로토콜에 Stage 0 추가: architecture-reviewer가 먼저 "이 구현이 PLAN.md/요구사항과 일치하는가?" 체크. 불일치 발견 시 다른 4개 에이전트 스폰 전에 사용자에게 보고.
+
+### 14. plugins-for-claude-natives Conclusion-First — 판정 우선 리포트 구조 (2026-04-21)
+
+- **상황**: CS-codebase-review 리포트가 상세 발견사항을 먼저 나열하고 종합 판정을 마지막에 제시. 긴 리포트에서 핵심 결론을 찾기 어려움.
+- **발견**: plugins-for-claude-natives `tech-decision`의 Conclusion-First 원칙: "3개 Critical 이슈, 5개 Warning — 여기서 가장 중요한 것은..." 헤더를 첫 줄에 배치. 증거는 그 다음.
+- **교훈**: review-lead 최종 리포트를 Conclusion-First 구조로 변경: ① 등급 + 1줄 판정 → ② Critical 이슈 목록 → ③ Warning → ④ 상세 발견사항. 독자가 처음 3줄만 읽어도 액션을 취할 수 있어야 함.

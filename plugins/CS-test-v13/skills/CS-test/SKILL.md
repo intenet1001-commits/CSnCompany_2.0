@@ -343,3 +343,21 @@ if (dt < 400 && Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { ... }
 - **상황**: 여러 버그를 한 번에 수정하면 git bisect로 개별 버그의 수정 시점 추적 불가.
 - **발견**: gstack `/qa`는 검증된 버그 수정마다 원자적 커밋을 생성. `git bisect`로 언제 어떤 버그가 수정됐는지 추적 가능.
 - **교훈**: functional-tester가 버그를 수정할 때마다 단일 원자적 커밋. 여러 버그 수정을 한 커밋에 묶지 말 것. 커밋 메시지: `fix: [버그 설명] (CS-test #[N])`.
+
+### 24. kimoring Dynamic Agent Discovery — verify-* 네이밍 컨벤션 (2026-04-21)
+
+- **상황**: test-lead가 14개 에이전트를 하드코딩하여 새 전문 에이전트 추가 시 SKILL.md를 반드시 수정해야 함.
+- **발견**: kimoring `/verify-implementation`은 `verify-*` 네이밍 컨벤션으로 에이전트를 런타임에 동적 발견. 새 에이전트 파일을 추가하면 자동으로 팀에 포함되어 오케스트레이터 수정 불필요.
+- **교훈**: CS-test v14에서 agents/ 디렉토리의 `verify-*.md` 파일을 자동 수집하는 동적 발견 로직 도입 검토. 새 전문 에이전트(예: `verify-a11y.md`)를 파일만 추가해서 팀에 합류시킬 수 있음.
+
+### 25. OMC Model Tier Assignment — 에이전트별 Claude 모델 할당 (2026-04-21)
+
+- **상황**: CS-test의 14개 에이전트가 모두 동일 모델(기본값)을 사용. 단순 스캔 작업에도 고성능 모델이 할당되어 비용 낭비.
+- **발견**: oh-my-claudecode는 에이전트별 모델 명시: Haiku(단순 탐색), Sonnet(표준 구현), Opus(전략적 판단). plugins-for-claude-natives team-assemble도 동일 패턴. 비용 30-50% 절감 가능.
+- **교훈**: agent .md 파일 frontmatter에 `model: haiku|sonnet|opus` 필드 추가. page-explorer/seo-auditor → haiku, functional-tester/visual-inspector → sonnet, test-lead → opus.
+
+### 26. OMC VERIFIED/PARTIAL/MISSING — 3단계 검증 분류 (2026-04-21)
+
+- **상황**: CS-test 에이전트들이 pass/fail 이분법 리포트만 생성. "부분적으로 검증됨" 상태를 표현할 수 없어 정보 손실 발생.
+- **발견**: OMC verifier의 VERIFIED/PARTIAL/MISSING 3단계: PARTIAL은 일부 증거만 있는 상태, MISSING은 검증 시도 자체가 불가한 상태. 이 분류가 test-lead의 최종 등급 결정을 더 정밀하게 만듦.
+- **교훈**: 각 에이전트 JSON 리포트에 `"verification": "VERIFIED|PARTIAL|MISSING"` 필드 추가. test-lead가 PARTIAL 항목 수를 A/B/C/D 등급 계산에 반영.

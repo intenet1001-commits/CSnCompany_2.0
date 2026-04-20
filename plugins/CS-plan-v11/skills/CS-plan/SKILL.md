@@ -118,3 +118,15 @@ plan-lead 완료 후 완료 결과를 사용자에게 전달합니다.
 - **상황**: 세션이 끊기거나 새 세션에서 plan을 이어받을 때 WHY/WHO/SCOPE 맥락이 사라져 arch-designer나 tdd-strategist가 재질문하거나 틀린 방향으로 진행.
 - **발견**: bkit의 Context Anchor 패턴: WHY(목적)/WHO(대상)/RISK(주요 위험)/SUCCESS(성공 기준)/SCOPE(범위) 5항목 테이블을 PLAN.md 상단에 삽입. 새 세션에서 이 테이블만 읽어도 전체 맥락 복원 가능.
 - **교훈**: plan-lead가 PLAN.md 생성 시 최상단에 Context Anchor 테이블 필수 추가. 다운스트림 에이전트(arch-designer, tdd-strategist)가 이 테이블을 먼저 읽도록 프로토콜 업데이트.
+
+### 7. OMC Handoff Document — 에이전트 간 결정 컨텍스트 전달 (2026-04-21)
+
+- **상황**: plan-lead가 4개 에이전트를 병렬 실행하지만 domain-analyst 결과가 arch-designer에게 전달되지 않아 아키텍처가 도메인 제약을 무시하는 경우 발생.
+- **발견**: oh-my-claudecode의 Handoff Document 패턴: 각 단계가 종료 전 `.omc/handoffs/{stage}.md`를 작성하면 다음 에이전트가 이를 먼저 읽고 시작. 컨텍스트 압축이 발생해도 결정이 생존함.
+- **교훈**: domain-analyst가 분석 완료 후 `PLAN-domain.md` 핸드오프 파일 생성. arch-designer가 이 파일을 첫 번째 입력으로 읽도록 프로토콜 업데이트. 병렬이 아닌 domain-analyst → (arch-designer + tdd-strategist) 순서로 전환.
+
+### 8. kimoring Pre-PR Gate — 플랜 완료 후 구현 검증 루프 (2026-04-21)
+
+- **상황**: CS-plan이 PLAN.md를 생성하면 플랜 단계 종료. 구현이 플랜대로 됐는지 확인하는 게이트가 없어 플랜 품질이 실제 결과와 단절됨.
+- **발견**: kimoring의 `/verify-implementation`: 구현 완료 후 verify-* 스킬들을 동적으로 발견하여 순차 실행하는 메타 오케스트레이터. 결과가 기준 미달이면 자동 수정 제안.
+- **교훈**: CS-plan에 `plan-verifier` 에이전트 추가 아이디어 — 구현 완료 신호 수신 시 PLAN.md vs 실제 구현 diff를 3-Way 체크(계획된 파일 ↔ 생성된 파일 ↔ 테스트 통과 여부). 이 역할은 신규 CS-ship 도메인이 담당.

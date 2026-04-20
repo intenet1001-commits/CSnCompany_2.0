@@ -6,10 +6,12 @@
 
 | 도메인 | 현재 버전 | 내용 |
 |--------|-----------|------|
-| **CS-test** | v4 | 웹 테스트 (14-agent playwright 팀) |
-| **CS-plan** | v4 | TDD+CleanArch 플랜 (4-agent: domain-analyst, arch-designer, tdd-strategist, checklist-builder) |
-| **CS-codebase-review** | v4 | 5-관점 병렬 코드 리뷰 (Architecture/Quality/Security/Performance/Maintainability) |
-| **cs-design** | v1 | 5-관점 병렬 디자인 리뷰 (visual-hierarchy/interaction-quality/design-system-consistency/responsive-accessibility/anti-pattern-detector) |
+| **CS-test** | v14 | 웹 테스트 (14-agent playwright 팀) |
+| **CS-plan** | v12 | TDD+CleanArch 플랜 (4-agent: domain-analyst, arch-designer, tdd-strategist, checklist-builder) |
+| **CS-codebase-review** | v14 | 5-관점 병렬 코드 리뷰 (Architecture/Quality/Security/Performance/Maintainability) |
+| **cs-design** | v9 | 5-관점 병렬 디자인 리뷰 (visual-hierarchy/interaction-quality/design-system-consistency/responsive-accessibility/anti-pattern-detector) |
+| **cs-clarify** | v1 | [신규] 요구사항 명료화 (4-agent: clarify-lead, requirements-interviewer, scope-validator, assumption-mapper) |
+| **cs-ship** | v1 | [신규] PR 전 검증 게이트 (4-agent: ship-lead, pre-pr-validator, coverage-auditor, commit-crafter) |
 
 ## 사용법
 
@@ -23,7 +25,11 @@
 /cs-experiencing version-up plan                          # CS-plan 버전 업그레이드
 /cs-experiencing version-up review                        # CS-codebase-review 버전 업그레이드
 /cs-experiencing version-up design                        # cs-design 버전 업그레이드
-/cs-experiencing version-up all                           # 4개 도메인 한번에 버전업
+/cs-experiencing version-up all                           # 6개 도메인 한번에 버전업
+/cs-clarify "[요청]"                                      # [신규] 요구사항 명료화 (플랜 전)
+/cs-ship                                                  # [신규] PR 전 최종 검증 게이트
+/cs-experiencing btw "[아이디어]"                         # [v4] 세션 중 개선 아이디어 캡처
+/cs-experiencing checkpoint                               # [v4] WIP 체크포인트 커밋
 ```
 
 ## 버전 관리
@@ -33,7 +39,7 @@
 
 ## 도메인 파일 구조
 
-4개 도메인은 cs-experiencing-v3과 같은 레벨의 plugins/ 디렉토리에 위치합니다:
+6개 도메인은 cs-experiencing-v4과 같은 레벨의 plugins/ 디렉토리에 위치합니다:
 
 ```
 plugins/
