@@ -135,3 +135,9 @@ review-lead 완료 후 결과를 사용자에게 전달합니다.
   - Windows 시스템 조회(`wsl`, `wmic`, registry)에서 `child_process.spawnSync('powershell', ...)` 패턴을 보면 `reg.exe`/`wmic`/`cmd /c` 대안 제안. PowerShell 시작 시간 자체가 수백 ms 이상이고 간헐 hang까지 있어 비용 대비 득실 나쁨.
   - TUI 앱 실행 시 **터미널 속성(title, palette, cursor, ...)의 소유권**을 명확히 추적. 누가 언제 OSC를 emit하는지 그래프 그려보면 디버깅 쉬움. isolation이 필요하면 tmux/screen 같은 멀티플렉서 경유.
   - `bash -i` 플래그를 `-c` 명령과 함께 쓰는 패턴(`bash -lic`, `bash -ic`)은 WSL 환경에서 hang 위험. login+interactive가 정말 필요한지 재검증.
+
+### 9. Next.js 클라이언트 컴포넌트 페이지 metadata 상속 버그 (2026-04-20)
+
+- **상황**: 'use client' scrum 페이지에 layout.tsx 없어 루트 레이아웃의 MAU 메타데이터가 OG 태그로 노출됨
+- **발견**: Next.js App Router에서 'use client' 페이지는 metadata export 불가. 별도 layout.tsx 없으면 루트 레이아웃 메타데이터를 상속함.
+- **교훈**: Architecture 리뷰 시 'use client' 페이지 + 해당 route의 layout.tsx 유무를 함께 체크. 클라이언트 컴포넌트 페이지마다 route-level layout.tsx 존재 여부 필수 확인.

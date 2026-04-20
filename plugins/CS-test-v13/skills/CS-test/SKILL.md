@@ -319,3 +319,9 @@ if (dt < 400 && Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { ... }
 - **충돌 시나리오**: 마켓플레이스 레포에서 직접 commit/push → 소스 레포에는 같은 파일이 untracked로 존재 → pull 시 "untracked file overwrite" 오류
 - **해결**: `rm -rf [충돌 파일]` 후 `git pull` → 파일 내용이 동일하면 안전
 - **정석 흐름**: 항상 소스 레포(`~/cs_plugins`)에서 편집 → commit/push → 마켓플레이스에서 pull
+
+### 20. Next.js 서브 페이지 OG 메타데이터 페이지별 검증 필요 (2026-04-20)
+
+- **상황**: scrum 페이지 Notion 북마크에서 MAU 페이지 제목/설명이 노출됨
+- **발견**: 'use client' 페이지는 metadata export 불가 → layout.tsx 없으면 루트 OG 메타데이터 상속. CS-test social-share-auditor가 페이지별 og:title 검증 미수행으로 미탐지됨.
+- **교훈**: social-share-auditor가 각 라우트 URL별 og:title/og:description을 실제 fetch로 검증해야 함. 루트 layout과 동일한 값이면 버그 플래그.
