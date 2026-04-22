@@ -349,3 +349,9 @@ if (dt < 400 && Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { ... }
 - **상황**: Vercel 배포가 성공(exit 0)했지만 실제로는 `"PortalActions" is not exported by "src/PortalManager.tsx"` 경고가 빌드 로그에 존재. 런타임에서 해당 액션 호출 시 undefined 참조 오류 발생.
 - **발견**: Rollup/Vite가 named re-export 오류를 warning으로 처리하면 빌드 exit 0 + 런타임 undefined. Vercel deploy 성공 = 빌드 warning 없음이 아님. 로컬 빌드와 Vercel 원격 빌드의 warning 기준도 다를 수 있음.
 - **교훈**: Vercel 배포 테스트 시 deploy status뿐 아니라 빌드 로그의 `[plugin] ... is not exported by` 패턴도 검사. CI 파이프라인에 `--reporter=verbose`로 warning을 exit 1로 처리하거나, 배포 후 핵심 액션(버튼 클릭 등)을 Playwright로 스모크 테스트하여 런타임 undefined를 조기 감지.
+
+### 25. Playwright waitUntil 전략 — Next.js dev 서버에서 networkidle 타임아웃 (2026-04-22)
+
+- **상황**: Next.js dev 서버(node_modules가 Google Drive에 마운트된 환경)에서 Playwright `waitUntil: 'networkidle'` 사용 시 타임아웃 발생.
+- **발견**: `networkidle`은 네트워크 요청이 500ms 동안 없어야 완료로 판단. I/O가 느린 환경(Google Drive, 원격 파일시스템)에서는 Next.js dev 서버가 계속 백그라운드 요청을 발생시켜 조건을 만족하지 못함.
+- **교훈**: Next.js dev 서버 테스트 시 `waitUntil: 'domcontentloaded'`로 변경. networkidle은 정적 사이트나 production 빌드에만 사용.

@@ -165,3 +165,9 @@ review-lead 완료 후 결과를 사용자에게 전달합니다.
 - **상황**: `portal-main.tsx`에서 `ports` 테이블 SELECT에 존재하지 않는 `category` 컬럼 포함 → Vercel 배포 후 런타임 400 에러. 로컬 빌드, TypeScript 컴파일 모두 통과.
 - **발견**: Supabase JS SDK의 `.select('col1, col2, ...')` 인자는 단순 문자열이라 컴파일 타임 검증 없음. 실제 DB 스키마와 괴리(drift)가 생겨도 빌드 성공. 에러는 항상 런타임 응답(400 Bad Request)으로만 노출됨.
 - **교훈**: Supabase 쿼리 리뷰 시 SELECT 컬럼 목록을 CLAUDE.md DDL 또는 마이그레이션 파일과 대조. 특히 테이블 간 유사 컬럼명(예: `portal_items.category` vs `ports`에 없는 `category`)을 혼용하는 실수를 주의. 리뷰 체크리스트: `.select(...)` 각 컬럼이 해당 테이블 DDL에 존재하는지 수동 확인.
+
+### 14. Notion 내부 인테그레이션 — 같은 워크스페이스도 페이지별 개별 공유 필요 (2026-04-22)
+
+- **상황**: `PATCH /blocks/{id}/children` API 호출 시 `object_not_found` 에러. 같은 Notion 워크스페이스 내 다른 페이지는 정상 작동하는데 특정 페이지만 실패.
+- **발견**: Notion 내부 인테그레이션은 토큰이 유효해도 각 페이지가 명시적으로 인테그레이션과 공유되어 있어야 함. 같은 워크스페이스/영역 내 모든 페이지가 자동으로 접근 가능한 것이 아님. `GET /blocks/{id}` 응답이 `object_not_found`면 토큰 문제가 아니라 해당 페이지의 공유 설정 문제.
+- **교훈**: Notion API 연동 코드 리뷰 시 "같은 워크스페이스니까 당연히 접근된다"는 가정 주의. 디버깅 순서: (1) `GET /blocks/{id}`로 접근 가능 여부 먼저 확인 → (2) `object_not_found`이면 Notion 페이지 → `...` → Connections에서 인테그레이션 추가.
