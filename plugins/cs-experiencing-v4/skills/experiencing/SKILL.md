@@ -230,6 +230,75 @@ fi
 
 ---
 
+**`version-up all` 실행 순서**: `test → plan → review → design → ceo` (5개 순차)
+
+**`version-up ceo` 프로토콜** (6-step):
+
+CEO 버전업은 다른 4개 도메인과 동일한 구조이나 학습 캡처 내용이 다르다.
+
+**STEP 1: 학습 분석 (CEO 특화)**
+
+이번 세션에서 CEO가 내린 배분 결정을 회고한다:
+- smart-run을 선택한/안 한 결정이 올바랐는가?
+- 어떤 요청 패턴에서 공수 추정이 틀렸는가?
+- 새로 발견한 효과적인 도메인 조합은?
+- 어떤 상황에서 모드 C(smart-run)가 효과적이었는가?
+
+발견사항이 있으면 AskUserQuestion으로 1회 확인. 없으면 자동 스킵.
+
+**STEP 2: SKILL.md에 학습 추가** (입력 있을 경우)
+
+파일: `$LATEST_CEO/skills/cs-ceo/SKILL.md`의 `## CEO 노하우` 섹션 끝에 추가:
+
+```markdown
+### [N]. [학습 제목] ([YYYY-MM-DD])
+- **상황**: [어떤 요청이었는가]
+- **판단**: [CEO가 내린 결정]
+- **결과**: [효과적이었는가]
+- **교훈**: [다음에 유사 상황에서 어떻게 판단할 것인가]
+```
+
+**STEP 3: 버전 디렉토리 생성**
+
+```bash
+BASE_PATH="$HOME/.claude/plugins/marketplaces/cs-plugins/plugins"
+ALL_DIRS=($(ls -d "$BASE_PATH/cs-ceo-v"* 2>/dev/null | sort -V))
+LATEST_DIR="${ALL_DIRS[-1]}"
+CURRENT_VERSION=$(cat "$LATEST_DIR/VERSION" 2>/dev/null || echo "1")
+NEXT_VERSION=$((CURRENT_VERSION + 1))
+NEW_DIR="$BASE_PATH/cs-ceo-v${NEXT_VERSION}"
+
+cp -r "$LATEST_DIR" "$NEW_DIR"
+echo "$NEXT_VERSION" > "$NEW_DIR/VERSION"
+```
+
+**STEP 4: marketplace.json 업데이트**
+
+Edit 도구로: `"./plugins/cs-ceo-v[CURRENT]"` → `"./plugins/cs-ceo-v[NEXT]"`
+
+**STEP 5: 오래된 버전 정리** (2개 유지)
+
+```bash
+TOTAL=${#ALL_DIRS[@]}
+DELETE_COUNT=$((TOTAL - 1))
+if [ $DELETE_COUNT -gt 0 ]; then
+  for dir in "${ALL_DIRS[@]:0:$DELETE_COUNT}"; do
+    rm -rf "$dir"
+  done
+fi
+```
+
+**STEP 6: 완료 안내**
+
+```
+✅ cs-ceo 버전업 완료
+📦 현재 버전: cs-ceo-v[NEXT] (VERSION=[NEXT])
+📦 보관 버전: cs-ceo-v[CURRENT] (직전)
+📝 학습 추가: "[제목]" (노하우 #[N])  또는  📝 학습 스킵
+```
+
+---
+
 **`all` 완료 후 종합 안내:**
 ```
 ✅ 전체 버전업 완료
@@ -237,6 +306,7 @@ fi
 📦 CS-plan: v[N] → v[N+1]  (학습 추가/스킵)
 📦 CS-codebase-review: v[N] → v[N+1]  (학습 추가/스킵)
 📦 cs-design: v[N] → v[N+1]  (학습 추가/스킵)
+📦 cs-ceo: v[N] → v[N+1]  (학습 추가/스킵)
 ```
 
 ### `/cs-experiencing pipeline [project]`

@@ -12,6 +12,7 @@
 | **cs-design** | v9 | 5-관점 병렬 디자인 리뷰 (visual-hierarchy/interaction-quality/design-system-consistency/responsive-accessibility/anti-pattern-detector) |
 | **cs-clarify** | v1 | [신규] 요구사항 명료화 (4-agent: clarify-lead, requirements-interviewer, scope-validator, assumption-mapper) |
 | **cs-ship** | v1 | [신규] PR 전 검증 게이트 (4-agent: ship-lead, pre-pr-validator, coverage-auditor, commit-crafter) |
+| **cs-ceo** | v1 | CS 시리즈 CEO 오케스트레이터 — 공수 추정 후 도메인 자율 배분 + cs-smart-run 자율 선택 |
 
 ## 사용법
 

@@ -45,6 +45,11 @@
       "name": "cs-design-sample1",
       "description": "Crextio-inspired design guide: warm cream #F5F3EE + amber/slate accents, dark table headers, KPI cards — audit & apply to Tailwind/Next.js dashboards",
       "source": "./plugins/cs-design-sample1"
+    },
+    {
+      "name": "cs-ceo",
+      "description": "CS 시리즈 CEO 오케스트레이터 — 공수 추정 후 CS-test/CS-plan/CS-codebase-review/cs-design/cs-smart-run 자율 배분",
+      "source": "./plugins/cs-ceo-v1"
     }
   ]
 }
