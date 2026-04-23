@@ -5,11 +5,11 @@
 
 set -e
 
-PLUGIN_NAME="cs_plugins"
-REPO_URL="https://github.com/intenet1001-commits/cs_plugins"
+PLUGIN_NAME="cs-plugins"
+REPO_URL="https://github.com/intenet1001-commits/CSnCOMPANY"
 INSTALL_DIR="$HOME/.claude/plugins/marketplaces/$PLUGIN_NAME"
 
-echo "Installing CS Plugins for Claude Code..."
+echo "Installing CSnCOMPANY for Claude Code..."
 
 # Create marketplaces directory if it doesn't exist
 mkdir -p "$HOME/.claude/plugins/marketplaces"
@@ -32,5 +32,15 @@ echo "Location: $INSTALL_DIR"
 echo ""
 echo "Please restart Claude Code to load the new plugins."
 echo ""
-echo "Available skill:"
-echo "  - playwright-test: Multi-agent web testing"
+echo "Available team members:"
+echo "  - cs-ceo              : CEO / orchestrator"
+echo "  - cs-clarify          : PM / requirements elicitation"
+echo "  - CS-plan             : Architect (TDD + Clean Architecture)"
+echo "  - cs-design           : Designer (5-agent design review)"
+echo "  - cs-design-sample1   : Design system reference"
+echo "  - CS-test             : QA engineer (14-agent web testing)"
+echo "  - CS-codebase-review  : Code reviewer (5-agent parallel review)"
+echo "  - cs-ship             : DevOps (pre-PR validation gate)"
+echo "  - cs-smart-run        : Team lead (Opus plan + Sonnet parallel execution)"
+echo "  - cs-experiencing     : Knowledge keeper"
+echo "  - convo-maker         : Language coach"
