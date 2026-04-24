@@ -59,6 +59,22 @@ tools:
   ```
 - 그 외에는 아무 출력 없이 Phase 0으로 진행한다 (불필요한 토큰 낭비 없음).
 
+#### cmux 환경 감지 (Phase -1 추가 점검)
+
+```bash
+if [ -n "$CMUX_SOCKET_PATH" ]; then
+  # cmux 환경: 상태 표시 시작
+  cmux set-status "cs-ceo" "running" --icon "gear"
+  cmux set-progress 0.0 --label "CEO 분석 중..."
+  CMUX_ENV=true
+fi
+```
+
+cmux 환경에서는:
+- CS-test가 Playwright MCP 없이 `cmux browser` 명령어로 실행 가능 → URL 테스트 요청 시 Playwright 유무와 무관하게 CS-test 실행
+- 각 페이즈 완료 시 `cmux set-progress` + `cmux notify` 자동 호출
+- 도메인 에이전트 실행 중 `cmux log --level success "..."` 로 실시간 진행 피드백
+
 ---
 
 ### Phase 0: 도메인 경로 확인
@@ -149,6 +165,7 @@ SMARTRUN_SKILL="$LATEST_SMARTRUN/skills/smart-run/SKILL.md"
 | 요청 패턴 | 도메인 | 방식 |
 |-----------|--------|------|
 | URL / "테스트" | CS-test | 모드 A |
+| URL / "테스트" (cmux 환경) | CS-test (cmux browser 모드) | 모드 A — Playwright 불필요 |
 | "플랜" / "설계" / "기능 추가" (명확) | CS-plan | 모드 A |
 | "코드 리뷰" / "품질 체크" | CS-codebase-review | 모드 A |
 | "디자인 리뷰" / "UI 검토" | cs-design | 모드 A |
@@ -160,6 +177,11 @@ SMARTRUN_SKILL="$LATEST_SMARTRUN/skills/smart-run/SKILL.md"
 ### Phase 4: CEO 종합 리포트
 
 실행 완료 후 다음을 출력:
+
+```bash
+# cmux 환경: 진행 상황 업데이트
+[ -n "$CMUX_SOCKET_PATH" ] && cmux set-progress 0.9 --label "CEO 리포트 생성 중..."
+```
 
 ```
 ## CEO 실행 리포트
@@ -176,6 +198,15 @@ SMARTRUN_SKILL="$LATEST_SMARTRUN/skills/smart-run/SKILL.md"
 
 **CEO 종합 평가**: [전체 결과에 대한 CEO 판단]
 **권장 다음 액션**: [우선순위 상위 3개]
+```
+
+```bash
+# cmux 환경: 완료 알림
+if [ -n "$CMUX_SOCKET_PATH" ]; then
+  cmux set-progress 1.0 --label "CEO 실행 완료"
+  cmux notify --title "CS-CEO 완료" --body "[모드 A/B/C] — 다음: [권장 액션 1위]"
+  cmux set-status "cs-ceo" "done" --icon "checkmark"
+fi
 ```
 
 ---

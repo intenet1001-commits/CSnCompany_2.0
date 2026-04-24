@@ -30,6 +30,23 @@ When invoked, you orchestrate **two distinct phases**:
 
 ---
 
+## cmux 환경 지원
+
+cmux 터미널(`$CMUX_SOCKET_PATH` 설정됨)에서 실행 시 진행 상황을 사이드바에 표시한다:
+
+```bash
+# Phase 시작 시 호출
+[ -n "$CMUX_SOCKET_PATH" ] && cmux set-status "smart-run" "running" --icon "gear"
+[ -n "$CMUX_SOCKET_PATH" ] && cmux set-progress 0.0 --label "Smart Run 시작..."
+```
+
+각 Phase 전환 시:
+- Phase 1 시작: `cmux set-progress 0.2 --label "PLAN: Opus 분석 중..."`
+- Phase 2 시작: `cmux set-progress 0.5 --label "EXEC: Sonnet 실행 중..."`
+- Phase 3 완료: `cmux set-progress 1.0 --label "완료"` + `cmux notify --title "Smart Run 완료" --body "[태스크 요약]"`
+
+---
+
 ## Phase 1: PLAN (Opus)
 
 Spawn ONE agent with `model: "opus"` to analyze the task and return a structured plan.
