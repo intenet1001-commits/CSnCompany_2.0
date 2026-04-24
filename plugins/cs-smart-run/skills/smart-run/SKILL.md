@@ -1,5 +1,5 @@
 ---
-name: smart-run
+name: cs-smart-run
 user-invocable: true
 description: |
   Two-phase orchestrator: Plan with Opus → Execute with Sonnet.

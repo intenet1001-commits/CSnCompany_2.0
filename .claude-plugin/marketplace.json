@@ -60,16 +60,6 @@
       "name": "cs-ceo",
       "description": "CS 시리즈 CEO 오케스트레이터 — 공수 추정 후 CS-test/CS-plan/CS-codebase-review/cs-design/cs-smart-run 자율 배분",
       "source": "./plugins/cs-ceo-v4"
-    },
-    {
-      "name": "cs-ship",
-      "description": "CS ship workflow — deploy, push, create PR with quality gates",
-      "source": "./plugins/cs-ship-v1"
-    },
-    {
-      "name": "cs-clarify",
-      "description": "CS clarify — transform vague requirements into precise specifications",
-      "source": "./plugins/cs-clarify-v1"
     }
   ]
 }

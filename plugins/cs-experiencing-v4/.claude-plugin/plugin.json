@@ -10,6 +10,7 @@
   "license": "MIT",
   "keywords": ["knowledge", "experience", "testing", "planning", "learning", "versioning", "code-review", "codebase-review", "karpathy", "bkit", "gstack"],
   "skills": [
+    { "name": "cs-experiencing", "source": "./skills/experiencing/SKILL.md" },
     { "name": "cs-end", "source": "./skills/cs-end/SKILL.md" }
   ]
 }
