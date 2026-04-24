@@ -44,7 +44,7 @@
     {
       "name": "CS-codebase-review",
       "description": "5-agent parallel codebase review - Architecture, Quality, Security, Performance, Maintainability",
-      "source": "./plugins/CS-codebase-review-v20"
+      "source": "./plugins/CS-codebase-review-v21"
     },
     {
       "name": "cs-design",
@@ -59,7 +59,7 @@
     {
       "name": "cs-ceo",
       "description": "CS 시리즈 CEO 오케스트레이터 — 공수 추정 후 CS-test/CS-plan/CS-codebase-review/cs-design/cs-smart-run 자율 배분",
-      "source": "./plugins/cs-ceo-v1"
+      "source": "./plugins/cs-ceo-v2"
     },
     {
       "name": "cs-ship",
