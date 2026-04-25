@@ -126,7 +126,7 @@ allowed-tools:
 ### Step 1: 최신 CEO 경로 확인
 
 ```bash
-BASE="$HOME/.claude/plugins/marketplaces/CSnCompany_2.0/plugins"
+BASE="$HOME/.claude/plugins/marketplaces/CSnCompany_2-0/plugins"
 LATEST_CEO=$(ls -d "$BASE/cs-ceo-v"* 2>/dev/null | sort -V | tail -1)
 echo "CEO 경로: $LATEST_CEO"
 echo "CEO 버전: $(cat $LATEST_CEO/VERSION)"

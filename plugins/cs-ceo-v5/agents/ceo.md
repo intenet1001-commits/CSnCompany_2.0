@@ -347,7 +347,7 @@ fi
 ### Phase 0: 도메인 경로 확인
 
 ```bash
-BASE="$HOME/.claude/plugins/marketplaces/CSnCompany_2.0/plugins"
+BASE="$HOME/.claude/plugins/marketplaces/CSnCompany_2-0/plugins"
 
 LATEST_TEST=$(ls -d "$BASE/CS-test-v"* 2>/dev/null | sort -V | tail -1)
 LATEST_PLAN=$(ls -d "$BASE/CS-plan-v"* 2>/dev/null | sort -V | tail -1)

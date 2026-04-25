@@ -1,4 +1,4 @@
-# CSnCompany_2.0 — An AI Team You Hire Inside Claude Code
+# CSnCompany_2-0 — An AI Team You Hire Inside Claude Code
 
 > 🇺🇸 English · [🇰🇷 한국어](./README.ko.md)
 
@@ -10,7 +10,7 @@
 
 [Claude Code](https://docs.claude.com/en/docs/claude-code) is Anthropic's official AI coding CLI. It supports **plugins** — bundles of slash commands, agents, and skills you install on top of it.
 
-**CSnCompany_2.0** is a marketplace that bundles **11 plugins**, each one a specialist on a virtual AI team:
+**CSnCompany_2-0** is a marketplace that bundles **11 plugins**, each one a specialist on a virtual AI team:
 
 ```
 You ──▶ /cs-ceo "build a dashboard"
@@ -66,7 +66,7 @@ claude
 Inside Claude Code, paste:
 
 ```
-/plugin marketplace add intenet1001-commits/CSnCompany_2.0
+/plugin marketplace add intenet1001-commits/CSnCompany_2-0
 ```
 
 ### Step 2 — Install the plugins you want
@@ -74,17 +74,17 @@ Inside Claude Code, paste:
 Pick à la carte, or install everything:
 
 ```
-/plugin install cs-ceo@CSnCompany_2.0
-/plugin install cs-clarify@CSnCompany_2.0
-/plugin install CS-plan@CSnCompany_2.0
-/plugin install cs-design@CSnCompany_2.0
-/plugin install cs-design-sample1@CSnCompany_2.0
-/plugin install CS-test@CSnCompany_2.0
-/plugin install CS-codebase-review@CSnCompany_2.0
-/plugin install cs-ship@CSnCompany_2.0
-/plugin install cs-smart-run@CSnCompany_2.0
-/plugin install cs-experiencing@CSnCompany_2.0
-/plugin install convo-maker@CSnCompany_2.0
+/plugin install cs-ceo@CSnCompany_2-0
+/plugin install cs-clarify@CSnCompany_2-0
+/plugin install CS-plan@CSnCompany_2-0
+/plugin install cs-design@CSnCompany_2-0
+/plugin install cs-design-sample1@CSnCompany_2-0
+/plugin install CS-test@CSnCompany_2-0
+/plugin install CS-codebase-review@CSnCompany_2-0
+/plugin install cs-ship@CSnCompany_2-0
+/plugin install cs-smart-run@CSnCompany_2-0
+/plugin install cs-experiencing@CSnCompany_2-0
+/plugin install convo-maker@CSnCompany_2-0
 ```
 
 ### Step 3 — Restart Claude Code
@@ -171,7 +171,7 @@ This keeps your conversation focused while massive parallel work happens behind 
 ## 📁 Repo Layout
 
 ```
-CSnCompany_2.0/
+CSnCompany_2-0/
 ├── .claude-plugin/
 │   └── marketplace.json           # the marketplace manifest
 ├── plugins/
@@ -213,7 +213,7 @@ A: Restart Claude Code (Ctrl-C → `claude` again). New plugins load on startup.
 A: `/cs-end` is designed for the plugin author. If you run it, Phase 4 (git push to the marketplace repo) is automatically skipped — your local session learnings are still saved normally.
 
 **Q: Something is broken / I want to contribute.**
-A: Open an issue or PR at [github.com/intenet1001-commits/CSnCompany_2.0](https://github.com/intenet1001-commits/CSnCompany_2.0).
+A: Open an issue or PR at [github.com/intenet1001-commits/CSnCompany_2-0](https://github.com/intenet1001-commits/CSnCompany_2-0).
 
 ---
 
@@ -224,5 +224,5 @@ MIT — see [LICENSE](LICENSE).
 ## 🔗 Links
 
 - [한국어 문서](./README.ko.md)
-- [GitHub Repository](https://github.com/intenet1001-commits/CSnCompany_2.0)
+- [GitHub Repository](https://github.com/intenet1001-commits/CSnCompany_2-0)
 - [Claude Code Documentation](https://docs.claude.com/en/docs/claude-code)

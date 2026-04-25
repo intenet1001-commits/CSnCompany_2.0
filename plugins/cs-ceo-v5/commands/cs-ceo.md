@@ -53,7 +53,7 @@ CS 시리즈 총괄 CEO. 자연어로 요청하면 CEO가 공수를 추정하고
 ## 실행 방식
 
 ```bash
-BASE="$HOME/.claude/plugins/marketplaces/CSnCompany_2.0/plugins"
+BASE="$HOME/.claude/plugins/marketplaces/CSnCompany_2-0/plugins"
 LATEST_CEO=$(ls -d "$BASE/cs-ceo-v"* 2>/dev/null | sort -V | tail -1)
 ```
 
