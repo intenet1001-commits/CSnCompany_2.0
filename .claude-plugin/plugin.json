@@ -1,10 +1,10 @@
 {
-  "name": "cs-plugins",
-  "version": "1.0.0",
+  "name": "CSnCompany_2.0",
+  "version": "2.0.0",
   "description": "CSnCOMPANY — AI team for Claude Code: CEO, PM, Architect, Designer, QA, Reviewer, DevOps, and more",
   "author": {
     "name": "intenet1001-commits",
     "url": "https://github.com/intenet1001-commits"
   },
-  "repository": "https://github.com/intenet1001-commits/CSnCOMPANY"
+  "repository": "https://github.com/intenet1001-commits/CSnCompany_2.0"
 }

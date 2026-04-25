@@ -1,3 +1,23 @@
+---
+name: cs-end
+user-invocable: true
+description: |
+  CS 세션 종료 + 플러그인 버전업 자동화. session-wrap 패턴을 CSnCOMPANY 컨텍스트로 개선.
+  4-Agent 병렬 분석 (doc-updater / learning-extractor / version-scout / followup-suggester)
+  → 학습 저장 → 활성 플러그인 자동 버전업 → GitHub push까지 한 번에 처리.
+  Use when user types "/cs-end" or "cs-end".
+version: 1.0.0
+allowed-tools:
+  - Task
+  - Agent
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+---
+
 # /cs-end — CS Session Closing + Plugin Version-up
 
 session-wrap 패턴(team-attention/plugins-for-claude-natives)을 CSnCOMPANY 컨텍스트로 개선.
@@ -35,7 +55,7 @@ session-wrap과의 차이:
 
 ### Agent 3: version-scout
 marketplace.json에 등록된 모든 활성 플러그인을 분석한다.
-- `/Users/gwanli/.claude/plugins/marketplaces/cs-plugins/.claude-plugin/marketplace.json` 읽기
+- `/Users/gwanli/.claude/plugins/marketplaces/CSnCompany_2.0/.claude-plugin/marketplace.json` 읽기
 - 각 플러그인 source 경로의 VERSION 파일 확인
 - git log --oneline --diff-filter=M -- <plugin-path> 로 변경 여부 확인
 - 변경된 플러그인에 대해 bump 타입 추천:
@@ -86,9 +106,9 @@ duplicate-checker에서 받은 version-scout 결과 기준으로:
 
 1. `docs/session-learnings/` 디렉토리 확인 (없으면 생성)
 2. `docs/session-learnings/YYYY-MM-DD.md` 파일 생성 (learning-extractor 결과)
-3. git -C /Users/gwanli/.claude/plugins/marketplaces/cs-plugins add -A
-4. git -C /Users/gwanli/.claude/plugins/marketplaces/cs-plugins commit -m "chore: version-up all domains + add session learnings"
-5. git -C /Users/gwanli/.claude/plugins/marketplaces/cs-plugins push
+3. git -C /Users/gwanli/.claude/plugins/marketplaces/CSnCompany_2.0 add -A
+4. git -C /Users/gwanli/.claude/plugins/marketplaces/CSnCompany_2.0 commit -m "chore: version-up all domains + add session learnings"
+5. git -C /Users/gwanli/.claude/plugins/marketplaces/CSnCompany_2.0 push
 
 ---
 

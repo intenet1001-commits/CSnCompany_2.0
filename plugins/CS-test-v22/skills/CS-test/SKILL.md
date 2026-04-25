@@ -378,7 +378,7 @@ if (dt < 400 && Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { ... }
 ### 15. cs-sync 이중 레포 구조 충돌 처리
 
 이 플러그인의 작업 흐름에서 발견된 git 충돌 패턴:
-- **구조**: 소스 레포(`~/cs_plugins`) + 로컬 마켓플레이스(`~/.claude/plugins/marketplaces/cs-plugins`) 두 곳이 동일 remote를 바라봄
+- **구조**: 소스 레포(`~/cs_plugins`) + 로컬 마켓플레이스(`~/.claude/plugins/marketplaces/CSnCompany_2.0`) 두 곳이 동일 remote를 바라봄
 - **충돌 시나리오**: 마켓플레이스 레포에서 직접 commit/push → 소스 레포에는 같은 파일이 untracked로 존재 → pull 시 "untracked file overwrite" 오류
 - **해결**: `rm -rf [충돌 파일]` 후 `git pull` → 파일 내용이 동일하면 안전
 - **정석 흐름**: 항상 소스 레포(`~/cs_plugins`)에서 편집 → commit/push → 마켓플레이스에서 pull
