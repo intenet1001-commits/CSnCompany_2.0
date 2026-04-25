@@ -40,7 +40,7 @@ You don't need to remember which command does what — type `/cs-ceo "your goal"
 | 🔍 **Code Reviewer** | `CS-codebase-review` | `/CS-codebase-review ./src` | 5-agent review: architecture, quality, security, perf, maintainability |
 | 🚢 **DevOps** | `cs-ship` | `/cs-ship` | Pre-PR validation: spec compliance, coverage, commit messages |
 | ⚡ **Team Lead** | `cs-smart-run` | `/cs-smart-run "task"` | Plan with Opus → execute with Sonnet agents in parallel |
-| 📚 **Knowledge Keeper** | `cs-experiencing` | `/cs-experiencing` | Versioned learnings + `/cs-end` session-wrap |
+| 📚 **Knowledge Keeper** | `cs-experiencing` | `/cs-experiencing` | Versioned learnings + `/cs-end` session-wrap *(author-only push)* |
 | 🗣️ **Language Coach** | `convo-maker` | `/convo-maker` | Turns session Q&A into natural American English conversations |
 
 ---
@@ -208,6 +208,9 @@ A: When the marketplace publishes a new version, Claude Code prompts you to upda
 
 **Q: I don't see the slash commands after installing.**
 A: Restart Claude Code (Ctrl-C → `claude` again). New plugins load on startup.
+
+**Q: Can I use `/cs-end`?**
+A: `/cs-end` is designed for the plugin author. If you run it, Phase 4 (git push to the marketplace repo) is automatically skipped — your local session learnings are still saved normally.
 
 **Q: Something is broken / I want to contribute.**
 A: Open an issue or PR at [github.com/intenet1001-commits/CSnCompany_2.0](https://github.com/intenet1001-commits/CSnCompany_2.0).

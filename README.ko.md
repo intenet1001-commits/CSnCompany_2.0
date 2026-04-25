@@ -40,7 +40,7 @@
 | 🔍 **코드 리뷰어** | `CS-codebase-review` | `/CS-codebase-review ./src` | 5-에이전트 리뷰: 아키텍처, 품질, 보안, 성능, 유지보수성 |
 | 🚢 **DevOps** | `cs-ship` | `/cs-ship` | PR 직전 검증: 스펙 준수, 커버리지, 커밋 메시지 |
 | ⚡ **팀 리더** | `cs-smart-run` | `/cs-smart-run "작업"` | Opus로 계획 → Sonnet 에이전트로 병렬 실행 |
-| 📚 **지식 저장소** | `cs-experiencing` | `/cs-experiencing` | 버전별 학습 관리 + `/cs-end` 세션 마무리 |
+| 📚 **지식 저장소** | `cs-experiencing` | `/cs-experiencing` | 버전별 학습 관리 + `/cs-end` 세션 마무리 *(GitHub push는 플러그인 작성자 전용)* |
 | 🗣️ **언어 코치** | `convo-maker` | `/convo-maker` | 세션 Q&A를 자연스러운 미국식 영어 대화로 변환 |
 
 ---
@@ -208,6 +208,9 @@ A. 마켓플레이스에 새 버전이 올라오면 Claude Code가 업데이트 
 
 **Q. 설치했는데 슬래시 명령이 안 보여요.**
 A. Claude Code를 재시작하세요(Ctrl-C 후 `claude` 다시). 새 플러그인은 시작 시 로드됩니다.
+
+**Q. `/cs-end`도 쓸 수 있나요?**
+A. `/cs-end`는 플러그인 작성자용입니다. 실행하면 Phase 4(마켓플레이스 repo에 git push)는 자동으로 건너뜁니다. 로컬 세션 학습 저장은 정상적으로 됩니다.
 
 **Q. 버그가 있어요 / 기여하고 싶어요.**
 A. [github.com/intenet1001-commits/CSnCompany_2.0](https://github.com/intenet1001-commits/CSnCompany_2.0)에서 이슈/PR 환영합니다.

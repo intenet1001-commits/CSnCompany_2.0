@@ -7,7 +7,22 @@ allowed-tools: Bash, Read, Write, Edit, Glob, Grep, Task, Agent, AskUserQuestion
 
 세션을 안전하게 종료하면서 학습을 영속화하고 변경된 플러그인을 자동으로 버전업·푸시합니다.
 
+## ⚠️ Author-Only Command
+
+`/cs-end` is designed for the **plugin author** (`intenet1001-commits`). It commits and pushes changes back to the marketplace repository.
+
+If you are not the author, Phase 4 (git push) is automatically skipped — your local learnings are still saved.
+
 ## 실행 순서
+
+0. **Phase 0 — Origin 확인** (자동)
+   ```bash
+   REMOTE=$(git -C "$HOME/.claude/plugins/marketplaces/CSnCompany_2-0" remote get-url origin 2>/dev/null)
+   if [[ "$REMOTE" != *"intenet1001-commits"* ]]; then
+     AUTO_NO_PUSH=true  # Phase 4 skip
+   fi
+   ```
+   `origin`이 `intenet1001-commits`가 아니면 자동으로 `--no-push` 모드로 전환합니다.
 
 1. **Phase 1 — 4-Agent 병렬 분석**
    - `doc-updater` — 문서 업데이트 필요 항목 추출
