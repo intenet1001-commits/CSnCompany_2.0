@@ -7,6 +7,11 @@
   "description": "CSnCOMPANY — A virtual AI team for Claude Code. Each plugin is a teammate (CEO / PM / Architect / Designer / QA / Reviewer / DevOps) that takes you from idea to ship.",
   "plugins": [
     {
+      "name": "cs-end",
+      "description": "🏁 Session Closer — 4-Agent analysis + TIL save + plugin version-up + GitHub push (/cs-end)",
+      "source": "./plugins/cs-end-v1"
+    },
+    {
       "name": "cs-ceo",
       "description": "🧭 CEO — Estimates effort and autonomously dispatches across CS-test/CS-plan/CS-codebase-review/cs-design/cs-smart-run. v5.2 adds External Knowledge Gate + partnership protocols.",
       "source": "./plugins/cs-ceo-v5"

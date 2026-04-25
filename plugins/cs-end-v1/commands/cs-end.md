@@ -21,9 +21,9 @@ allowed-tools: Bash, Read, Write, Edit, Glob, Grep, Task, Agent, AskUserQuestion
 ## 실행 방식
 
 ```bash
-BASE="$HOME/.claude/plugins/marketplaces/CSnCompany_2.0/plugins"
+BASE="$HOME/.claude/plugins/marketplaces/CSnCompany_2-0/plugins"
 LATEST_EXP=$(ls -d "$BASE/cs-experiencing-v"* 2>/dev/null | sort -V | tail -1)
-SKILL="$LATEST_EXP/skills/cs-end/SKILL.md"
+SKILL="$LATEST_EXP/skills/experiencing/SKILL.md"
 ```
 
 `$SKILL`의 프로토콜에 따라 4-Agent를 단일 메시지에 병렬 스폰하여 실행합니다.
