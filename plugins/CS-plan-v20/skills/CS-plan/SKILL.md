@@ -148,3 +148,9 @@ fi
 - **상황**: Notion 페이지에서 테이블 데이터를 가져오려 했으나 직접 table 블록이 아닌 child_page 블록 안에 테이블이 있어 1회 API 호출로 데이터를 얻지 못함.
 - **발견**: Notion 페이지 구조가 parent → child_page → table 2-depth인 경우, `GET /blocks/{parent_id}/children`로 child_page 블록 ID를 얻고, 다시 `GET /blocks/{child_page_id}/children`으로 table 블록을 얻어야 함. 1회 API 호출로 가정하면 데이터 없음 → 빈 결과.
 - **교훈**: Notion 데이터 소스 플랜 수립 시 "페이지 구조 depth 확인" 단계 추가. child_page 블록 타입이 나오면 자동으로 한 단계 더 내려가는 순회 로직 설계.
+
+### 9. 동시 작업 원격 39커밋 — rebase 대신 merge + checkout --theirs 후 additive 재적용 (2026-04-28)
+
+- **상황**: portmanager 통합 모달 + Vercel 숨김을 로컬에 커밋한 사이 원격 main이 39커밋 진행. `git pull --rebase`로 시도하니 4개 파일(App.tsx, PortalManager, SetupWizard, api-server) 충돌, 그 중 App.tsx는 원격이 더 정교한 통합 모달(`projectModalTab`)을 이미 만들어 둔 상태 → 충돌 마커 5개 hunk, 수동 머지 도중 잘못된 마커 결합으로 코드 깨짐 → rebase abort.
+- **발견**: 원격이 동일 의도의 더 큰 변경을 했을 때, rebase는 내 변경을 "위에 올리려" 시도해 충돌 폭발. `git merge origin/main` 후 `git checkout --theirs <conflicted files>`로 원격 우선 채택, 그다음 신규 파일(`src/lib/env.ts` 등)과 추가 라인(env import 1줄, Vercel hide 가드 등)만 layered patch로 재적용하면 안전. 핵심: **무엇을 "내 고유 추가분"으로 분리할 수 있는지 사전 식별**.
+- **교훈**: PLAN.md에 "Critical Files" 우선순위 매길 때, 큰 파일(예: 4000+줄 App.tsx)은 가급적 **신규 파일 + 작은 import 라인**으로 분리해 변경하면 충돌 자가-회복 가능. 푸시 전 항상 `git fetch origin && git log HEAD..origin/main --oneline | wc -l` 로 차이 확인, 5커밋 이상 차이면 merge 우선 검토.

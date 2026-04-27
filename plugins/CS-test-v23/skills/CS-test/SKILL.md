@@ -430,3 +430,9 @@ if (dt < 400 && Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { ... }
 - **상황**: 포트관리기 ⌄ 드롭다운 메뉴 항목을 playwright로 추출해야 했음
 - **발견**: `page.locator('[style*="fixed"]').locator('button').allTextContents()`로 fixed-position 메뉴 항목 텍스트 일괄 추출 가능. `detectDevServers()`가 port 9000 Vite 서버를 여러 서버(3001/5173/5000/9000) 중 자동 감지함.
 - **교훈**: fixed-position 컨텍스트 메뉴/드롭다운은 `[style*="fixed"]` 로케이터로 빠르게 접근. detectDevServers 결과가 여러 개면 사용자에게 확인 후 target 지정.
+
+### 28. 모바일 가로 오버플로우 — VIEWPORT env + scrollWidth/clientWidth 단순 비교 (2026-04-28)
+
+- **상황**: Vercel 배포 portal이 iPhone 세로(375px)에서 UI 잘림. 사용자 신고 후 5개 구체 원인(maxWidth:460/440 모달, scrollbar-none pills, 절대 위치 드롭다운 등) 식별 + 회귀 방지 필요.
+- **발견**: 한 smoke.mjs 안에 `VIEWPORT=mobile` 환경변수 분기 추가 → `chromium.launch + newContext({viewport:{width:375,height:812}, isMobile:true})` 로 동일 시나리오 재실행. 핵심 검증: `await page.evaluate(() => ({ scrollWidth: document.documentElement.scrollWidth, clientWidth: document.documentElement.clientWidth }))` → `scrollWidth ≤ clientWidth + 1` (1px 여유). 한 줄 assertion이 5개 overflow 버그 모두 잡음.
+- **교훈**: 모바일 회귀 테스트는 Lighthouse나 풀스크린샷 비교 같은 무거운 도구 없이도 **scrollWidth 비교 1줄**로 80% 가치 확보. 비밀번호 게이트 같은 가드가 있으면 게이트 자체에서도 이 검증을 실행해 두면 deploy 후 즉시 회귀 감지. package.json scripts 에 `"test:smoke:mobile": "VIEWPORT=mobile TARGET=vercel node tests/smoke.mjs"` 같은 한 줄 별칭 표준화.

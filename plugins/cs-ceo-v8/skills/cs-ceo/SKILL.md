@@ -201,3 +201,10 @@ CEO 에이전트가 반환한 종합 리포트를 그대로 출력한다.
 - **판단**: 3-레이어 격리 방식 적용: ① pbpaste로 클립보드 직접 확인(Electron clipboard.writeText 정상 여부) ② osascript 단독 실행(AppleScript 문법 + 권한 여부) ③ Electron exec() 통합 테스트(자식 프로세스 sandbox 이슈 여부). Layer 2 성공 + Layer 3 실패 → Electron 자식 프로세스 권한 문제로 즉시 특정.
 - **결과**: keystroke "v" using command down은 Layer 2에서는 동작하지만 Layer 3(Electron exec)에서 silent fail → click menu item "Paste"로 교체 후 해결.
 - **교훈**: Electron 앱에서 osascript 오작동 시 반드시 3-레이어 격리부터. 특히 exit 0이지만 효과 없는 경우 sandbox/권한 문제 → AppleScript 메뉴 클릭 방식으로 우회.
+
+### 14. 야간 위임 — 사용자 sleep 중 Phase별 자율 진행 + 아침 보고서 (2026-04-28)
+
+- **상황**: 사용자가 "난 자야하니까 잘 처리해 아침에 보자"로 위임. 5-phase 작업(handoff UX + Windows tmux fallback + wizard 개선 + Windows 빌드 + 설치)을 사용자 컨펌 없이 자율 진행해야 함.
+- **판단**: 안전한 작업(코드 변경, 빌드, git push)은 자율 진행, **destructive/installing 동작**(NSIS 인스톨러 실행)은 silent flag(`/S`)로 사용자 확인 없이 가능하지만 **결과 검증 필수**(설치 경로 ls, 프로세스 살아있는지 tasklist). Phase 단위로 commit/push 분리 → 아침에 사용자가 git log로 진행 트레이스 가능.
+- **결과**: 5-phase 모두 완료, 6커밋 푸시, 앱 설치 + 실행 검증, 아침 보고서에 시나리오별 검증 절차 명시(핸드오프, cmux 폴백, 기기명 변경, 자동 실행). 사용자가 깨어나면 30초 내에 상태 파악 가능.
+- **교훈**: 야간 위임 받을 때 (1) Phase별 commit으로 트레이스 보장 (2) destructive는 검증까지 묶음 (3) 마지막 메시지에 **시나리오 체크리스트** 포함 — "Step N: 이걸 클릭하면 X가 보여야 함" 식. ScheduleWakeup 으로 장시간 빌드 polling 가능 (270초 간격이 cache TTL 적정).

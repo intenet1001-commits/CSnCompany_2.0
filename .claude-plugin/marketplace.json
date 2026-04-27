@@ -14,7 +14,7 @@
     {
       "name": "cs-ceo",
       "description": "🧭 CEO — Estimates effort and autonomously dispatches across CS-test/CS-plan/CS-codebase-review/cs-design/cs-smart-run. v5.2 adds External Knowledge Gate + partnership protocols.",
-      "source": "./plugins/cs-ceo-v7"
+      "source": "./plugins/cs-ceo-v8"
     },
     {
       "name": "cs-clarify",
@@ -24,12 +24,12 @@
     {
       "name": "CS-plan",
       "description": "🏗️ Architect — TDD + Clean Architecture 4-agent planner. Domain analysis, architecture design, test strategy, implementation checklist.",
-      "source": "./plugins/CS-plan-v20"
+      "source": "./plugins/CS-plan-v21"
     },
     {
       "name": "cs-design",
       "description": "🎨 Designer — 5-agent parallel design review: visual hierarchy, interaction quality, design-system consistency, responsive/accessibility, anti-pattern detection.",
-      "source": "./plugins/cs-design-v17"
+      "source": "./plugins/cs-design-v18"
     },
     {
       "name": "cs-design-sample1",
@@ -39,12 +39,12 @@
     {
       "name": "CS-test",
       "description": "🧪 QA Engineer — 14-agent web testing: security, SEO, performance, accessibility, DB, PWA, touch, image optimization.",
-      "source": "./plugins/CS-test-v23"
+      "source": "./plugins/CS-test-v24"
     },
     {
       "name": "CS-codebase-review",
       "description": "🔍 Code Reviewer — 5-agent parallel review: Architecture, Quality, Security, Performance, Maintainability.",
-      "source": "./plugins/CS-codebase-review-v25"
+      "source": "./plugins/CS-codebase-review-v26"
     },
     {
       "name": "cs-ship",
