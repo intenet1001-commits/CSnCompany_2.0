@@ -193,3 +193,11 @@ CEO 에이전트가 반환한 종합 리포트를 그대로 출력한다.
 - **판단**: Playwright는 서버리스 환경에서 Chromium 바이너리 실행 불가 → plain fetch로 HTTP 세션 자동화 먼저 시도. 실패 시 UI에 "Claude Code에 전달" 버튼으로 진단 프롬프트를 클립보드에 복사하는 UX 패턴 설계.
 - **결과**: fetch 구현은 AJPark 로그인 인코딩(Base64 ID) 문제로 추가 디버깅 필요했으나 아키텍처 방향은 유효. 진단 버튼 패턴은 비기술 사용자가 오류를 개발자(Claude Code)에게 전달하는 효과적인 채널이 됨.
 - **교훈**: Playwright 필수처럼 보이는 작업도 HTTP-first로 먼저 시도. 실패 경로에 "AI 진단 게이트(클립보드 복사 프롬프트)" 설계 → 사용자가 직접 Claude Code에 붙여넣으면 자동 디버깅 루프 완성.
+
+
+### 13. Electron auto-paste 디버깅 — 3-레이어 격리 전략 (2026-04-27)
+
+- **상황**: Electron 앱에서 단축키 → 클립보드 → 붙여넣기 파이프라인이 동작하지 않아 root cause 특정이 어려움.
+- **판단**: 3-레이어 격리 방식 적용: ① pbpaste로 클립보드 직접 확인(Electron clipboard.writeText 정상 여부) ② osascript 단독 실행(AppleScript 문법 + 권한 여부) ③ Electron exec() 통합 테스트(자식 프로세스 sandbox 이슈 여부). Layer 2 성공 + Layer 3 실패 → Electron 자식 프로세스 권한 문제로 즉시 특정.
+- **결과**: keystroke "v" using command down은 Layer 2에서는 동작하지만 Layer 3(Electron exec)에서 silent fail → click menu item "Paste"로 교체 후 해결.
+- **교훈**: Electron 앱에서 osascript 오작동 시 반드시 3-레이어 격리부터. 특히 exit 0이지만 효과 없는 경우 sandbox/권한 문제 → AppleScript 메뉴 클릭 방식으로 우회.
