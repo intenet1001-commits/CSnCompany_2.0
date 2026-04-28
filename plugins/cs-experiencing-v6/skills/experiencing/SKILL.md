@@ -426,6 +426,12 @@ done
 - **발견**: 문제 레이어를 3단계로 격리해서 빠르게 원인 특정: ① `curl` → API 응답 ② `osascript -e '...'` 직접 실행 → OS/스크립트 문법 ③ `bun -e "Bun.spawn..."` → 런타임. 직접 실행이 성공하면 서버 코드(문법 오류 또는 stale 프로세스) 안에 원인이 있음. 실제 원인: `choose folder with prompt "..." invisibles shown true` — `invisibles shown true`는 `choose folder`에 없는 파라미터로 error -2741 발생 → `on error` → 빈 반환. 추가 원인: `bun --watch`가 Claude Code Edit 도구의 파일 변경을 감지 못해 old 코드가 계속 실행됨.
 - **교훈**: ① `choose folder`에 `invisibles shown true` 사용 금지 — 올바른 문법: `choose folder with prompt "..."` 만. ② API 서버 코드 수정 후 curl 테스트 전 반드시 프로세스 재시작 확인 — `bun --watch` 미감지 가능. ③ osascript는 temp 파일(`Bun.write + osascript path`) 방식이 stdin Blob보다 안정적.
 
+### 9. ClipboardItem text/html+text/plain 이중 포맷으로 Slack 하이퍼링크 복사 (2026-04-28)
+
+- **상황**: "Slack 공유용 복사" 버튼 구현 시 URL이 그대로 노출되지 않고 "백로그 바로가기" 같은 라벨 텍스트가 클릭 가능한 링크로 표시되길 원했음.
+- **발견**: Slack mrkdwn `<url|label>` 포맷은 Slack Web API 전송 전용 — 클립보드 붙여넣기에서는 리터럴 문자열로 표시됨. 정답은 `navigator.clipboard.write()`에 `ClipboardItem({ "text/html": Blob([html]), "text/plain": Blob([plain]) })`를 동시에 담는 것. Slack 리치텍스트 에디터는 `text/html`을 우선 소비하여 `<a href="url">label</a>`를 클릭 가능한 하이퍼링크로 렌더링. HTML 미지원 앱은 `text/plain` fallback 사용.
+- **교훈**: Slack 공유용 클립보드 복사는 mrkdwn이 아닌 HTML ClipboardItem을 기본으로 설계. `try/catch`로 감싸고 실패 시 `writeText()` fallback 필수 (Firefox 등 미지원 브라우저 대응). `navigator.clipboard.write()`는 HTTPS 또는 localhost + 사용자 제스처(클릭) 핸들러 내에서만 동작.
+
 ### 8. Tauri webview에서 `window.open()` silent 실패 — 외부 URL은 항상 API.openInChrome (2026-04-26)
 
 - **상황**: deployUrl/githubUrl 카드 버튼에 `window.open(url, '_blank')`를 사용했더니 Tauri 앱에서 아무 반응 없음. 에러도 없고 브라우저도 안 열림.
