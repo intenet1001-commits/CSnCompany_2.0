@@ -436,3 +436,9 @@ if (dt < 400 && Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { ... }
 - **상황**: Vercel 배포 portal이 iPhone 세로(375px)에서 UI 잘림. 사용자 신고 후 5개 구체 원인(maxWidth:460/440 모달, scrollbar-none pills, 절대 위치 드롭다운 등) 식별 + 회귀 방지 필요.
 - **발견**: 한 smoke.mjs 안에 `VIEWPORT=mobile` 환경변수 분기 추가 → `chromium.launch + newContext({viewport:{width:375,height:812}, isMobile:true})` 로 동일 시나리오 재실행. 핵심 검증: `await page.evaluate(() => ({ scrollWidth: document.documentElement.scrollWidth, clientWidth: document.documentElement.clientWidth }))` → `scrollWidth ≤ clientWidth + 1` (1px 여유). 한 줄 assertion이 5개 overflow 버그 모두 잡음.
 - **교훈**: 모바일 회귀 테스트는 Lighthouse나 풀스크린샷 비교 같은 무거운 도구 없이도 **scrollWidth 비교 1줄**로 80% 가치 확보. 비밀번호 게이트 같은 가드가 있으면 게이트 자체에서도 이 검증을 실행해 두면 deploy 후 즉시 회귀 감지. package.json scripts 에 `"test:smoke:mobile": "VIEWPORT=mobile TARGET=vercel node tests/smoke.mjs"` 같은 한 줄 별칭 표준화.
+
+### 29. Vercel 자동 배포 미트리거 시 CLI 강제 배포 (2026-04-28)
+
+- **상황**: GitHub push 후 Vercel 배포 버전이 갱신되지 않음. 코드 수정 후 push를 여러 번 해도 프로덕션이 구버전 유지.
+- **발견**: GitHub ↔ Vercel webhook 연동이 끊기면 push 트리거가 무시됨. `npx vercel --prod --yes` 로 CLI에서 직접 프로젝트 루트에서 실행하면 `.vercel/project.json` 의 projectId/orgId를 읽어 즉시 빌드·배포. 배포 URL이 `Aliased: https://xxx.vercel.app` 으로 출력되면 성공.
+- **교훈**: 배포 이후 UI 변경이 없거나 placeholder 텍스트가 구버전으로 보이면 자동 배포 미트리거를 의심. 확인법: 로컬 placeholder와 배포 버전 비교. 해결: 프로젝트 루트에서 `npx vercel --prod --yes` 실행.

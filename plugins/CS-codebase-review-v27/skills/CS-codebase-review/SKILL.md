@@ -36,3 +36,9 @@ version: 1.0.0
 - **상황**: PortalManager `saveSettings()`에서 `persist(next)` (내부 `setData(next)` + `await PortalAPI.save(next)`) 직후, 같은 onConfirm 클로저의 `syncSupabase()` 실행. devices 테이블 upsert 라인 `name: data.deviceName ?? deviceName ?? null` — React 배칭 때문에 `data.deviceName`은 옛 값, 사용자가 새로 입력한 useState `deviceName`은 신값인데 `??` 순서가 거꾸로라 옛 값이 이김 → Supabase에 새 이름이 영영 안 올라감.
 - **발견**: `setX(next)` 는 마이크로태스크 큐에 들어가지만 같은 함수 스코프의 closure 변수는 await 후에도 갱신되지 않음. async chain에서 데이터 흐름은 항상 명시적으로 전달(인자 또는 ref)하거나, 새로 입력된 useState 값을 우선 참조해야 함.
 - **교훈**: 코드 리뷰 시 `setX(...)` 직후 같은 함수에서 `x` 또는 `data` 같은 closure-captured 상태를 참조하는 패턴은 **반드시 의심**. 검토 체크리스트에 추가: "async fn 내 setData → 같은 함수 후속 분기가 data 참조? → 직접 인자 전달 또는 fresh useState 사용으로 대체". 비슷한 자기-덮어쓰기 패턴: `fetchKnownDevices()` 가 Supabase 응답으로 로컬 deviceName을 force-overwrite 했던 case도 동일한 클래스 — local-first 정책 명시 필요.
+
+### 6. Next.js App Router createPortal → position:fixed 직접 사용 (2026-04-28)
+
+- **상황**: MentionInput 드롭다운을 `createPortal(dropdown, document.body)` 로 구현. 로컬(npm run dev)에서는 정상, Vercel 프로덕션 빌드에서만 드롭다운 미표시.
+- **발견**: Next.js App Router는 "use client" 컴포넌트도 초기 HTML을 서버에서 렌더링. `createPortal`은 `document.body`가 필요해 `mounted` state 체크로 SSR 방지했으나, hydration 타이밍 차이로 프로덕션에서 portal이 조용히 실패. `overflow:hidden` 부모 탈출이 목적이라면 `position:fixed`만으로 충분 — fixed는 CSS spec상 `overflow:hidden` 부모에 영향 받지 않음 (transform 없을 때).
+- **교훈**: Next.js App Router에서 드롭다운/툴팁의 `overflow` 탈출은 `position:fixed + getBoundingClientRect()` 로 해결. `createPortal`은 SSR과 충돌 위험이 있어 꼭 필요한 경우(모달 배경 등)만 사용. 로컬과 프로덕션 차이가 있으면 hydration 타이밍 문제를 1순위로 의심.
