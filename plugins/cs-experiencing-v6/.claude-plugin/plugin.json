@@ -8,8 +8,5 @@
   },
   "repository": "https://github.com/intenet1001-commits/CSnCompany_2-0",
   "license": "MIT",
-  "keywords": ["knowledge", "experience", "testing", "planning", "learning", "versioning", "code-review", "codebase-review", "karpathy", "bkit", "gstack"],
-  "skills": [
-    { "name": "cs-experiencing", "source": "./skills/experiencing/SKILL.md" }
-  ]
+  "keywords": ["knowledge", "experience", "testing", "planning", "learning", "versioning", "code-review", "codebase-review", "karpathy", "bkit", "gstack"]
 }
