@@ -1,0 +1,127 @@
+{
+  "_comment": "cs-youtube CapCut 임포트용 통합 JSON 템플릿 v1.0",
+  "version": "1.0",
+  "project": {
+    "id": "YYYY-MM-DD_slug",
+    "title": "영상 제목",
+    "topic": "주제",
+    "duration_target_sec": 60,
+    "aspect_ratio": "9:16",
+    "resolution": "1080x1920",
+    "fps": 30,
+    "created_at": "YYYY-MM-DDTHH:MM:SS",
+    "lang": "ko",
+    "channel_profile": "default"
+  },
+  "research": {
+    "query": "",
+    "draft_angle": null,
+    "collected_at": "",
+    "youtube_competitors": [],
+    "blog_competitors": [],
+    "trend_insights": [],
+    "differentiation_angle": "",
+    "draft_improvement_points": []
+  },
+  "script": {
+    "hook": {
+      "text": "",
+      "type": "question",
+      "start_sec": 0,
+      "end_sec": 3
+    },
+    "body": [
+      {
+        "segment_id": 2,
+        "type": "problem",
+        "text": "",
+        "start_sec": 3,
+        "end_sec": 15
+      },
+      {
+        "segment_id": 3,
+        "type": "solution",
+        "point": 1,
+        "text": "",
+        "start_sec": 15,
+        "end_sec": 25
+      },
+      {
+        "segment_id": 4,
+        "type": "solution",
+        "point": 2,
+        "text": "",
+        "start_sec": 25,
+        "end_sec": 40
+      },
+      {
+        "segment_id": 5,
+        "type": "solution",
+        "point": 3,
+        "text": "",
+        "start_sec": 40,
+        "end_sec": 55
+      }
+    ],
+    "cta": {
+      "text": "",
+      "start_sec": 55,
+      "end_sec": 60
+    },
+    "total_words": 0,
+    "total_duration_sec": 60,
+    "hook_strength": "medium"
+  },
+  "voice": {
+    "provider": "elevenlabs",
+    "api_endpoint": "https://api.elevenlabs.io/v1/text-to-speech/{voice_id}",
+    "voice_id": "",
+    "voice_name": "",
+    "model_id": "eleven_multilingual_v2",
+    "segments": []
+  },
+  "visuals": {
+    "provider": "gemini",
+    "model": "gemini-2.0-flash-exp",
+    "aspect_ratio": "9:16",
+    "shots": []
+  },
+  "capcut_timeline": {
+    "tracks": [
+      {
+        "type": "video",
+        "segments": []
+      },
+      {
+        "type": "audio",
+        "segments": []
+      },
+      {
+        "type": "text",
+        "segments": []
+      }
+    ],
+    "captions": {
+      "auto_generate": true,
+      "style": "bold_white_shadow",
+      "font_size": 48,
+      "position": "center"
+    },
+    "music": {
+      "mood": "energetic",
+      "volume": 0.15,
+      "fade_in_sec": 1,
+      "fade_out_sec": 2
+    },
+    "color_grade": "vibrant"
+  },
+  "review_checklist": {
+    "hook_strength": null,
+    "competitor_differentiation": null,
+    "script_flow": null,
+    "voice_quality": null,
+    "visual_coherence": null,
+    "cta_clarity": null,
+    "notes": ""
+  }
+}

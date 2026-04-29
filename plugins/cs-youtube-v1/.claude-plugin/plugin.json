@@ -1,0 +1,12 @@
+{
+  "name": "cs-youtube",
+  "version": "1.0.0",
+  "description": "YouTube Shorts 자동화 빌더 — 경쟁사 리서치 → 대본 → ElevenLabs 보이스 → Gemini 비주얼 → CapCut JSON. 주제 입력 또는 초안 기반 제작 모두 지원.",
+  "author": {
+    "name": "intenet1001-commits",
+    "url": "https://github.com/intenet1001-commits"
+  },
+  "repository": "https://github.com/intenet1001-commits/CS-youtube",
+  "license": "MIT",
+  "keywords": ["youtube", "shorts", "reels", "tiktok", "elevenlabs", "gemini", "capcut", "script", "research", "automation"]
+}

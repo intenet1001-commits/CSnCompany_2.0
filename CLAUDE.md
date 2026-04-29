@@ -15,3 +15,4 @@ Key routing rules:
 - Code review, check my diff → invoke review
 - Architecture review, plan review → invoke plan-eng-review
 - Save progress, checkpoint, resume → invoke checkpoint
+- YouTube Shorts, 숏폼 만들어, 쇼츠 제작, 유튜브 영상, 대본 써줘 (영상) → invoke cs-youtube

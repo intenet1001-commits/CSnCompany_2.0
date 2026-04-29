@@ -65,6 +65,11 @@
       "name": "convo-maker",
       "description": "🗣️ Language Coach — Convert session Q&A into natural American English conversations for language learning.",
       "source": "./plugins/convo-maker"
+    },
+    {
+      "name": "cs-youtube",
+      "description": "🎬 YouTube Shorts Builder — 경쟁사 리서치 → 대본 → ElevenLabs 보이스 → Gemini 비주얼 → CapCut JSON. 주제 입력 또는 초안 기반 제작. (/cs-youtube \"주제\" 또는 --draft)",
+      "source": "./plugins/cs-youtube-v1"
     }
   ]
 }

@@ -1,0 +1,38 @@
+{
+  "_comment": "채널 프로필 설정 — 복사하여 config/channels/ 폴더에 저장 후 커스터마이징",
+  "channel_id": "my-channel",
+  "channel_name": "내 채널 이름",
+  "niche": "예: 재테크, AI활용, 건강, 자기계발",
+  "target_audience": "예: 20-30대 직장인",
+  "tone": "friendly",
+  "voice": {
+    "provider": "elevenlabs",
+    "voice_id": "pNInz6obpgDQGcFmaJgB",
+    "voice_name": "Adam",
+    "language": "ko",
+    "default_settings": {
+      "stability": 0.5,
+      "similarity_boost": 0.75,
+      "style": 0.3,
+      "use_speaker_boost": true
+    }
+  },
+  "visual_style": {
+    "style": "modern, clean, photorealistic",
+    "color_palette": "bright and vibrant",
+    "mood": "energetic and inspiring",
+    "avoid": "dark, gloomy, vintage filters"
+  },
+  "script_style": {
+    "hook_preferred_types": ["question", "shock"],
+    "language_level": "쉬운 구어체",
+    "max_words_per_segment": 50,
+    "cta_template": "이 영상 도움됐으면 구독 눌러주세요!"
+  },
+  "capcut_settings": {
+    "caption_style": "bold_white_shadow",
+    "music_mood": "energetic",
+    "music_volume": 0.15,
+    "color_grade": "vibrant"
+  }
+}
