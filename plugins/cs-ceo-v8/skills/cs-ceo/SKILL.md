@@ -208,3 +208,10 @@ CEO 에이전트가 반환한 종합 리포트를 그대로 출력한다.
 - **판단**: 안전한 작업(코드 변경, 빌드, git push)은 자율 진행, **destructive/installing 동작**(NSIS 인스톨러 실행)은 silent flag(`/S`)로 사용자 확인 없이 가능하지만 **결과 검증 필수**(설치 경로 ls, 프로세스 살아있는지 tasklist). Phase 단위로 commit/push 분리 → 아침에 사용자가 git log로 진행 트레이스 가능.
 - **결과**: 5-phase 모두 완료, 6커밋 푸시, 앱 설치 + 실행 검증, 아침 보고서에 시나리오별 검증 절차 명시(핸드오프, cmux 폴백, 기기명 변경, 자동 실행). 사용자가 깨어나면 30초 내에 상태 파악 가능.
 - **교훈**: 야간 위임 받을 때 (1) Phase별 commit으로 트레이스 보장 (2) destructive는 검증까지 묶음 (3) 마지막 메시지에 **시나리오 체크리스트** 포함 — "Step N: 이걸 클릭하면 X가 보여야 함" 식. ScheduleWakeup 으로 장시간 빌드 polling 가능 (270초 간격이 cache TTL 적정).
+
+### 15. 빌드 시스템 크로스 디바이스 버그 — Mode B 인라인 분석으로 절대경로 즉시 진단 (2026-05-01)
+
+- **상황**: Tauri 앱 DMG 빌드가 iCloud ETIMEDOUT + E0601(main 미발견)로 반복 실패. 다른 Mac에서도 빌드 오류 보고됨.
+- **판단**: Mode B — CS-codebase-review 인라인 분석. `.cargo/config.toml`의 하드코딩 절대경로(`/Users/gwanli/cargo-targets/portmanager`)가 크로스 디바이스 실패의 근본 원인으로 즉시 특정. `build-macos.ts` 래퍼 생성으로 `CARGO_TARGET_DIR=$HOME/...` 동적 설정 제안.
+- **결과**: 크로스 디바이스 문제 해결. 추가로 fix-dmg stale 파일 버그 + 로그 offset UTF-8 버그 동시 발견 및 수정. 8파일 커밋 + 푸시.
+- **교훈**: 빌드 실패 디버깅에서 "다른 기기에서도 재현"은 **환경 고유값 하드코딩**(절대경로, username, 홈 디렉토리)을 1순위 의심. 코드 리뷰 시 `.cargo/config.toml`, `CMakeLists.txt`, Makefile의 절대경로 항목을 체크리스트 필수 항목으로 추가.

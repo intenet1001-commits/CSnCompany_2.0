@@ -42,3 +42,9 @@ version: 1.0.0
 - **상황**: MentionInput 드롭다운을 `createPortal(dropdown, document.body)` 로 구현. 로컬(npm run dev)에서는 정상, Vercel 프로덕션 빌드에서만 드롭다운 미표시.
 - **발견**: Next.js App Router는 "use client" 컴포넌트도 초기 HTML을 서버에서 렌더링. `createPortal`은 `document.body`가 필요해 `mounted` state 체크로 SSR 방지했으나, hydration 타이밍 차이로 프로덕션에서 portal이 조용히 실패. `overflow:hidden` 부모 탈출이 목적이라면 `position:fixed`만으로 충분 — fixed는 CSS spec상 `overflow:hidden` 부모에 영향 받지 않음 (transform 없을 때).
 - **교훈**: Next.js App Router에서 드롭다운/툴팁의 `overflow` 탈출은 `position:fixed + getBoundingClientRect()` 로 해결. `createPortal`은 SSR과 충돌 위험이 있어 꼭 필요한 경우(모달 배경 등)만 사용. 로컬과 프로덕션 차이가 있으면 hydration 타이밍 문제를 1순위로 의심.
+
+### 7. iCloud Drive + Tauri 빌드 ETIMEDOUT + 크로스 디바이스 절대경로 버그 (2026-05-01)
+
+- **상황**: macOS `~/Documents/`(iCloud 동기화 경로) 안의 Tauri 프로젝트에서 `bun run tauri:build:dmg` 실행 시 `os error 60 (ETIMEDOUT)` 발생. 또 `.cargo/config.toml`에 `target-dir = "/Users/gwanli/..."` 절대경로가 있어 다른 Mac에서 빌드 실패. 로그 뷰어의 `offset` 파라미터가 bytes이나 `text.slice(chars)`로 처리해 한글 로그에서 중복 append 발생.
+- **발견**: ① iCloud `brctl status`에서 `needs-sync`/`orphan.live` 에러 시 파일 I/O 간헐 타임아웃. `brctl download <path>`로 로컬 강제 다운로드 후 재시도. ② `.cargo/config.toml` 절대경로 → `build-macos.ts` 래퍼로 `CARGO_TARGET_DIR=$HOME/cargo-targets/portmanager` 동적 설정. ③ `text.slice(offset)` → `Buffer.from(text,'utf-8').slice(offset).toString()`으로 byte 기반 슬라이싱 통일. Rust `&content[offset..]` → `is_char_boundary()` safe slicing.
+- **교훈**: Tauri 프로젝트가 iCloud 경로에 있으면 빌드 전 `brctl download` 실행 또는 프로젝트를 iCloud 밖으로 이동. `.cargo/config.toml`에 절대경로 사용 금지 — 항상 동적 환경변수로 대체. 로그 offset은 byte/char 일관성 반드시 검증.
