@@ -1,22 +1,22 @@
 #!/bin/bash
 
-# CSnCompany_2.0 Installer for Claude Code
+# CSnCompany_2-0 Installer for Claude Code
 # Automatically installs to ~/.claude/plugins/marketplaces/
 
 set -e
 
-PLUGIN_NAME="CSnCompany_2.0"
-REPO_URL="https://github.com/intenet1001-commits/CSnCompany_2.0"
+PLUGIN_NAME="CSnCompany_2-0"
+REPO_URL="https://github.com/intenet1001-commits/CSnCompany_2-0"
 INSTALL_DIR="$HOME/.claude/plugins/marketplaces/$PLUGIN_NAME"
 
-echo "Installing CSnCompany_2.0 for Claude Code..."
+echo "Installing CSnCompany_2-0 for Claude Code..."
 
 # Create marketplaces directory if it doesn't exist
 mkdir -p "$HOME/.claude/plugins/marketplaces"
 
 # Check if already installed
 if [ -d "$INSTALL_DIR" ]; then
-    echo "CSnCompany_2.0 already installed. Updating..."
+    echo "CSnCompany_2-0 already installed. Updating..."
     cd "$INSTALL_DIR"
     git pull origin main
     echo "Updated successfully!"
