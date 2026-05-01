@@ -187,6 +187,12 @@ CEO 에이전트가 반환한 종합 리포트를 그대로 출력한다.
 - **결과**: 6개 항목 모두 빠르게 검증 완료.
 - **교훈**: "implemented code verify" = 항상 Mode A. Bash grep + Read로 충분.
 
+### 3. 외부 지식 게이트 — context7-auto-research 자동 호출 (2026-04-25)
+- **상황**: CEO 내부 노하우만으로는 라이브러리/프레임워크 최신 동향, 새 API, 마이너 변경점을 정확히 답할 수 없음.
+- **판단**: Phase -3 신설 — 모든 요청 진입 직전에 "외부 지식 필요 여부" 평가. 트리거 신호 1개라도 감지되면 즉시 context7-auto-research 호출.
+- **결과**: 도메인 에이전트에게 정확한 최신 문서 INPUT 전달 → 잘못된 가정 기반 실행 감소.
+- **교훈**: 의심되면 호출이 기본값. 동일 세션 내 재호출 금지. 미설치 시 AskUserQuestion으로 Install/Skip/Abort 3지선다 제시.
+
 ### 12. HTTP-first 자동화 아키텍처: 서버리스 호환 fetch → Playwright 폴백 → AI 진단 게이트 (2026-04-26)
 
 - **상황**: Playwright 전용 파킹 자동화 앱을 Vercel 배포에서도 동작하도록 전환 요청

@@ -569,3 +569,33 @@ fi
   2. 동일 세션 내 재호출 금지로 토큰 낭비 방지.
   3. 게이트 발동/누락 모두 Phase 5-B 버전업 트리거 → 다음 세션에 노하우로 영속화.
   4. **미설치 환경 대응**: context7-auto-research가 없으면 무단으로 건너뛰지 말고 AskUserQuestion으로 Install/Skip/Abort 3지선다 제시. 설치 명령은 `npx skills add -g BenedictKing/context7-auto-research`. Skip 선택 시 정확도 하락 경고 1줄 후 진행.
+
+### 12. HTTP-first 자동화 아키텍처: 서버리스 호환 fetch → Playwright 폴백 → AI 진단 게이트 (2026-04-26)
+- **상황**: Playwright 전용 파킹 자동화 앱을 Vercel 배포에서도 동작하도록 전환 요청
+- **판단**: Playwright는 서버리스 환경에서 Chromium 바이너리 실행 불가 → plain fetch로 HTTP 세션 자동화 먼저 시도. 실패 시 UI에 "Claude Code에 전달" 버튼으로 진단 프롬프트를 클립보드에 복사하는 UX 패턴 설계.
+- **결과**: fetch 구현은 AJPark 로그인 인코딩(Base64 ID) 문제로 추가 디버깅 필요했으나 아키텍처 방향은 유효. 진단 버튼 패턴은 비기술 사용자가 오류를 개발자(Claude Code)에게 전달하는 효과적인 채널이 됨.
+- **교훈**: Playwright 필수처럼 보이는 작업도 HTTP-first로 먼저 시도. 실패 경로에 "AI 진단 게이트(클립보드 복사 프롬프트)" 설계 → 사용자가 직접 Claude Code에 붙여넣으면 자동 디버깅 루프 완성.
+
+### 13. Electron auto-paste 디버깅 — 3-레이어 격리 전략 (2026-04-27)
+- **상황**: Electron 앱에서 단축키 → 클립보드 → 붙여넣기 파이프라인이 동작하지 않아 root cause 특정이 어려움.
+- **판단**: 3-레이어 격리 방식 적용: ① pbpaste로 클립보드 직접 확인(Electron clipboard.writeText 정상 여부) ② osascript 단독 실행(AppleScript 문법 + 권한 여부) ③ Electron exec() 통합 테스트(자식 프로세스 sandbox 이슈 여부). Layer 2 성공 + Layer 3 실패 → Electron 자식 프로세스 권한 문제로 즉시 특정.
+- **결과**: keystroke "v" using command down은 Layer 2에서는 동작하지만 Layer 3(Electron exec)에서 silent fail → click menu item "Paste"로 교체 후 해결.
+- **교훈**: Electron 앱에서 osascript 오작동 시 반드시 3-레이어 격리부터. 특히 exit 0이지만 효과 없는 경우 sandbox/권한 문제 → AppleScript 메뉴 클릭 방식으로 우회.
+
+### 14. 야간 위임 — 사용자 sleep 중 Phase별 자율 진행 + 아침 보고서 (2026-04-28)
+- **상황**: 사용자가 "난 자야하니까 잘 처리해 아침에 보자"로 위임. 5-phase 작업을 사용자 컨펌 없이 자율 진행해야 함.
+- **판단**: 안전한 작업(코드 변경, 빌드, git push)은 자율 진행. destructive 동작은 결과 검증 필수. Phase 단위로 commit/push 분리 → 아침에 사용자가 git log로 진행 트레이스 가능.
+- **결과**: 5-phase 모두 완료, 6커밋 푸시, 앱 설치 + 실행 검증, 아침 보고서에 시나리오별 검증 절차 명시.
+- **교훈**: 야간 위임 시 (1) Phase별 commit으로 트레이스 보장 (2) destructive는 검증까지 묶음 (3) 마지막 메시지에 시나리오 체크리스트 포함. ScheduleWakeup 270초 간격이 cache TTL 적정.
+
+### 15. 빌드 시스템 크로스 디바이스 버그 — Mode B 인라인 분석으로 절대경로 즉시 진단 (2026-05-01)
+- **상황**: Tauri 앱 DMG 빌드가 iCloud ETIMEDOUT + E0601(main 미발견)로 반복 실패. 다른 Mac에서도 빌드 오류 보고됨.
+- **판단**: Mode B — CS-codebase-review 인라인 분석. `.cargo/config.toml`의 하드코딩 절대경로가 크로스 디바이스 실패의 근본 원인으로 즉시 특정.
+- **결과**: 크로스 디바이스 문제 해결. fix-dmg stale 파일 버그 + 로그 offset UTF-8 버그 동시 발견 및 수정. 8파일 커밋 + 푸시.
+- **교훈**: "다른 기기에서도 재현"은 **환경 고유값 하드코딩**(절대경로, username, 홈 디렉토리)을 1순위 의심. `.cargo/config.toml`, `CMakeLists.txt`, Makefile 절대경로를 코드 리뷰 체크리스트 필수 항목으로.
+
+### 16. Tauri 앱 필드 사라짐 버그 — TypeScript ↔ Rust struct 필드 불일치 1순위 확인 (2026-05-01)
+- **상황**: 즐겨찾기(favorite) 추가 후 앱 재시작 시 사라지는 버그.
+- **판단**: Mode A 직접 분석. CEO 직접 Bash+Read로 3단계 원인 추적.
+- **결과**: 3중 원인 발견. 핵심 근본 원인 — Rust `PortInfo` 구조체에 `favorite` 필드 없어서 `save_ports` 호출 시 JSON 역직렬화 과정에서 필드 드롭.
+- **교훈**: Tauri 앱에서 특정 필드가 저장 안 될 때 → **1순위: `src-tauri/src/lib.rs`의 `struct PortInfo` 필드 목록과 TS `interface PortInfo` 비교**. Rust 구조체 누락 필드는 serde 역직렬화 시 silently drop됨.
