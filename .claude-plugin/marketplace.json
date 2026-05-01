@@ -14,7 +14,7 @@
     {
       "name": "cs-ceo",
       "description": "🧭 CEO — Estimates effort and autonomously dispatches across CS-test/CS-plan/CS-codebase-review/cs-design/cs-smart-run. v5.2 adds External Knowledge Gate + partnership protocols.",
-      "source": "./plugins/cs-ceo-v9"
+      "source": "./plugins/cs-ceo-v10"
     },
     {
       "name": "cs-clarify",

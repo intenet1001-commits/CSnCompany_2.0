@@ -215,3 +215,10 @@ CEO 에이전트가 반환한 종합 리포트를 그대로 출력한다.
 - **판단**: Mode B — CS-codebase-review 인라인 분석. `.cargo/config.toml`의 하드코딩 절대경로(`/Users/gwanli/cargo-targets/portmanager`)가 크로스 디바이스 실패의 근본 원인으로 즉시 특정. `build-macos.ts` 래퍼 생성으로 `CARGO_TARGET_DIR=$HOME/...` 동적 설정 제안.
 - **결과**: 크로스 디바이스 문제 해결. 추가로 fix-dmg stale 파일 버그 + 로그 offset UTF-8 버그 동시 발견 및 수정. 8파일 커밋 + 푸시.
 - **교훈**: 빌드 실패 디버깅에서 "다른 기기에서도 재현"은 **환경 고유값 하드코딩**(절대경로, username, 홈 디렉토리)을 1순위 의심. 코드 리뷰 시 `.cargo/config.toml`, `CMakeLists.txt`, Makefile의 절대경로 항목을 체크리스트 필수 항목으로 추가.
+
+### 16. Tauri 앱 필드 사라짐 버그 — TypeScript ↔ Rust struct 필드 불일치 1순위 확인 (2026-05-01)
+
+- **상황**: 즐겨찾기(favorite) 추가 후 앱 재시작 또는 창 전환 시 사라지는 버그. Pull 직후에는 나타나지만 바로 소실됨.
+- **판단**: Mode A 직접 분석. CEO 직접 Bash+Read로 3단계 원인 추적.
+- **결과**: 3중 원인 발견: ① App.tsx 자동 Push rows에 `favorite` 누락 ② Supabase `ports` 테이블에 `favorite` 컬럼 없음 ③ **핵심 근본 원인** — Rust `PortInfo` 구조체에 `favorite` 필드 없어서 `save_ports` 호출 시 JSON 역직렬화 과정에서 필드 드롭. `ports.json`에 저장될 때마다 `favorite`가 사라짐.
+- **교훈**: Tauri 앱에서 특정 필드가 저장 안 될 때 → **1순위: `src-tauri/src/lib.rs`의 `struct PortInfo` 필드 목록과 TS `interface PortInfo` 비교**. Rust 구조체 누락 필드는 serde 역직렬화 시 silently drop됨. 이후 Supabase 컬럼/Push 로직은 2·3차 확인 순서.
