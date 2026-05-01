@@ -48,3 +48,9 @@ version: 1.0.0
 - **상황**: macOS `~/Documents/`(iCloud 동기화 경로) 안의 Tauri 프로젝트에서 `bun run tauri:build:dmg` 실행 시 `os error 60 (ETIMEDOUT)` 발생. 또 `.cargo/config.toml`에 `target-dir = "/Users/gwanli/..."` 절대경로가 있어 다른 Mac에서 빌드 실패. 로그 뷰어의 `offset` 파라미터가 bytes이나 `text.slice(chars)`로 처리해 한글 로그에서 중복 append 발생.
 - **발견**: ① iCloud `brctl status`에서 `needs-sync`/`orphan.live` 에러 시 파일 I/O 간헐 타임아웃. `brctl download <path>`로 로컬 강제 다운로드 후 재시도. ② `.cargo/config.toml` 절대경로 → `build-macos.ts` 래퍼로 `CARGO_TARGET_DIR=$HOME/cargo-targets/portmanager` 동적 설정. ③ `text.slice(offset)` → `Buffer.from(text,'utf-8').slice(offset).toString()`으로 byte 기반 슬라이싱 통일. Rust `&content[offset..]` → `is_char_boundary()` safe slicing.
 - **교훈**: Tauri 프로젝트가 iCloud 경로에 있으면 빌드 전 `brctl download` 실행 또는 프로젝트를 iCloud 밖으로 이동. `.cargo/config.toml`에 절대경로 사용 금지 — 항상 동적 환경변수로 대체. 로그 offset은 byte/char 일관성 반드시 검증.
+
+### 8. killall -9 node / rm -rf .next 가 Next.js dev 서버를 자살시키는 패턴 (2026-05-01)
+
+- **상황**: Next.js API 라우트(`/api/build-dmg`)에서 빌드 전 `killall -9 node`를 실행했더니 SSE 스트림이 즉시 끊겨 빌드가 실패처럼 보임. 빌드 npm 스크립트에 `rm -rf .next`가 포함돼 있어 빌드 실행 중 dev 서버가 불능 상태가 됨.
+- **발견**: `killall -9 node`는 OS 전체 node 프로세스를 종료 — Next.js 개발 서버, VS Code, 모든 node 기반 앱 포함. API 라우트는 dev 서버 내에서 실행되므로 자기 자신도 종료됨 → SSE 스트림 즉시 단절. `rm -rf .next`는 dev 서버가 읽는 컴파일 캐시 디렉토리를 삭제 → 서버가 응답 불능 상태로 전환. `next.config.js`의 `distDir: NODE_ENV=production ? '.next-build' : '.next'` 설정으로 production 빌드는 `.next-build`에 출력되므로 `rm -rf .next`가 불필요함.
+- **교훈**: API 라우트에서 프로세스 종료 시 `pkill -f "AppName"`으로 특정 앱만 종료. `killall -9 node` 절대 사용 금지. 빌드 스크립트에서 `rm -rf .next` 제거 — next.config.js의 distDir 분리로 대체. production 빌드가 별도 디렉토리를 사용하면 dev 서버 캐시 삭제 불필요.

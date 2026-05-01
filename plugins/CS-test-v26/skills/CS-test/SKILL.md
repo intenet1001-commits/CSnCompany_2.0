@@ -442,3 +442,9 @@ if (dt < 400 && Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { ... }
 - **상황**: GitHub push 후 Vercel 배포 버전이 갱신되지 않음. 코드 수정 후 push를 여러 번 해도 프로덕션이 구버전 유지.
 - **발견**: GitHub ↔ Vercel webhook 연동이 끊기면 push 트리거가 무시됨. `npx vercel --prod --yes` 로 CLI에서 직접 프로젝트 루트에서 실행하면 `.vercel/project.json` 의 projectId/orgId를 읽어 즉시 빌드·배포. 배포 URL이 `Aliased: https://xxx.vercel.app` 으로 출력되면 성공.
 - **교훈**: 배포 이후 UI 변경이 없거나 placeholder 텍스트가 구버전으로 보이면 자동 배포 미트리거를 의심. 확인법: 로컬 placeholder와 배포 버전 비교. 해결: 프로젝트 루트에서 `npx vercel --prod --yes` 실행.
+
+### 30. formidable allowEmptyFiles + minFileSize 동시 설정 필수 + Radix UI 탭 셀렉터 (2026-05-01)
+
+- **상황**: Next.js 업로드 라우트에서 `allowEmptyFiles: false` → 0바이트 파일 업로드 시 에러. `allowEmptyFiles: true`로 변경해도 "minFileSize (1 bytes) inferior" 에러 지속. Playwright에서 Radix UI 탭을 `[data-value="xxx"]`로 찾으면 항상 0개 반환.
+- **발견**: formidable v3은 `allowEmptyFiles`와 `minFileSize`를 독립적으로 체크. `allowEmptyFiles: true`만으로는 `minFileSize` 기본값(1 byte) 검사가 여전히 적용됨. `minFileSize: 0`도 함께 설정해야 0바이트 파일이 통과. Radix UI `TabsTrigger`는 `data-value` 대신 `id="radix-xxx-trigger-youtube"` 패턴으로 렌더링 — `[role="tab"]` + `.filter({hasText: "레이블"})` 조합만 안정적으로 작동.
+- **교훈**: formidable 빈 파일 허용 시 `allowEmptyFiles: true, minFileSize: 0` 쌍으로 설정. 서버에서 `file.size === 0` 추가 필터링도 병행. Radix UI 컴포넌트 테스트 시 내부 DOM 속성(data-value, data-state 등)보다 aria role + text 조합 사용.

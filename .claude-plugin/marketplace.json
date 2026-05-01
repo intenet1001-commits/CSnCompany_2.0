@@ -29,7 +29,7 @@
     {
       "name": "cs-design",
       "description": "🎨 Designer — 5-agent parallel design review: visual hierarchy, interaction quality, design-system consistency, responsive/accessibility, anti-pattern detection.",
-      "source": "./plugins/cs-design-v18"
+      "source": "./plugins/cs-design-v19"
     },
     {
       "name": "cs-design-sample1",
@@ -39,12 +39,12 @@
     {
       "name": "CS-test",
       "description": "🧪 QA Engineer — 14-agent web testing: security, SEO, performance, accessibility, DB, PWA, touch, image optimization.",
-      "source": "./plugins/CS-test-v25"
+      "source": "./plugins/CS-test-v26"
     },
     {
       "name": "CS-codebase-review",
       "description": "🔍 Code Reviewer — 5-agent parallel review: Architecture, Quality, Security, Performance, Maintainability.",
-      "source": "./plugins/CS-codebase-review-v28"
+      "source": "./plugins/CS-codebase-review-v29"
     },
     {
       "name": "cs-ship",
