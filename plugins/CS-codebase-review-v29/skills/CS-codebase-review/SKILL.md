@@ -5,6 +5,80 @@ description: 5-agent parallel codebase review
 version: 1.0.0
 ---
 
+# CS-codebase-review 실행 프로토콜
+
+## Phase 0 — Python Pre-Pass (선택적, 토큰 절감)
+
+5-agent를 스폰하기 전에 Python 스크립트로 구조 데이터를 추출한다.
+Python이 없으면 이 Phase를 건너뛰고 기존 방식(Read+Grep)으로 진행한다.
+
+```bash
+BASE="$HOME/.claude/plugins/marketplaces/CSnCompany_2-0/plugins"
+export CSN_SHARED_DIR="$BASE/shared"
+source "$CSN_SHARED_DIR/_bootstrap.sh" 2>/dev/null
+
+if [ "$CSN_USE_PYTHON" = "true" ]; then
+  # 파일 구조 + import 그래프 추출 (LLM Read 대체)
+  SUMMARY=$(csn_run "extract_summary.py" "$TARGET_DIR" --depth 4)
+
+  # TS interface ↔ Rust struct 필드 불일치 탐지 (노하우 #16 자동화)
+  TS_RUST=$(csn_run "ts_rust_diff.py" "$TARGET_DIR")
+
+  # 하드코딩 절대경로 탐지 (노하우 #15 자동화)
+  ABSPATH=$(csn_run "abspath_check.py" "$TARGET_DIR")
+
+  echo "📊 Python pre-pass 완료:"
+  echo "$SUMMARY" | python3 -c "import sys,json; d=json.load(sys.stdin); print(f'  파일 {d[\"total_files\"]}개 | {d[\"total_lines\"]}줄 분석')" 2>/dev/null
+  echo "$TS_RUST"  | python3 -c "import sys,json; d=json.load(sys.stdin); print(f'  TS↔Rust 불일치: {d[\"high_risk_count\"]}건 HIGH')" 2>/dev/null
+  echo "$ABSPATH"  | python3 -c "import sys,json; d=json.load(sys.stdin); print(f'  절대경로: {d[\"high_risk\"]}건 HIGH')" 2>/dev/null
+else
+  SUMMARY='{"fallback":true}'
+  TS_RUST='{"fallback":true}'
+  ABSPATH='{"fallback":true}'
+fi
+```
+
+## Phase 1 — 5-Agent 병렬 리뷰
+
+각 에이전트에게 Python pre-pass 결과(JSON)를 컨텍스트로 전달한다.
+`fallback:true`이면 에이전트가 직접 Read+Grep으로 분석한다.
+
+**Agent 목록 (단일 블록 병렬 스폰):**
+
+| Agent | 담당 | Python 결과 활용 |
+|-------|------|----------------|
+| architecture-reviewer | 의존성 구조, 레이어 분리 | SUMMARY (import 그래프) |
+| quality-reviewer | 코드 품질, 복잡도 | SUMMARY (함수 목록, LoC) |
+| security-reviewer | 취약점, 하드코딩 | ABSPATH (절대경로 hit) |
+| performance-reviewer | 병목, 비효율 패턴 | SUMMARY (파일 크기, LoC) |
+| maintainability-reviewer | 유지보수성, struct 동기화 | TS_RUST (필드 불일치) |
+
+**각 에이전트 프롬프트 템플릿:**
+```
+당신은 [ROLE] 전문 리뷰어입니다.
+
+## 대상 프로젝트
+경로: [TARGET_DIR]
+
+## Python Pre-Pass 결과 (결정론적 추출)
+[SUMMARY / TS_RUST / ABSPATH JSON — fallback:true이면 직접 분석]
+
+## 노하우 참고
+[관련 SKILL.md 노하우 항목]
+
+5점 척도(A~F)로 평가하고 우선순위별 수정사항을 제시하세요.
+```
+
+## Phase 2 — 종합 리포트
+
+5개 에이전트 결과를 취합:
+- 전체 등급 (A~F)
+- 발견된 이슈 (HIGH/MEDIUM/LOW)
+- 우선순위 상위 5개 액션 아이템
+- Python 자동 탐지 이슈 (TS↔Rust, 절대경로) 별도 강조
+
+---
+
 # CS-codebase-review 노하우
 
 ### 1. Bun.spawn()에서 bare 'bash' ENOENT — 항상 /bin/bash 전체 경로 사용 (2026-04-24)

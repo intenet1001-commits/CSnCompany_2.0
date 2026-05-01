@@ -4,6 +4,8 @@
 
 **TL;DR — One marketplace, eleven AI teammates.** Install it once, and you can call a CEO, PM, Architect, Designer, QA Engineer, Code Reviewer, and DevOps engineer from inside Claude Code with simple slash commands like `/cs-ceo` or `/CS-test`.
 
+> ⚡ **Optional: Install [uv](https://docs.astral.sh/uv/) for 70%+ token savings on code analysis** — `brew install uv` or `curl -LsSf https://astral.sh/uv/install.sh | sh`. Works without it too (automatic fallback).
+
 ---
 
 ## 🤔 What is this? (For Beginners)
@@ -138,7 +140,7 @@ The CEO estimates effort, decides which teammates to call (PM, Architect, Design
 
 ---
 
-## 🏛️ Architecture — Lead-Agent Pattern
+## 🏛️ Architecture — Lead-Agent Pattern + Python Pre-Pass
 
 Every multi-agent plugin uses the **lead-agent pattern**: the main conversation spawns **one** lead agent, and the lead orchestrates N specialist workers internally. Worker output never pollutes your main context — only the final synthesized report comes back.
 
@@ -152,7 +154,21 @@ Main Claude Code conversation
             → synthesize final doc → return to main context
 ```
 
-This keeps your conversation focused while massive parallel work happens behind the scenes.
+### Python Pre-Pass (optional, requires uv or python3)
+
+For code analysis plugins, a Python pre-pass runs **before** the agents to extract structural data deterministically. The agents receive a compact JSON summary instead of reading raw files — cutting input tokens by 70%+.
+
+```
+plugins/shared/
+├── _bootstrap.sh          ← uv/python3 detection + graceful fallback
+└── scripts/
+    ├── extract_summary.py ← file structure + import graph → JSON
+    ├── ts_rust_diff.py    ← TypeScript ↔ Rust struct field diff
+    └── abspath_check.py   ← hardcoded absolute path detection
+```
+
+**Without uv/python3**: all plugins still work normally — agents read files directly (more tokens, same results).
+**With uv/python3**: agents receive pre-extracted JSON → faster, cheaper, more accurate cross-file analysis.
 
 ### Per-plugin agent counts
 
@@ -175,16 +191,22 @@ CSnCompany_2-0/
 ├── .claude-plugin/
 │   └── marketplace.json           # the marketplace manifest
 ├── plugins/
-│   ├── cs-ceo-v5/                 # 🧭 CEO orchestrator
+│   ├── shared/                    # 🔧 Shared Python scripts (token optimizer)
+│   │   ├── _bootstrap.sh          #    uv/python3 detection + graceful fallback
+│   │   └── scripts/
+│   │       ├── extract_summary.py #    file structure + import graph → JSON
+│   │       ├── ts_rust_diff.py    #    TypeScript ↔ Rust struct field diff
+│   │       └── abspath_check.py   #    hardcoded absolute path detection
+│   ├── cs-ceo-v11/                # 🧭 CEO orchestrator
 │   ├── cs-clarify-v1/             # 💬 PM
-│   ├── CS-plan-v19/               # 🏗️ Architect
-│   ├── cs-design-v16/             # 🎨 Designer
+│   ├── CS-plan-v21/               # 🏗️ Architect
+│   ├── cs-design-v19/             # 🎨 Designer
 │   ├── cs-design-sample1/         # 🎨 Design reference
-│   ├── CS-test-v22/               # 🧪 QA
-│   ├── CS-codebase-review-v23/    # 🔍 Reviewer
+│   ├── CS-test-v26/               # 🧪 QA
+│   ├── CS-codebase-review-v29/    # 🔍 Reviewer (Python pre-pass enabled)
 │   ├── cs-ship-v1/                # 🚢 DevOps
 │   ├── cs-smart-run/              # ⚡ Team Lead
-│   ├── cs-experiencing-v4/        # 📚 Knowledge keeper
+│   ├── cs-experiencing-v8/        # 📚 Knowledge keeper
 │   └── convo-maker/               # 🗣️ Language coach
 ├── docs/                          # extra documentation
 ├── README.md                      # this file
@@ -204,13 +226,19 @@ A: No. Install only what you need. `cs-ceo` alone covers most cases since it dis
 A: The plugins themselves are free (MIT). They run on your existing Claude Code subscription / API usage.
 
 **Q: Will plugins update automatically?**
-A: When the marketplace publishes a new version, Claude Code prompts you to update. You stay in control.
+A: When the marketplace publishes a new version, Claude Code prompts you to update. You stay in control. For git-based installs, `git pull` inside the marketplace folder is enough.
 
 **Q: I don't see the slash commands after installing.**
 A: Restart Claude Code (Ctrl-C → `claude` again). New plugins load on startup.
 
+**Q: How do I get the 70% token savings?**
+A: Install [uv](https://docs.astral.sh/uv/) — the Python environment manager. One command: `brew install uv` (Mac) or `curl -LsSf https://astral.sh/uv/install.sh | sh`. No Python pre-install needed. The plugins auto-detect uv and use it; without it they fall back silently to LLM-based analysis.
+
 **Q: Can I use `/cs-end`?**
-A: `/cs-end` is designed for the plugin author. If you run it, Phase 4 (git push to the marketplace repo) is automatically skipped — your local session learnings are still saved normally.
+A: `/cs-end` is designed for the plugin author. If you run it, Phase 4 (git push to the marketplace repo) is automatically skipped — your local session learnings are still saved normally. Use `--project /path/to/your/repo` to include your project's push status in the report.
+
+**Q: Something is broken / I want to contribute.**
+A: Open an issue or PR at [github.com/intenet1001-commits/CSnCompany_2-0](https://github.com/intenet1001-commits/CSnCompany_2-0).
 
 **Q: Something is broken / I want to contribute.**
 A: Open an issue or PR at [github.com/intenet1001-commits/CSnCompany_2-0](https://github.com/intenet1001-commits/CSnCompany_2-0).
