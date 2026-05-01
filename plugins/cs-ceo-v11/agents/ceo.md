@@ -35,6 +35,22 @@ tools:
 
 ## 실행 프로토콜
 
+### Phase INIT: Python Pre-pass (토큰 소비 없음)
+
+모든 Phase 시작 전 Python 스크립트가 경로 탐색·설치 확인을 실행한다.
+이후 Phase들은 이 결과를 재사용하며 추가 `find`/`ls`/`sort -V` 호출을 하지 않는다.
+
+```bash
+PREPASS_RUNNER="$HOME/.claude/plugins/marketplaces/CSnCompany_2-0/shared/run_prepass.sh"
+PREFLIGHT=$(bash "$PREPASS_RUNNER" ceo-preflight 2>/dev/null)
+_f() { printf '%s' "$PREFLIGHT" | python3 -c "import sys,json;print(json.load(sys.stdin)$1)" 2>/dev/null; }
+```
+
+Python/uv 미설치 시 → `run_prepass.sh`가 uv 자동 설치를 유도하거나 오류 JSON을 반환한다.
+`PREFLIGHT`가 비어 있으면 각 Phase의 bash fallback으로 진행한다.
+
+---
+
 ### Phase -3: 외부 지식 게이트 (External Knowledge Gate) — v5.2
 
 **모든 요청에서 가장 먼저 평가한다. "외부 도움이 필요할 것 같다"고 판단되면 지체 없이 `/context7-auto-research`를 호출한다.**
@@ -55,12 +71,9 @@ tools:
 
 ```
 ① 트리거 평가 (위 표 + CEO 자율 판단)
-② 설치 여부 확인 (Bash):
-   CONTEXT7_INSTALLED=false
-   [ -f "$HOME/.claude/skills/context7-auto-research/SKILL.md" ] && CONTEXT7_INSTALLED=true
-   if [ "$CONTEXT7_INSTALLED" = "false" ]; then
-     find "$HOME/.claude/plugins" -path "*/context7-auto-research/SKILL.md" 2>/dev/null | head -1 | grep -q . && CONTEXT7_INSTALLED=true
-   fi
+② 설치 여부 확인 (Phase INIT 결과 사용 — 추가 find 불필요):
+   CONTEXT7_INSTALLED=$(_f "['context7_installed']")
+   CONTEXT7_SKILL=$(_f "['partners']['context7']")
 
 ③ 미설치 → 설치 유도 (블로킹 옵션):
    AskUserQuestion(
@@ -178,35 +191,25 @@ Phase 0에서 파트너 경로를 함께 검색한다.
 ### Fast-Path (알려진 파트너)
 
 ```bash
-# superpowers
-SP_SKILLS=$(find "$HOME/.claude/plugins/cache" -path "*/superpowers/*/skills" -maxdepth 7 2>/dev/null | sort -V | tail -1)
-SP_BRAINSTORM="$SP_SKILLS/brainstorming/SKILL.md"
-SP_WRITEPLAN="$SP_SKILLS/writing-plans/SKILL.md"
-SP_EXECUTE="$SP_SKILLS/executing-plans/SKILL.md"
-SP_DEBUG="$SP_SKILLS/systematic-debugging/SKILL.md"
-SP_PARALLEL="$SP_SKILLS/dispatching-parallel-agents/SKILL.md"
+# Phase INIT 결과에서 일괄 추출 — find/sort/ls 불필요
+SP_SKILLS=$(_f "['partners']['superpowers']['base']")
+SP_BRAINSTORM=$(_f "['partners']['superpowers']['brainstorming']")
+SP_WRITEPLAN=$(_f "['partners']['superpowers']['writing_plans']")
+SP_EXECUTE=$(_f "['partners']['superpowers']['executing_plans']")
+SP_DEBUG=$(_f "['partners']['superpowers']['systematic_debugging']")
+SP_PARALLEL=$(_f "['partners']['superpowers']['dispatching_parallel']")
 
-# bkit
-BKIT_PDCA="$HOME/.claude/plugins/marketplaces/bkit-marketplace/skills/pdca/SKILL.md"
-BKIT_QA="$HOME/.claude/plugins/marketplaces/bkit-marketplace/skills/qa-phase/SKILL.md"
+BKIT_PDCA=$(_f "['partners']['bkit']['pdca']")
+BKIT_QA=$(_f "['partners']['bkit']['qa']")
 
-# omc (oh-my-claudecode) — exclude src/skills (test-only dir)
-OMC_SKILLS=$(find "$HOME/.claude/plugins/cache" -path "*/oh-my-claudecode/*/skills" -not -path "*/src/skills" -maxdepth 7 2>/dev/null | sort -V | tail -1)
-OMC_DEEPDIVE="$OMC_SKILLS/deep-dive/SKILL.md"
-OMC_AUTORESEARCH="$OMC_SKILLS/autoresearch/SKILL.md"
-OMC_AUTOPILOT="$OMC_SKILLS/autopilot/SKILL.md"
+OMC_SKILLS=$(_f "['partners']['omc']['base']")
+OMC_DEEPDIVE=$(_f "['partners']['omc']['deep_dive']")
+OMC_AUTORESEARCH=$(_f "['partners']['omc']['autoresearch']")
+OMC_AUTOPILOT=$(_f "['partners']['omc']['autopilot']")
 
-# gstack
-GSTACK_SKILL=$(find "$HOME/.claude/skills/gstack" -name "SKILL.md" 2>/dev/null | head -1)
-[ -z "$GSTACK_SKILL" ] && GSTACK_SKILL=$(find "$HOME/.claude/plugins" -path "*/gstack/SKILL.md" 2>/dev/null | head -1)
-
-# cs-clarify (CS 시리즈 내부 파트너)
-CLARIFY_SKILL=$(ls -d "$BASE/cs-clarify-v"* 2>/dev/null | sort -V | tail -1)
-CLARIFY_SKILL="$CLARIFY_SKILL/skills/cs-clarify/SKILL.md"
-
-# context7-auto-research (External Knowledge Gate — v5.2)
-CONTEXT7_SKILL="$HOME/.claude/skills/context7-auto-research/SKILL.md"
-[ ! -f "$CONTEXT7_SKILL" ] && CONTEXT7_SKILL=$(find "$HOME/.claude/plugins" -path "*/context7-auto-research/SKILL.md" 2>/dev/null | head -1)
+GSTACK_SKILL=$(_f "['partners']['gstack']")
+CLARIFY_SKILL=$(_f "['partners']['clarify']")
+CONTEXT7_SKILL=$(_f "['partners']['context7']")
 ```
 
 ### Dynamic Resolve (미등록 파트너 — 범용)
@@ -347,13 +350,12 @@ fi
 ### Phase 0: 도메인 경로 확인
 
 ```bash
-BASE="$HOME/.claude/plugins/marketplaces/CSnCompany_2-0/plugins"
-
-LATEST_TEST=$(ls -d "$BASE/CS-test-v"* 2>/dev/null | sort -V | tail -1)
-LATEST_PLAN=$(ls -d "$BASE/CS-plan-v"* 2>/dev/null | sort -V | tail -1)
-LATEST_REVIEW=$(ls -d "$BASE/CS-codebase-review-v"* 2>/dev/null | sort -V | tail -1)
-LATEST_DESIGN=$(ls -d "$BASE/cs-design-v"* 2>/dev/null | sort -V | tail -1)
-LATEST_SMARTRUN=$(ls -d "$BASE/cs-smart-run"* 2>/dev/null | sort -V | tail -1)
+# Phase INIT 결과에서 추출 — ls/sort -V 불필요
+LATEST_TEST=$(_f "['plugins']['test']")
+LATEST_PLAN=$(_f "['plugins']['plan']")
+LATEST_REVIEW=$(_f "['plugins']['review']")
+LATEST_DESIGN=$(_f "['plugins']['design']")
+LATEST_SMARTRUN=$(_f "['plugins']['smartrun']")
 ```
 
 파트너십이 감지된 경우, Partnership Registry의 Bash 블록도 이 Phase에서 함께 실행해 경로를 확보한다.

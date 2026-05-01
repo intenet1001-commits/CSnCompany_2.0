@@ -17,23 +17,17 @@ If you are not the author, Phase 4 (git push) is automatically skipped — your 
 
 0. **Phase 0 — 플래그 파싱 + Origin 확인** (자동)
    ```bash
-   # --project <path> 플래그 파싱
-   EXPLICIT_PROJECT=""
-   for i in "$@"; do
-     if [[ "$i" == --project=* ]]; then
-       EXPLICIT_PROJECT="${i#--project=}"
-     elif [[ "$PREV" == "--project" ]]; then
-       EXPLICIT_PROJECT="$i"
-     fi
-     PREV="$i"
-   done
+   PREPASS_RUNNER="$HOME/.claude/plugins/marketplaces/CSnCompany_2-0/shared/run_prepass.sh"
+   PREFLIGHT=$(bash "$PREPASS_RUNNER" end-preflight "$@" 2>/dev/null)
+   _f() { printf '%s' "$PREFLIGHT" | python3 -c "import sys,json;print(json.load(sys.stdin)$1)" 2>/dev/null; }
 
-   REMOTE=$(git -C "$HOME/.claude/plugins/marketplaces/CSnCompany_2-0" remote get-url origin 2>/dev/null)
-   if [[ "$REMOTE" != *"intenet1001-commits"* ]]; then
-     AUTO_NO_PUSH=true  # Phase 4 skip
-   fi
+   EXPLICIT_PROJECT=$(_f "['flags']['explicit_project']")
+   AUTO_NO_PUSH=$(_f "['flags']['auto_no_push']")
+   PROJECT_DIR=$(_f "['paths']['project']")
+   PROJECT_NAME=$(_f "['paths']['project_name']")
+   MARKETPLACE_DIR=$(_f "['paths']['marketplace']")
    ```
-   `origin`이 `intenet1001-commits`가 아니면 자동으로 `--no-push` 모드로 전환합니다.
+   `origin`이 `intenet1001-commits`가 아니면 `AUTO_NO_PUSH=true`로 자동 설정됩니다 (Python이 판정).
 
 1. **Phase 1 — 4-Agent 병렬 분석**
    - `doc-updater` — 문서 업데이트 필요 항목 추출
@@ -49,8 +43,9 @@ If you are not the author, Phase 4 (git push) is automatically skipped — your 
 ## 실행 방식
 
 ```bash
-BASE="$HOME/.claude/plugins/marketplaces/CSnCompany_2-0/plugins"
-LATEST_EXP=$(ls -d "$BASE/cs-experiencing-v"* 2>/dev/null | sort -V | tail -1)
+VERSIONS=$(bash "$PREPASS_RUNNER" plugin-versions 2>/dev/null)
+_v() { printf '%s' "$VERSIONS" | python3 -c "import sys,json;print(json.load(sys.stdin)['$1'])" 2>/dev/null; }
+LATEST_EXP=$(_v "cs-experiencing")
 SKILL="$LATEST_EXP/skills/experiencing/SKILL.md"
 ```
 
@@ -63,33 +58,17 @@ SKILL="$LATEST_EXP/skills/experiencing/SKILL.md"
 ### 탐지 로직
 
 ```bash
+# Phase 0 PREFLIGHT에서 이미 확보된 값 사용
 MARKETPLACE_DIR="$HOME/.claude/plugins/marketplaces/CSnCompany_2-0"
 MARKETPLACE_NAME="CSnCompany_2-0"
+# PROJECT_DIR, PROJECT_NAME은 Phase 0 PREFLIGHT에서 설정됨
 
-# 작업 중인 프로젝트 레포 탐지 (우선순위: --project 플래그 > CWD > 세션 컨텍스트)
-if [[ -n "$EXPLICIT_PROJECT" ]]; then
-  PROJECT_DIR="$EXPLICIT_PROJECT"
-else
-  PROJECT_DIR=$(git rev-parse --show-toplevel 2>/dev/null)
-  if [[ "$PROJECT_DIR" == "$MARKETPLACE_DIR" || -z "$PROJECT_DIR" ]]; then
-    PROJECT_DIR=""
-  fi
-fi
-PROJECT_NAME=$(basename "$PROJECT_DIR" 2>/dev/null)
-
-# 각 레포 push 상태 확인
+# push 완료 후 최신 git 상태 조회 (Python — Phase 4 이후 호출)
 check_push_status() {
-  local dir="$1"
-  local ahead
-  ahead=$(git -C "$dir" rev-list --count @{u}..HEAD 2>/dev/null)
-  local behind
-  behind=$(git -C "$dir" rev-list --count HEAD..@{u} 2>/dev/null)
-  local branch
-  branch=$(git -C "$dir" branch --show-current 2>/dev/null)
-  local remote
-  remote=$(git -C "$dir" remote get-url origin 2>/dev/null | sed 's/.*github.com[:/]//' | sed 's/\.git$//')
-  echo "$ahead|$behind|$branch|$remote"
+  bash "$PREPASS_RUNNER" git-status "$1" 2>/dev/null
+  # Returns JSON: {"state":"pushed","ahead":"0","behind":"0","branch":"main","remote":"owner/repo"}
 }
+_ps() { printf '%s' "$1" | python3 -c "import sys,json;print(json.load(sys.stdin).get('$2',''))" 2>/dev/null; }
 ```
 
 ### 출력 포맷
