@@ -432,6 +432,12 @@ done
 - **발견**: Slack mrkdwn `<url|label>` 포맷은 Slack Web API 전송 전용 — 클립보드 붙여넣기에서는 리터럴 문자열로 표시됨. 정답은 `navigator.clipboard.write()`에 `ClipboardItem({ "text/html": Blob([html]), "text/plain": Blob([plain]) })`를 동시에 담는 것. Slack 리치텍스트 에디터는 `text/html`을 우선 소비하여 `<a href="url">label</a>`를 클릭 가능한 하이퍼링크로 렌더링. HTML 미지원 앱은 `text/plain` fallback 사용.
 - **교훈**: Slack 공유용 클립보드 복사는 mrkdwn이 아닌 HTML ClipboardItem을 기본으로 설계. `try/catch`로 감싸고 실패 시 `writeText()` fallback 필수 (Firefox 등 미지원 브라우저 대응). `navigator.clipboard.write()`는 HTTPS 또는 localhost + 사용자 제스처(클릭) 핸들러 내에서만 동작.
 
+### 10. `/compact`는 스킬에서 직접 호출 불가 — 생성된 요약을 제안하는 패턴으로 우회 (2026-05-01)
+
+- **상황**: cs-end가 세션 종결 자동화를 담당하지만 `/compact`(context 압축)는 별도로 실행해야 했음. 사용자가 "원커맨드 종결"을 원했으나 cs-end가 compact를 수행하지 않았음.
+- **발견**: `/compact`는 Claude Code 내장 명령으로, 스킬/커맨드에서 프로그래밍적으로 호출이 불가능함. allowed-tools에도 invoke-command 같은 도구가 없음.
+- **교훈**: 자동 호출이 불가능한 명령이 필요한 경우, 해당 명령의 인자를 AI가 생성하여 사용자가 복사-실행할 수 있도록 제안하는 패턴이 최선. cs-end Phase 6: Phase 1 분석 결과로 세션 요약 1-2줄 생성 → `/compact [요약]` 형식으로 출력 → 사용자가 그대로 실행. `--no-compact` 플래그로 생략 가능.
+
 ### 8. Tauri webview에서 `window.open()` silent 실패 — 외부 URL은 항상 API.openInChrome (2026-04-26)
 
 - **상황**: deployUrl/githubUrl 카드 버튼에 `window.open(url, '_blank')`를 사용했더니 Tauri 앱에서 아무 반응 없음. 에러도 없고 브라우저도 안 열림.

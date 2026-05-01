@@ -1,5 +1,5 @@
 ---
-description: "CS 세션 종료 자동화 - 4-Agent 병렬 분석 → 학습 저장 → 활성 플러그인 버전업 → GitHub push (/cs-end)"
+description: "CS 세션 종료 자동화 - 4-Agent 병렬 분석 → 학습 저장 → 플러그인 버전업 → GitHub push → context compact 제안 (/cs-end)"
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep, Task, Agent, AskUserQuestion
 ---
 
@@ -33,6 +33,7 @@ If you are not the author, Phase 4 (git push) is automatically skipped — your 
 3. **Phase 3 — 변경 플러그인 버전업** (VERSION 파일 + plugin.json bump)
 4. **Phase 4 — Git commit + push** (atomic commit, marketplace.json 동기화)
 5. **Phase 5 — Push 완료 리포트** (두 레포 상태 명확 구분 출력)
+6. **Phase 6 — 세션 컨텍스트 압축** (기본 활성화, `--no-compact`로 생략 가능)
 
 ## 실행 방식
 
@@ -111,10 +112,37 @@ Phase 4 완료 직후, 다음 형식으로 출력합니다:
 | `⏭️ SKIPPED` | `--no-push` 플래그 또는 `AUTO_NO_PUSH=true` |
 | `─ 해당없음` | 프로젝트 레포 탐지 불가 또는 마켓플레이스와 동일 |
 
+## Phase 6 — 세션 컨텍스트 압축
+
+Phase 5 완료 후, Phase 1의 `learning-extractor`·`followup-suggester` 결과를 바탕으로
+현재 세션의 핵심을 1-2줄로 압축하여 `/compact` 인자로 제공합니다.
+
+### 생성 내용
+
+- 이번 세션에서 한 것 (작업 요약)
+- 핵심 결정/학습 (3줄 이내)
+- 다음 세션 시작 시 알아야 할 것
+
+### 출력 포맷
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ 세션 종결 완료 — 아래 명령으로 context를 정리하세요
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+/compact [생성된 세션 요약 1-2줄]
+
+ 또는 완전 초기화: /clear
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+`--no-compact` 플래그가 있거나 `--learning-only` 모드이면 이 Phase를 스킵합니다.
+
 ## 사용 예
 
 ```
-/cs-end                  # 표준 종료 (분석 → 버전업 → push)
+/cs-end                  # 표준 종료 (분석 → 버전업 → push → compact 제안)
 /cs-end --no-push        # push 생략 (로컬만)
-/cs-end --learning-only  # 학습 추출/저장만 (버전업/push 생략)
+/cs-end --no-compact     # Phase 6 생략 (compact 제안 없이 종료)
+/cs-end --learning-only  # 학습 추출/저장만 (버전업/push/compact 생략)
 ```
