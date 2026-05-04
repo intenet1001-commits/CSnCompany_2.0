@@ -28,8 +28,8 @@
     },
     {
       "name": "cs-design",
-      "description": "🎨 Designer — 5-agent parallel design review: visual hierarchy, interaction quality, design-system consistency, responsive/accessibility, anti-pattern detection.",
-      "source": "./plugins/cs-design-v19"
+      "description": "🎨 Designer — 5-agent parallel design review + claude.ai/design-quality generation (--gen). oklch() palette, ec-* namespace, self-contained HTML or Next.js TSX output.",
+      "source": "./plugins/cs-design-v20"
     },
     {
       "name": "cs-design-sample1",
