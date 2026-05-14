@@ -8,23 +8,23 @@
   "plugins": [
     {
       "name": "cs-end",
-      "description": "🏁 Session Closer — 4-Agent analysis + TIL save + plugin version-up + GitHub push (/cs-end)",
-      "source": "./plugins/cs-end-v2"
+      "description": "🏁 Session Closer — 4-Agent analysis + TIL save + CS_V7 knowledge write (Phase 2.1) + plugin version-up + GitHub push (/cs-end)",
+      "source": "./plugins/cs-end-v3"
     },
     {
       "name": "cs-ceo",
-      "description": "🧭 CEO — Estimates effort and autonomously dispatches across CS-test/CS-plan/CS-codebase-review/cs-design/cs-smart-run. v5.2 adds External Knowledge Gate + partnership protocols.",
-      "source": "./plugins/cs-ceo-v11"
+      "description": "🧭 CEO — Estimates effort and autonomously dispatches across CS-test/CS-plan/CS-codebase-review/cs-design/cs-smart-run. v5.4 adds Personal Knowledge Gate (Phase -3.5): queries CS_V7 personal wiki before context7.",
+      "source": "./plugins/cs-ceo-v12"
     },
     {
       "name": "goal",
       "description": "🎯 Goal — /goal with Goal Gate built-in. Clarifies goal first, then auto-dispatches to the best CS-series domain via cs-ceo.",
-      "source": "./plugins/cs-ceo-v11"
+      "source": "./plugins/cs-ceo-v12"
     },
     {
       "name": "cs-partnership",
-      "description": "🤝 Partnership — /cs-partnership with [skills] [goal]. Explicit partnership collaboration via cs-ceo P-mode orchestration. Goal Gate built-in.",
-      "source": "./plugins/cs-ceo-v11"
+      "description": "🤝 Partnership — /cs-partnership with [skills] [goal]. Explicit partnership collaboration via cs-ceo P-mode orchestration. Goal Gate built-in. Execution code added (v12).",
+      "source": "./plugins/cs-ceo-v12"
     },
     {
       "name": "cs-clarify",
