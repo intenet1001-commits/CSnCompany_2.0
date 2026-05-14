@@ -51,6 +51,56 @@ Python/uv 미설치 시 → `run_prepass.sh`가 uv 자동 설치를 유도하거
 
 ---
 
+### Phase G: Goal Gate (목표 추출 + 명확화) — v5.3
+
+**Phase INIT 직후, Phase -3 이전에 항상 실행한다. 유저 요청의 목표(WHAT)를 확정하는 것이 유일한 목적이다.**
+
+#### 실행
+
+```bash
+LATEST_CEO=$(_f "['plugins']['experiencing']" 2>/dev/null || \
+  ls -d "$HOME/.claude/plugins/marketplaces/CSnCompany_2-0/plugins/cs-ceo-v"* 2>/dev/null | sort -V | tail -1)
+GOAL_SKILL="$LATEST_CEO/skills/goal/SKILL.md"
+```
+
+GOAL_SKILL 프로토콜(skills/goal/SKILL.md)을 읽고 아래 순서로 실행:
+
+**① 목표 신호 분석 (goal/SKILL.md STEP 1 기준)**
+
+| 명확 패턴 | 처리 |
+|---------|------|
+| URL + 동사, 도메인 + 기능, 구체적 작업, with 파트너 포함 요청 | 즉시 GOAL 확정 → Phase -3으로 진행 |
+
+| 불명확 패턴 | 처리 |
+|---------|------|
+| 동사만, 맥락 없는 키워드, 무한정 범위 | → ② 단계로 진행 |
+
+**② 불명확 시 AskUserQuestion 1회**
+
+```
+AskUserQuestion(
+  question: "어떤 목표를 달성하고 싶으신가요?\n현재 요청: '[원문]'",
+  options: ["현재 요청 그대로 진행", "작업 취소"]
+)
+```
+- Other(직접 입력) → 입력값을 goal_statement로 확정
+- "현재 요청 그대로 진행" → 원문 그대로 사용
+- "작업 취소" → 즉시 종료
+
+**③ GOAL 객체 확정 후 Phase -3으로 진행**
+
+```
+GOAL_STATEMENT = "[한 문장 목표]"  # Phase 1~5 전체에서 기준점으로 사용
+```
+
+#### Phase 전체 영향
+
+- **Phase 1 공수 추정**: GOAL_STATEMENT 기준으로 영향 범위·도메인 수 판단
+- **Phase 4 리포트**: 첫 줄에 `**목표**: [GOAL_STATEMENT]` 항상 출력
+- **Phase 5-B 버전업**: 목표가 불명확해서 중간에 방향 전환이 있었다면 → 버전업 트리거
+
+---
+
 ### Phase -3: 외부 지식 게이트 (External Knowledge Gate) — v5.2
 
 **모든 요청에서 가장 먼저 평가한다. "외부 도움이 필요할 것 같다"고 판단되면 지체 없이 `/context7-auto-research`를 호출한다.**
@@ -468,6 +518,7 @@ Plan: CS-plan / Do: CEO 오케스트레이션 / Check: CS-test + CS-codebase-rev
 ```
 ## CEO 실행 리포트
 
+**목표**: [GOAL_STATEMENT]
 **요청**: [유저 요청 원문]
 **공수 판정**: 小/中/大
 **선택 모드**: A / B / C / P-Pre / P-In / P-Post / P-Wraps

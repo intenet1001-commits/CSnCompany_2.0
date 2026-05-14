@@ -5,8 +5,9 @@ description: |
   CS 시리즈 CEO 오케스트레이터. 자연어 요청을 받아 공수 추정 후 CS-test/CS-plan/CS-codebase-review/cs-design/cs-smart-run 중 최적 조합을 자율 선택·배분한다.
   v5.1: Universal Partnership Protocol — "with [어떤스킬이든]:" 구문으로 시스템에 설치된 모든 스킬과 협업 가능.
   v5.2: External Knowledge Gate — 외부 지식이 필요하다고 판단되면 지체 없이 context7-auto-research를 자동 호출하여 학습 후 진행. 학습 결과는 버전업 시 노하우로 영속화.
+  v5.3: Goal Gate — 모든 요청 진입 직전 목표(WHAT)를 추출·확정. 불명확 시 1회 질문. GOAL_STATEMENT가 공수 추정·도메인 선택·리포트 기준점이 됨.
   설치된 스킬을 자동 탐색하고, 타이밍(Pre/In/Post/Wraps)을 description 기반으로 자동 추론한다.
-  Use when user types "/cs-ceo" or "cs-ceo".
+  Use when user types "/cs-ceo", "cs-ceo", "/goal", or "/cs-partnership".
 version: 1.2.0
 allowed-tools:
   - Task
@@ -26,8 +27,9 @@ allowed-tools:
 ## 개요
 
 유저가 `/cs-ceo [자연어 요청]`을 입력하면:
-1. **(v5.2 신규) 외부 지식 게이트**: CEO가 라이브러리/프레임워크/최신 동향 등 외부 도움이 필요할 것 같으면 즉시 `/context7-auto-research`를 호출해 공부 후 진행 (Phase -3)
-2. CEO가 외부 파트너 스킬 필요 여부 판단 (Phase -2)
+1. **(v5.3 신규) Goal Gate**: CEO가 요청에서 목표(WHAT)를 추출. 불명확하면 사용자에게 1회 질문하여 목표 확정 (Phase G)
+2. **(v5.2 신규) 외부 지식 게이트**: CEO가 라이브러리/프레임워크/최신 동향 등 외부 도움이 필요할 것 같으면 즉시 `/context7-auto-research`를 호출해 공부 후 진행 (Phase -3)
+3. CEO가 외부 파트너 스킬 필요 여부 판단 (Phase -2)
 3. CEO 에이전트(opus)가 공수를 추정하고
 4. 어떤 CS 도메인을 어떤 순서로 실행할지 스스로 결정하고
 5. 필요 시 cs-smart-run(Opus 플랜→Sonnet 실행)을 자율 선택한다
@@ -38,6 +40,12 @@ allowed-tools:
 
 ```
 요청 진입
+  ↓
+[Phase G]  목표 명확?  ← WHAT(달성 목표) 추출
+  │ 명확  → GOAL_STATEMENT 확정 → 다음 Phase
+  │ 불명확 → AskUserQuestion: "어떤 목표를 달성하고 싶으신가요?"
+  │          └─ 답변 → GOAL_STATEMENT 확정 → 다음 Phase
+  │          └─ 취소 → 종료
   ↓
 [Phase -3] 외부 지식 필요?  ← 라이브러리/최신 변경/모르는 용어/대안 비교/외부 stack trace
   │ Yes → context7-auto-research 설치됨?

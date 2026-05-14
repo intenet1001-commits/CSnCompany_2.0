@@ -1,12 +1,14 @@
 ---
-description: "목표 기반 CEO 오케스트레이터 — 자연어 목표를 받아 공수 추정 후 최적 도메인 자율 배분. /cs-ceo의 alias. (/goal [목표])"
+description: "목표 명확화 → CEO 오케스트레이터 — 목표를 먼저 확정한 뒤 공수 추정 후 최적 도메인 자율 배분. Goal Gate 내장. (/goal [목표])"
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep, Agent, AskUserQuestion, Task, ToolSearch
 ---
 
 # /goal [목표]
 
-목표를 말하면 CEO가 공수를 추정하고 CS 시리즈에서 최적 실행 경로를 자율 배분합니다.
-`/cs-ceo`와 동일한 CEO 에이전트를 사용합니다.
+목표를 말하면 Goal Gate가 먼저 목표를 명확히 하고, CEO가 최적 실행 경로를 자율 배분합니다.
+`/cs-ceo`와 동일한 CEO 에이전트를 사용하며 Goal Gate가 내장되어 있습니다.
+
+> 목표가 불명확해도 괜찮습니다 — CEO가 먼저 목표를 물어보고 시작합니다.
 
 ## 사용법
 

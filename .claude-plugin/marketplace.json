@@ -18,7 +18,12 @@
     },
     {
       "name": "goal",
-      "description": "🎯 Goal — /goal alias for cs-ceo. Accepts a natural language goal and auto-dispatches to the best CS-series domain.",
+      "description": "🎯 Goal — /goal with Goal Gate built-in. Clarifies goal first, then auto-dispatches to the best CS-series domain via cs-ceo.",
+      "source": "./plugins/cs-ceo-v11"
+    },
+    {
+      "name": "cs-partnership",
+      "description": "🤝 Partnership — /cs-partnership with [skills] [goal]. Explicit partnership collaboration via cs-ceo P-mode orchestration. Goal Gate built-in.",
       "source": "./plugins/cs-ceo-v11"
     },
     {
