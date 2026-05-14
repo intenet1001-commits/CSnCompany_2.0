@@ -652,3 +652,9 @@ fi
 - **판단**: Mode A 직접 분석. CEO 직접 Bash+Read로 3단계 원인 추적.
 - **결과**: 3중 원인 발견. 핵심 근본 원인 — Rust `PortInfo` 구조체에 `favorite` 필드 없어서 `save_ports` 호출 시 JSON 역직렬화 과정에서 필드 드롭.
 - **교훈**: Tauri 앱에서 특정 필드가 저장 안 될 때 → **1순위: `src-tauri/src/lib.rs`의 `struct PortInfo` 필드 목록과 TS `interface PortInfo` 비교**. Rust 구조체 누락 필드는 serde 역직렬화 시 silently drop됨.
+
+### 17. GUI 앱 PATH Desert — Tauri invoke()는 zsh -l -c로 실행해야 사용자 PATH 확보 (2026-05-14)
+- **상황**: Tauri 앱에서 `claude --bg`가 "claude not found in PATH" 오류. CLI/API 서버 경로에서는 정상 동작. Playwright 테스트도 통과했으나 앱에서만 계속 실패.
+- **판단**: Mode A 직접 분석. isTauri() 분기 발견 → Tauri invoke() 경로(lib.rs)와 HTTP 경로(api-server.ts)가 완전히 독립적. PATH enhancedPath로 부족, `zsh -l -c` 필요.
+- **결과**: `open_claude_bg()`를 `Command::new("/bin/zsh").args(["-l", "-c", &shell_cmd])`로 수정 → DMG v80 빌드 완료. 같은 파일의 `suggest_names_batch()`가 이미 동일 패턴 사용 중이었음.
+- **교훈**: Tauri(Finder 실행) = 최소 PATH(`/usr/bin:/bin`). **CLI에서 작동 + Playwright 통과 + 앱에서만 실패 → isTauri() 분기 확인 → Rust invoke() 경로는 `zsh -l -c` 필수**. Playwright는 HTTP 경로만 검증 — Rust invoke() 경로는 별도 테스트 필요.
