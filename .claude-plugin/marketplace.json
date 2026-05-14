@@ -17,6 +17,11 @@
       "source": "./plugins/cs-ceo-v11"
     },
     {
+      "name": "goal",
+      "description": "🎯 Goal — /goal alias for cs-ceo. Accepts a natural language goal and auto-dispatches to the best CS-series domain.",
+      "source": "./plugins/cs-ceo-v11"
+    },
+    {
       "name": "cs-clarify",
       "description": "💬 PM — Requirements clarification before planning. 4-agent Socratic elicitation surfaces hidden assumptions, validates scope, prevents over-engineering.",
       "source": "./plugins/cs-clarify-v1"

@@ -15,3 +15,5 @@ Key routing rules:
 - Code review, check my diff → invoke review
 - Architecture review, plan review → invoke plan-eng-review
 - Save progress, checkpoint, resume → invoke checkpoint
+- "목표", complex multi-step task, unsure which domain, /goal → invoke cs-ceo
+- Complex task routing, effort estimation, domain dispatch → invoke cs-ceo
