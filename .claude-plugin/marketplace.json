@@ -13,18 +13,18 @@
     },
     {
       "name": "cs-ceo",
-      "description": "🧭 CEO — Estimates effort and autonomously dispatches across CS-test/CS-plan/CS-codebase-review/cs-design/cs-smart-run. v5.4 adds Personal Knowledge Gate (Phase -3.5): queries CS_V7 personal wiki before context7.",
-      "source": "./plugins/cs-ceo-v12"
+      "description": "🧭 CEO — Estimates effort and autonomously dispatches across CS-test/CS-plan/CS-codebase-review/cs-design/cs-smart-run. v5.5 adds Dynamic Resolve v2: partner type auto-detection (AGENT/SKILL/PROTOCOL) + external agent direct call support.",
+      "source": "./plugins/cs-ceo-v13"
     },
     {
       "name": "goal",
       "description": "🎯 Goal — /goal with Goal Gate built-in. Clarifies goal first, then auto-dispatches to the best CS-series domain via cs-ceo.",
-      "source": "./plugins/cs-ceo-v12"
+      "source": "./plugins/cs-ceo-v13"
     },
     {
       "name": "cs-partnership",
-      "description": "🤝 Partnership — /cs-partnership with [skills] [goal]. Explicit partnership collaboration via cs-ceo P-mode orchestration. Goal Gate built-in. Execution code added (v12).",
-      "source": "./plugins/cs-ceo-v12"
+      "description": "🤝 Partnership — /cs-partnership with [skills/agents] [goal]. v5.5: AGENT type (executor, debugger, architect) directly calls external plugin agents via Task(subagent_type). SKILL/PROTOCOL types use Skill() or direct execution.",
+      "source": "./plugins/cs-ceo-v13"
     },
     {
       "name": "cs-clarify",

@@ -123,6 +123,13 @@ def cmd_ceo_preflight() -> dict:
         )
         omc_base = str(candidates[-1]) if candidates else ""
 
+    # omc agents — direct marketplace path (not cache)
+    omc_marketplace = HOME / ".claude/plugins/marketplaces/omc"
+    omc_agents: dict[str, str] = {}
+    if (omc_marketplace / "agents").is_dir():
+        for af in sorted((omc_marketplace / "agents").glob("*.md"))[:12]:
+            omc_agents[af.stem] = str(af)
+
     # gstack
     gstack = ""
     for candidate in [
@@ -169,6 +176,8 @@ def cmd_ceo_preflight() -> dict:
                 "deep_dive":    omc("deep-dive"),
                 "autoresearch": omc("autoresearch"),
                 "autopilot":    omc("autopilot"),
+                "plugin_name":  "oh-my-claudecode",
+                "agents":       omc_agents,
             },
             "gstack":  gstack,
             "clarify": f"{clarify_dir}/skills/cs-clarify/SKILL.md" if clarify_dir else "",
@@ -372,12 +381,144 @@ def cmd_git_status(argv: list) -> dict:
     return push_status(argv[0])
 
 
+_SKILL_TO_AGENT_HINT: dict[str, str] = {
+    "deep-dive":    "debugger",
+    "autoresearch": "analyst",
+    "autopilot":    "executor",
+    "explore":      "explore",
+    "brainstorm":   "architect",
+    "analyze":      "analyst",
+    "review":       "code-reviewer",
+    "simplify":     "code-simplifier",
+    "document":     "document-specialist",
+    "design":       "designer",
+    "debug":        "debugger",
+    "execute":      "executor",
+    "critique":     "critic",
+}
+
+
+def find_agent_file(name: str) -> str:
+    """Search for agents/<name>.md in plugin marketplaces and cache."""
+    roots = [
+        HOME / ".claude/plugins/marketplaces",
+        HOME / ".claude/plugins/cache",
+    ]
+    for root in roots:
+        if not root.is_dir():
+            continue
+        for dirpath, dirnames, filenames in os.walk(str(root), onerror=lambda _: None):
+            dirnames[:] = [d for d in dirnames if d not in _SKIP_DIRS]
+            if os.path.basename(dirpath) == "agents" and f"{name}.md" in filenames:
+                return os.path.join(dirpath, f"{name}.md")
+    return ""
+
+
+def _plugin_root_from_path(start: Path) -> Path | None:
+    """Walk up from start to find a directory that has .claude-plugin/plugin.json or agents/."""
+    current = start
+    for _ in range(7):
+        if (current / ".claude-plugin" / "plugin.json").exists() or (current / "agents").is_dir():
+            return current
+        current = current.parent
+    return None
+
+
+def _read_plugin_name(plugin_root: Path) -> str:
+    pj = plugin_root / ".claude-plugin" / "plugin.json"
+    if pj.exists():
+        try:
+            return json.loads(pj.read_text(encoding="utf-8")).get("name", "")
+        except Exception:
+            pass
+    return ""
+
+
+def _build_agent_result(name: str, skill_path: str, plugin_root: Path, plugin_name: str) -> dict:
+    agents_dir = plugin_root / "agents"
+    agent_files = sorted(agents_dir.glob("*.md"))
+    agent_names = [f.stem for f in agent_files]
+    hint = _SKILL_TO_AGENT_HINT.get(name, "")
+    primary = (
+        hint if hint and hint in agent_names
+        else next((a for a in agent_names if a == name or a == name.replace("-", "_")), "")
+        or (agent_names[0] if agent_names else "")
+    )
+    return {
+        "name":        name,
+        "found":       True,
+        "type":        "AGENT",
+        "path":        skill_path,
+        "plugin_name": plugin_name,
+        "invocation":  f"{plugin_name}:{primary}" if primary else "",
+        "agents":      agent_names[:8],
+    }
+
+
+def find_partner_info(name: str) -> dict:
+    """
+    Find a partner and detect its invocation type.
+
+    Returns:
+      found        – bool
+      type         – "AGENT" | "SKILL" | "PROTOCOL"
+      path         – path to SKILL.md or agent .md (if found)
+      plugin_name  – plugin name from .claude-plugin/plugin.json
+      invocation   – "plugin_name:agent_name" or "plugin_name:skill_name"
+      agents       – list of available agent names (AGENT type only)
+
+    Type semantics:
+      AGENT    → plugin has agents/ dir + plugin.json → Task(subagent_type=invocation)
+      SKILL    → plugin has plugin.json but no agents/ → Skill(skill=invocation)
+      PROTOCOL → only SKILL.md, no plugin.json → CEO reads and follows directly
+    """
+    # --- Primary: search by SKILL.md ----------------------------------------
+    skill_path = find_skill(name)
+    if skill_path:
+        plugin_root = _plugin_root_from_path(Path(skill_path).parent)
+        if plugin_root is None:
+            # SKILL.md found but no plugin root (standalone skill) —
+            # check if an agent file exists and prefer it when it has a proper plugin
+            agent_file = find_agent_file(name)
+            if agent_file:
+                ar = _plugin_root_from_path(Path(agent_file).parent)
+                if ar:
+                    pn = _read_plugin_name(ar)
+                    if pn:
+                        return _build_agent_result(name, agent_file, ar, pn)
+            return {"name": name, "found": True, "type": "PROTOCOL", "path": skill_path,
+                    "plugin_name": "", "invocation": "", "agents": []}
+
+        plugin_name = _read_plugin_name(plugin_root)
+        agents_dir = plugin_root / "agents"
+
+        if agents_dir.is_dir() and plugin_name:
+            return _build_agent_result(name, skill_path, plugin_root, plugin_name)
+
+        if plugin_name:
+            skill_folder = Path(skill_path).parent.name
+            return {"name": name, "found": True, "type": "SKILL", "path": skill_path,
+                    "plugin_name": plugin_name, "invocation": f"{plugin_name}:{skill_folder}", "agents": []}
+
+        return {"name": name, "found": True, "type": "PROTOCOL", "path": skill_path,
+                "plugin_name": "", "invocation": "", "agents": []}
+
+    # --- Fallback: search by agent file name (e.g. "executor", "analyst") ----
+    agent_file = find_agent_file(name)
+    if agent_file:
+        plugin_root = _plugin_root_from_path(Path(agent_file).parent)
+        if plugin_root:
+            plugin_name = _read_plugin_name(plugin_root)
+            if plugin_name:
+                return _build_agent_result(name, agent_file, plugin_root, plugin_name)
+
+    return {"name": name, "found": False, "type": "UNKNOWN", "path": "", "plugin_name": "", "invocation": "", "agents": []}
+
+
 def cmd_resolve_partner(argv: list) -> dict:
     if not argv:
         return {"error": "resolve-partner requires a skill name"}
-    name = argv[0]
-    path = find_skill(name)
-    return {"name": name, "path": path, "found": bool(path)}
+    return find_partner_info(argv[0])
 
 
 def cmd_plugin_versions() -> dict:
