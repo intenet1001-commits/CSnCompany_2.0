@@ -511,3 +511,21 @@ done
 - **상황**: deployUrl/githubUrl 카드 버튼에 `window.open(url, '_blank')`를 사용했더니 Tauri 앱에서 아무 반응 없음. 에러도 없고 브라우저도 안 열림.
 - **발견**: Tauri webview는 외부 URL 네비게이션을 sandbox로 차단. DOM API(`window.open`)는 silent 실패. Rust 커맨드 `open_in_chrome`을 통해야 동작. 실패가 조용해서 개발 중 발견이 어려움.
 - **교훈**: Tauri 앱에서 외부 URL 여는 버튼은 무조건 `API.openInChrome(url).catch(()=>{})`. `window.open` 사용 금지. 새 UI 요소 추가 체크리스트: 기능 코드 → `data-help-key` → `guideContent.ts` 항목 — 세 가지를 같은 커밋에 포함.
+
+### 20. Pull merge: 동일 폴더 다른 ID 중복 방지 — 결정적 ID + folderPath dedup (2026-05-17)
+<!-- tier: principle -->
+- **상황**: Supabase Pull 시 같은 폴더가 여러 행으로 중복 나타남. `mergePorts`는 `id` 기준 dedup만 수행.
+- **발견**: 기기/마이그레이션 경로에 따라 같은 폴더가 다른 ID로 저장되어 있었음. 두 가지 동시 적용으로 해결: (a) port가 없는 항목은 `folderPath`를 dedup 보조키로 추가, (b) 마이그레이션 시 ID를 `path hash`로 결정적으로 생성 → 모든 기기가 동일 폴더에 대해 동일 ID 산출.
+- **교훈**: 분산/멀티기기 동기화에서 "natural key"(folderPath 등)는 dedup 보조키로 항상 사용. 마이그레이션이 새 row 생성할 때는 random UUID 대신 deterministic hash(path) 사용해야 idempotent.
+
+### 21. Merge 전략: 사용자 직접 편집 필드는 local-first (2026-05-17)
+<!-- tier: principle -->
+- **상황**: Pull 직후 방금 편집한 `deployUrl`이 stale 원격 값으로 덮어써짐. `mergePorts`가 `{ ...local, ...remote }` 단순 스프레드 사용.
+- **발견**: `folderPath`/`commandPath`는 이미 local-first였으나 사용자 직접 입력 필드(`deployUrl`, `githubUrl`, `description`)는 누락. 같은 local-first 규칙 적용으로 해결.
+- **교훈**: 동기화 merge에서 "사용자가 UI로 직접 입력하는 필드"와 "시스템 자동 계산 필드"를 구분. 전자는 항상 local-first(원격이 빈 값일 때만 채움). 새 사용자 편집 필드 추가할 때마다 merge 정책 재검토 필수.
+
+### 22. ~/.claude/settings.json extraKnownMarketplaces는 객체 shape 필수 (2026-05-17)
+<!-- tier: tactical -->
+- **상황**: 마켓플레이스 entry를 문자열(경로)로 추가 → `/doctor`에서 "Expected object, but received string" 에러 13건.
+- **발견**: 유일하게 작동하는 entry(`karpathy-skills`)가 `{ source: { source: "github", repo: "owner/repo" } }` 중첩 객체 형태였음. 문자열 path는 invalid 스키마.
+- **교훈**: 새 known marketplace 추가 시 반드시 객체 shape 사용. 스키마 불확실하면 기존 작동 entry 먼저 참고. 자동 설치 스크립트가 string으로 저장하면 같은 에러 재발 — 설치 스크립트 측 패치도 검토.
