@@ -458,6 +458,36 @@ done
 - **발견**: `notification-hook.sh`, `stop-hook.sh` 모두 `.env` 없을 시 `exit 1` 반환 → Claude Code는 훅 비정상 종료를 UI 블로킹으로 처리. 훅이 "해당 없음"인 경우에도 `exit 1`이면 입력창이 그레이아웃됨
 - **교훈**: 훅의 전제조건(`.env`, 토큰 등)이 충족되지 않을 때는 반드시 `exit 0`으로 종료. `exit 1`은 의도적으로 사용자를 멈춰야 할 진짜 오류에만 사용. "이 훅은 여기에 해당 없음" = `exit 0`
 
+### 12. Git worktree base ref: local branch vs. remote tracking — unpushed commits invisible (2026-05-17)
+<!-- tier: principle -->
+- **상황**: EnterWorktree(bgIsolation)로 워크트리 생성 후 코드 수정하려 했는데 이번 세션에서 작성한 코드가 없음. 에러 없이 조용히 구버전 상태로 시작됨.
+- **발견**: `git worktree add -b <branch> <path> origin/<default>` 는 remote tracking branch 기준으로 분기. push 안 된 로컬 커밋은 포함되지 않음. "origin/master"와 로컬 "master"가 diverge한 상태에서 워크트리를 만들면 로컬 커밋이 없는 상태로 시작.
+- **교훈**: 워크트리 생성 후 항상 `git merge master`(또는 `git rebase master`)로 로컬 최신화. 또는 base ref를 `origin/` 없이 로컬 branch명으로 지정. push-before-worktree 습관이 가장 안전.
+
+### 13. Browser cache busting: `?t=Date.now()` + `cache: 'no-store'` 둘 다 필요 (2026-05-17)
+<!-- tier: principle -->
+- **상황**: Next.js에서 `/api/build-index` POST로 `public/skills-index.json` 재빌드 후 `fetch('/skills-index.json')` 해도 구버전 데이터 노출. 삭제된 플러그인이 UI에 계속 보임.
+- **발견**: `cache: 'no-store'` 단독으로는 브라우저/CDN edge cache를 완전히 우회하지 못함. 쿼리 파라미터 `?t=Date.now()`로 URL을 유니크하게 만들어야 캐시 항목 자체를 건너뜀. 두 메커니즘이 상호보완적.
+- **교훈**: 서버사이드 빌드가 쓰는 `/public/` 정적 파일을 클라이언트가 즉시 읽어야 하면 `fetch(\`\${url}?t=\${Date.now()}\`, { cache: 'no-store' })` 패턴 사용. 하나만으로는 부족.
+
+### 14. Build "unchanged" ≠ 파일 미재기록 — onRefresh는 항상 호출해야 (2026-05-17)
+<!-- tier: principle -->
+- **상황**: StatsBar의 `↺` 버튼이 `unchanged: true`일 때 `onRefresh()`를 호출 안 함. rebuild 후 UI가 갱신 안 돼 새로고침 기능이 작동 안 하는 것처럼 보임.
+- **발견**: build-index 스크립트는 스킬 목록 변화가 없어도 `skills-index.json`을 항상 덮어씀. `unchanged`는 "논리적 diff 없음"이지 "파일 미수정"이 아님. 파일이 항상 재기록되므로 클라이언트는 항상 새 응답을 받아야 함.
+- **교훈**: 빌드 파이프라인 결과물을 polling하는 UI는 build 완료 후 reload callback을 `unchanged` 여부와 무관하게 항상 호출. "no change → no reload" 최적화는 파일이 조건부로 쓰일 때만 유효.
+
+### 15. React 부모→자식 이벤트: 모노토닉 카운터 증가 패턴 (2026-05-17)
+<!-- tier: tactical -->
+- **상황**: Dashboard rebuild 이벤트를 SourcesPanel에 전달해 자동 재조회시켜야 함. prop callback 전달은 자식 내부 구현에 의존하게 됨.
+- **발견**: `const [rebuildCount, setRebuildCount] = useState(0)` + `setRebuildCount(c => c + 1)` 를 prop으로 전달. 자식은 `useEffect(() => { if (rebuildCount === 0) return; fetchData() }, [rebuildCount])`. 초기 마운트는 `=== 0` 가드로 스킵. 카운터가 증가할 때마다 effect 재실행.
+- **교훈**: 부모→자식 one-time 이벤트 알림(이유 불문)은 모노토닉 카운터 prop으로 처리. Context/EventEmitter 없이 깔끔하게 해결. `key` reset trick의 변형.
+
+### 16. Node.js native `fs.watch({ recursive: true })` macOS에서 chokidar 없이 동작 (2026-05-17)
+<!-- tier: principle -->
+- **상황**: 플러그인 디렉토리 변경 감시 스크립트 작성 시 chokidar 의존성 추가가 필요한지 검토.
+- **발견**: Node.js 18+ 에서 macOS는 `fs.watch(dir, { recursive: true }, callback)` 네이티브 지원(FSEvents 기반). `filename`이 null일 수 있으므로 반드시 가드 필요. `rename`/`change` 두 이벤트만 구분 가능. 단일 파일 감시는 `fs.watchFile()`(polling)이 더 안정적.
+- **교훈**: macOS 전용 Node.js 스크립트라면 chokidar 없이 native recursive watch 사용 가능. Linux는 chokidar 필요. `if (!filename) return` 가드 필수.
+
 ### 8. Tauri webview에서 `window.open()` silent 실패 — 외부 URL은 항상 API.openInChrome (2026-04-26)
 
 - **상황**: deployUrl/githubUrl 카드 버튼에 `window.open(url, '_blank')`를 사용했더니 Tauri 앱에서 아무 반응 없음. 에러도 없고 브라우저도 안 열림.
