@@ -488,6 +488,24 @@ done
 - **발견**: Node.js 18+ 에서 macOS는 `fs.watch(dir, { recursive: true }, callback)` 네이티브 지원(FSEvents 기반). `filename`이 null일 수 있으므로 반드시 가드 필요. `rename`/`change` 두 이벤트만 구분 가능. 단일 파일 감시는 `fs.watchFile()`(polling)이 더 안정적.
 - **교훈**: macOS 전용 Node.js 스크립트라면 chokidar 없이 native recursive watch 사용 가능. Linux는 chokidar 필요. `if (!filename) return` 가드 필수.
 
+### 17. HTML 목록 스크래핑 — 복합 정규식 대신 분리 추출 후 index 매칭 (2026-05-17)
+<!-- tier: tactical -->
+- **상황**: `carSearch.cs` 200 응답 HTML에서 `<tr onclick="onclick_Car('pKey')">` + `<img src="/Images/CH_DATE_PLATE.JPG">` 구조를 단일 정규식으로 동시 추출 시도. HTML 변동(추가 속성, 개행)으로 매칭 실패.
+- **발견**: 각 값을 독립 패턴으로 추출 후 위치 매칭(index alignment)이 안정적. (1) `onclick_Car\('([^']+)'\)` pKey 배열 (2) `/Images/.+\.JPG` 이미지경로 배열 → 동일 인덱스로 zip → 번호판 일치 행의 pKey 선택.
+- **교훈**: DOM 파서 없이 HTML에서 "같은 행의 복수 값"을 추출할 때는 단일 블록 정규식보다 속성별 독립 추출 후 배열 위치 매칭이 HTML 변동에 더 강인하다.
+
+### 18. `[^"']*` 정규식 — 혼합 따옴표 HTML 속성에서 조기 종료 (2026-05-17)
+<!-- tier: tactical -->
+- **상황**: `onclick="javascript:onclick_Car('pKey')"` 에서 pKey 추출 시 `[^"']*onclick_Car\('([^"']*)'\)` 패턴 사용.
+- **발견**: `[^"']*`는 큰따옴표·단따옴표 둘 다를 종료 조건으로 취급. 외부 구분자가 `"` 이어도 값 내부의 `'` 에서 매칭 중단 → pKey 빈 문자열. 수정: `onclick_Car\('([^']+)'\)` (내부 단따옴표만 배제).
+- **교훈**: HTML attribute 추출 시 `[^"']*`는 "어떤 따옴표도 없는 값"에만 쓴다. 외부/내부 따옴표 종류가 다르면 내부 값에 쓰인 따옴표 종류만 배제하는 `[^']` 또는 `[^"]`를 사용해야 한다.
+
+### 19. SSE 이벤트 핸들러에서 연관 React state 동시 호출 필요 (2026-05-17)
+<!-- tier: tactical -->
+- **상황**: 차량 등록 SSE 핸들러 `applyLogUpdate`에서 `setLogs`만 호출. `statusMap`(UI 배지)은 별도 state여서 갱신되지 않음 → 등록 완료 후 배지가 "입차중"으로 남음.
+- **발견**: SSE/비동기 이벤트 핸들러는 React 자동 배칭 범위 밖일 수 있으며, 파생 state가 독립 useState일 경우 이벤트 핸들러에서 명시 `setState`를 함께 호출해야 같은 렌더에 반영.
+- **교훈**: 이벤트 핸들러에서 연관 display state가 여러 개라면 모든 연관 `setState`를 함께 호출한다. useEffect 의존성 기반 파생 업데이트는 렌더 후 다음 사이클에 실행되어 즉각 UI 반응에 부적합.
+
 ### 8. Tauri webview에서 `window.open()` silent 실패 — 외부 URL은 항상 API.openInChrome (2026-04-26)
 
 - **상황**: deployUrl/githubUrl 카드 버튼에 `window.open(url, '_blank')`를 사용했더니 Tauri 앱에서 아무 반응 없음. 에러도 없고 브라우저도 안 열림.
